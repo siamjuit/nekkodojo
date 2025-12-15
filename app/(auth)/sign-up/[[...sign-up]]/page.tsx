@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { useSignUp } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Google from "@/public/logos/google.svg";
+import Github from "@/public/logos/github.svg";
 import {
   Card,
   CardContent,
@@ -23,6 +25,7 @@ import { useState } from "react";
 import { Eye, EyeOff, Loader2, UserPlus, Mail, Loader } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import Image from "next/image";
 
 export default function Page() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -97,7 +100,38 @@ export default function Page() {
     }
     setIsLoading(false);
   }
+  async function googleSignIn() {
+    setIsLoading(true);
+    setError("");
+    if (!isLoaded) return;
+    try {
+      await signUp.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: "/",
+      });
+    } catch (error: any) {
+      console.log(JSON.stringify(error, null, 2));
+      setError(error.errors[0].message);
+    }
+  }
 
+  async function githubSignIn() {
+    setIsLoading(true);
+    setError("");
+    if (!isLoaded) return;
+
+    try {
+      await signUp.authenticateWithRedirect({
+        strategy: "oauth_github",
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: "/",
+      });
+    } catch (error: any) {
+      console.log(JSON.stringify(error, null, 2));
+      setError(error.errors[0].message);
+    }
+  }
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-linear-to-br from-slate-50 via-white to-slate-100">
       <div className="absolute inset-0 bg-grid-slate-200/50 mask-[radial-gradient(ellipse_at_center,transparent_20%,black)]" />
@@ -129,6 +163,24 @@ export default function Page() {
         <CardContent className="space-y-5">
           {!pendingVerification ? (
             <div className="space-y-5 flex flex-col w-full">
+              <div className="flex gap-4 w-full items-center justify-center">
+                <Button
+                  onClick={googleSignIn}
+                  className="btn btn-outline bg-transparent text-accent-foreground hover:text-accent"
+                >
+                  <Image src={Google} alt="Google" width={16} height={16} />
+                  <span className="sm:block hidden mx-auto">Join with Google</span>
+                  <span className="sm:hidden block">Google</span>
+                </Button>
+                <Button
+                  onClick={githubSignIn}
+                  className="btn btn-outline bg-transparent text-accent-foreground hover:text-accent"
+                >
+                  <Image src={Github} alt="Google" width={16} height={16} />
+                  <span className="sm:block hidden mx-auto">Join with GitHub</span>
+                  <span className="sm:hidden block">GitHub</span>
+                </Button>
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
                   Email
@@ -189,7 +241,7 @@ export default function Page() {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-                <div id="clerk-captcha" className="self-center" />
+              <div id="clerk-captcha" className="self-center" />
               <Button
                 className="w-full h-11 text-base font-medium shadow-md hover:shadow-lg transition-all cursor-pointer"
                 type="button"

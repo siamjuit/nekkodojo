@@ -13,10 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Google from "@/public/logos/google.svg";
+import Github from "@/public/logos/github.svg";
 import { useState } from "react";
 import { Eye, EyeOff, Loader, Loader2, Shield } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import Image from "next/image";
 
 export default function Page() {
   const { isLoaded, signIn, setActive } = useSignIn();
@@ -38,7 +41,38 @@ export default function Page() {
       </div>
     );
   }
+  async function googleSignIn() {
+    setIsLoading(true);
+    setError("");
+    if (!isLoaded) return;
+    try {
+      await signIn.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: "/",
+      });
+    } catch (error: any) {
+      console.log(JSON.stringify(error, null, 2));
+      setError(error.errors[0].message);
+    }
+  }
 
+  async function githubSignIn() {
+    setIsLoading(true);
+    setError("");
+    if (!isLoaded) return;
+
+    try {
+      await signIn.authenticateWithRedirect({
+        strategy: "oauth_github",
+        redirectUrl: "/sso-callback",
+        redirectUrlComplete: "/",
+      });
+    } catch (error: any) {
+      console.log(JSON.stringify(error, null, 2));
+      setError(error.errors[0].message);
+    }
+  }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!isLoaded || !email || !password) {
@@ -81,6 +115,24 @@ export default function Page() {
 
         <CardContent className="space-y-5">
           <div className="space-y-5">
+            <div className="flex gap-4 w-full items-center justify-center">
+              <Button
+                onClick={googleSignIn}
+                className="btn btn-outline bg-transparent text-accent-foreground hover:text-accent"
+              >
+                <Image src={Google} alt="Google" width={16} height={16} />
+                <span className="sm:block hidden mx-auto">Join with Google</span>
+                <span className="sm:hidden block">Google</span>
+              </Button>
+              <Button
+                onClick={githubSignIn}
+                className="btn btn-outline bg-transparent text-accent-foreground hover:text-accent"
+              >
+                <Image src={Github} alt="Google" width={16} height={16} />
+                <span className="sm:block hidden mx-auto">Join with GitHub</span>
+                <span className="sm:hidden block">GitHub</span>
+              </Button>
+            </div>
             <div className="space-y-2">
               <Label htmlFor="identifier" className="text-sm font-medium">
                 Email or Username

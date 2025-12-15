@@ -55,7 +55,7 @@ export default function RootLayout({
   return (
     <ClerkProvider appearance={{ theme: dark }}>
       <html lang="en" data-theme="luxury">
-        <body
+        <body suppressHydrationWarning
           className={`${nunito.variable} ${inter.variable} ${poppins.variable} ${fira_code.variable} ${jetbrains_mono.variable} ${roboto.variable} antialiased`}
         >
           {children}
