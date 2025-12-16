@@ -42,10 +42,12 @@ export default function Page() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 via-white to-slate-100">
+      <div className="min-h-screen flex items-center justify-center bg-[#0f0b0a]">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="size-12 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Loading...</p>
+          <Loader2 className="size-12 animate-spin text-[#d4af37]" />
+          <p className="text-sm text-[#d4af37]/60 font-mono tracking-widest">
+            LOADING DOJO...
+          </p>
         </div>
       </div>
     );
@@ -132,184 +134,220 @@ export default function Page() {
       setError(error.errors[0].message);
     }
   }
+  
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-linear-to-br from-slate-50 via-white to-slate-100">
-      <div className="absolute inset-0 bg-grid-slate-200/50 mask-[radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+    <div className="min-h-screen flex items-center justify-center px-4 bg-[#0f0b0a] font-sans text-[#eaddcf] relative overflow-hidden">
+      
+      {/* ==========================================
+          BACKGROUND ATMOSPHERE
+      ========================================== */}
+      <div className="absolute inset-0 bg-[#120c0a]">
+        {/* Spotlight Effect */}
+        <div className="absolute top-[-50%] left-[-50%] right-[-50%] bottom-[-50%] bg-[radial-gradient(circle_at_center,rgba(62,39,35,0.2)_0%,rgba(10,5,3,1)_60%)] pointer-events-none"></div>
+        {/* Floor Texture */}
+        <div
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), 
+                              linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 40%, rgba(0,0,0,1) 100%)`,
+            backgroundSize: "60px 100%",
+          }}
+        ></div>
+      </div>
 
-      <Card className="max-w-md w-full shadow-xl border-slate-200/60 backdrop-blur-sm bg-white/95 relative z-10">
-        <CardHeader className="space-y-3 pb-6">
-          <div className="mx-auto w-12 h-12 bg-linear-to-br from-primary to-primary/70 rounded-xl flex items-center justify-center shadow-lg">
+      <Card className="max-w-md w-full shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-[#5d4037] bg-[#1a110d]/90 backdrop-blur-md relative z-10 text-[#eaddcf]">
+        <CardHeader className="space-y-3 pb-6 border-b border-[#3e2723]">
+          
+          {/* Header Icon */}
+          <div className="mx-auto w-12 h-12 bg-linear-to-br from-[#2c1810] to-[#0f0b0a] border border-[#d4af37]/50 rounded-xl flex items-center justify-center shadow-lg group">
             {!pendingVerification ? (
-              <UserPlus className="size-6 text-white" />
+              <UserPlus className="size-6 text-[#d4af37] group-hover:scale-110 transition-transform duration-300" />
             ) : (
-              <Mail className="size-6 text-white" />
+              <Mail className="size-6 text-[#d4af37] group-hover:scale-110 transition-transform duration-300" />
             )}
           </div>
-          <CardTitle className="text-2xl font-bold text-center bg-linear-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent">
-            {!pendingVerification ? "Create your Dojo ID" : "Verify your email"}
+          
+          {/* Title */}
+          <CardTitle className="text-3xl font-bold text-center text-[#d4af37] tracking-tight drop-shadow-sm">
+            {!pendingVerification ? "Join the Dojo" : "Verify Email"}
           </CardTitle>
-          <CardDescription className="text-center text-base">
+          
+          {/* Description */}
+          <CardDescription className="text-center text-base text-[#a1887f] font-light">
             {!pendingVerification ? (
-              "Join the Dojo and start your journey"
+              "Create your ID and begin the path."
             ) : (
-              <>
-                <p>Enter the code we sent to your email</p>
-                <span className="text-muted-foreground text-xs">{email}</span>
-              </>
+              <div className="flex flex-col gap-1">
+                <p>Enter the code sent to your scroll:</p>
+                <span className="text-[#eaddcf] font-mono text-xs bg-[#0f0b0a] py-1 px-2 rounded-sm border border-[#3e2723] self-center">
+                  {email}
+                </span>
+              </div>
             )}
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-5">
+        <CardContent className="space-y-5 pt-6">
           {!pendingVerification ? (
             <div className="space-y-5 flex flex-col w-full">
+              
+              {/* Social Buttons */}
               <div className="flex gap-4 w-full items-center justify-center">
                 <Button
                   onClick={googleSignIn}
-                  className="btn btn-outline bg-transparent text-accent-foreground hover:text-accent"
+                  className="flex-1 btn btn-outline bg-[#2c1810]/50 border-[#5d4037] text-[#eaddcf] hover:bg-[#3e2723] hover:text-[#d4af37] hover:border-[#d4af37] transition-all duration-300 h-12"
                 >
-                  <Image src={Google} alt="Google" width={16} height={16} />
-                  <span className="sm:block hidden mx-auto">Join with Google</span>
-                  <span className="sm:hidden block">Google</span>
+                  <Image src={Google} alt="Google" width={18} height={18} className="opacity-80" />
+                  <span className="ml-2 hidden sm:block">Google</span>
                 </Button>
                 <Button
                   onClick={githubSignIn}
-                  className="btn btn-outline bg-transparent text-accent-foreground hover:text-accent"
+                  className="flex-1 btn btn-outline bg-[#2c1810]/50 border-[#5d4037] text-[#eaddcf] hover:bg-[#3e2723] hover:text-[#d4af37] hover:border-[#d4af37] transition-all duration-300 h-12"
                 >
-                  <Image src={Github} alt="Google" width={16} height={16} />
-                  <span className="sm:block hidden mx-auto">Join with GitHub</span>
-                  <span className="sm:hidden block">GitHub</span>
+                  <Image src={Github} alt="Github" width={18} height={18} className="invert opacity-80" />
+                  <span className="ml-2 hidden sm:block">GitHub</span>
                 </Button>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">
-                  Email
-                </Label>
-                <Input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-11 transition-all focus:ring-2 focus:ring-primary/20"
-                />
+
+              {/* Divider */}
+              <div className="relative flex items-center py-2">
+                <div className="grow border-t border-[#3e2723]"></div>
+                <span className="shrink-0 mx-4 text-[#5d4037] text-xs uppercase tracking-widest font-mono">
+                  Or register with
+                </span>
+                <div className="grow border-t border-[#3e2723]"></div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="username" className="text-sm font-medium">
-                  Username
-                </Label>
-                <Input
-                  type="text"
-                  name="username"
-                  id="username"
-                  placeholder="Choose a username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="h-11 transition-all focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">
-                  Password
-                </Label>
-                <div className="relative">
+              {/* Form Inputs */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-xs font-medium text-[#d4af37]/80 uppercase tracking-wider">
+                    Email
+                  </Label>
                   <Input
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    placeholder="••••••••"
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                    className="h-11 pr-10 transition-all focus:ring-2 focus:ring-primary/20"
+                    type="email"
+                    name="email"
+                    id="email"
+                    placeholder="initiate@nekodojo.io"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="h-11 bg-[#0f0b0a]/50 border-[#3e2723] text-[#eaddcf] placeholder:text-[#5d4037] focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] transition-all"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                  </button>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="username" className="text-xs font-medium text-[#d4af37]/80 uppercase tracking-wider">
+                    Username
+                  </Label>
+                  <Input
+                    type="text"
+                    name="username"
+                    id="username"
+                    placeholder="Dojo Name"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="h-11 bg-[#0f0b0a]/50 border-[#3e2723] text-[#eaddcf] placeholder:text-[#5d4037] focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] transition-all"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-xs font-medium text-[#d4af37]/80 uppercase tracking-wider">
+                    Password
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      placeholder="••••••••"
+                      onChange={(e) => setPassword(e.target.value)}
+                      value={password}
+                      className="h-11 pr-10 bg-[#0f0b0a]/50 border-[#3e2723] text-[#eaddcf] placeholder:text-[#5d4037] focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5d4037] hover:text-[#d4af37] transition-colors"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
 
               {error && (
-                <Alert variant="destructive" className="animate-in fade-in slide-in-from-top-1">
+                <Alert variant="destructive" className="bg-red-900/20 border-red-900/50 text-red-200 animate-in fade-in slide-in-from-top-1">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
+              
+              {/* Invisible Captcha Container */}
               <div id="clerk-captcha" className="self-center" />
+              
               <Button
-                className="w-full h-11 text-base font-medium shadow-md hover:shadow-lg transition-all cursor-pointer"
+                className="w-full h-12 text-base font-bold tracking-widest uppercase shadow-md transition-all cursor-pointer 
+                         bg-[#d4af37] text-[#1a110d] hover:bg-[#b5952f] hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] border border-[#d4af37]"
                 type="button"
                 onClick={submit}
                 disabled={isLoading}
               >
-                {isLoading && <Loader className="size-4 animate-spin" />} Sign up
+                {isLoading && <Loader className="size-4 animate-spin mr-2" />} 
+                Sign up
               </Button>
             </div>
           ) : (
-            <div className="space-y-5">
-              <div className="space-y-2 flex flex-col items-center">
-                <Label htmlFor="code" className="text-sm font-medium text-center">
-                  Verification code
+            <div className="space-y-6">
+              <div className="space-y-4 flex flex-col items-center">
+                <Label htmlFor="code" className="text-xs font-medium text-[#d4af37]/80 uppercase tracking-wider text-center">
+                  Enter Code
                 </Label>
+                
+                {/* OTP Input Styled */}
                 <div className="flex justify-center">
                   <InputOTP maxLength={6} value={code} onChange={setCode}>
                     <InputOTPGroup>
-                      <InputOTPSlot
-                        index={0}
-                        className="h-11 w-11 text-lg transition-all focus:ring-2 focus:ring-primary/20"
-                      />
-                      <InputOTPSlot
-                        index={1}
-                        className="h-11 w-11 text-lg transition-all focus:ring-2 focus:ring-primary/20"
-                      />
-                      <InputOTPSlot
-                        index={2}
-                        className="h-11 w-11 text-lg transition-all focus:ring-2 focus:ring-primary/20"
-                      />
+                      {[0, 1, 2].map((index) => (
+                        <InputOTPSlot
+                          key={index}
+                          index={index}
+                          className="h-12 w-10 text-lg bg-[#0f0b0a]/50 border-[#3e2723] text-[#d4af37] transition-all focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37]"
+                        />
+                      ))}
                     </InputOTPGroup>
-                    <InputOTPSeparator />
+                    <InputOTPSeparator className="text-[#5d4037]" />
                     <InputOTPGroup>
-                      <InputOTPSlot
-                        index={3}
-                        className="h-11 w-11 text-lg transition-all focus:ring-2 focus:ring-primary/20"
-                      />
-                      <InputOTPSlot
-                        index={4}
-                        className="h-11 w-11 text-lg transition-all focus:ring-2 focus:ring-primary/20"
-                      />
-                      <InputOTPSlot
-                        index={5}
-                        className="h-11 w-11 text-lg transition-all focus:ring-2 focus:ring-primary/20"
-                      />
+                      {[3, 4, 5].map((index) => (
+                        <InputOTPSlot
+                          key={index}
+                          index={index}
+                          className="h-12 w-10 text-lg bg-[#0f0b0a]/50 border-[#3e2723] text-[#d4af37] transition-all focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37]"
+                        />
+                      ))}
                     </InputOTPGroup>
                   </InputOTP>
                 </div>
               </div>
 
               {error && (
-                <Alert variant="destructive" className="animate-in fade-in slide-in-from-top-1">
+                <Alert variant="destructive" className="bg-red-900/20 border-red-900/50 text-red-200 animate-in fade-in slide-in-from-top-1">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
 
               <Button
-                className="w-full h-11 text-base font-medium shadow-md hover:shadow-lg transition-all cursor-pointer"
+                className="w-full h-12 text-base font-bold tracking-widest uppercase shadow-md transition-all cursor-pointer 
+                         bg-[#d4af37] text-[#1a110d] hover:bg-[#b5952f] hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] border border-[#d4af37]"
                 type="button"
                 onClick={onPressVerify}
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <>
-                    <Loader className="size-4 animate-spin" /> Verifying...
+                    <Loader className="size-4 animate-spin mr-2" /> Verifying...
                   </>
                 ) : (
-                  <p>Verify email</p>
+                  <p>Complete Registration</p>
                 )}
               </Button>
 
@@ -321,36 +359,34 @@ export default function Page() {
                     setError("");
                     setCode("");
                   }}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  className="text-xs text-[#a1887f] hover:text-[#d4af37] transition-colors tracking-widest uppercase"
                 >
-                  ← Back to sign up
+                  ← Back to setup
                 </button>
               </div>
             </div>
           )}
         </CardContent>
 
-        <CardFooter className="flex-col space-y-4 pt-2">
-          <div className="relative w-full">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-slate-200" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-slate-500">Already a member?</span>
-            </div>
-          </div>
-
-          <p className="text-sm text-center text-muted-foreground">
-            Have an account?{" "}
+        <CardFooter className="flex-col space-y-4 pt-4 border-t border-[#3e2723] bg-[#120c0a]/30">
+          <p className="text-sm text-center text-[#a1887f]">
+            Already have a belt?{" "}
             <Link
               href="/sign-in"
-              className="font-semibold text-primary hover:underline underline-offset-4 transition-all"
+              className="font-semibold text-[#d4af37] hover:text-[#eaddcf] hover:underline underline-offset-4 transition-all"
             >
               Sign in now
             </Link>
           </p>
         </CardFooter>
       </Card>
+      
+      {/* Footer Branding */}
+      <div className="absolute bottom-6 w-full text-center">
+        <p className="text-[#3e2723] text-xs tracking-[0.4em] font-mono opacity-50">
+           NEKODOJO // REGISTRATION
+        </p>
+      </div>
     </div>
   );
 }

@@ -45,29 +45,47 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-linear-to-br from-slate-50 via-white to-slate-100">
-      <div className="absolute inset-0 bg-grid-slate-200/50 mask-[radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+    <div className="min-h-screen flex items-center justify-center px-4 bg-[#0f0b0a] font-sans text-[#eaddcf] relative overflow-hidden">
+      
+      {/* ==========================================
+          BACKGROUND ATMOSPHERE
+      ========================================== */}
+      <div className="absolute inset-0 bg-[#120c0a]">
+        {/* Spotlight Effect */}
+        <div className="absolute top-[-50%] left-[-50%] right-[-50%] bottom-[-50%] bg-[radial-gradient(circle_at_center,rgba(62,39,35,0.2)_0%,rgba(10,5,3,1)_60%)] pointer-events-none"></div>
+        {/* Floor Texture */}
+        <div
+          className="absolute inset-0 opacity-10 pointer-events-none"
+          style={{
+            backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), 
+                              linear-gradient(to bottom, rgba(0,0,0,1) 0%, transparent 40%, rgba(0,0,0,1) 100%)`,
+            backgroundSize: "60px 100%",
+          }}
+        ></div>
+      </div>
       
       <div className="w-full max-w-md relative z-10">
-        <Card className="shadow-xl border-slate-200/60 backdrop-blur-sm bg-white/95">
-          <CardHeader className="space-y-3 pb-6">
-            <div className="mx-auto w-16 h-16 bg-linear-to-br from-primary to-primary/70 rounded-2xl flex items-center justify-center shadow-lg relative">
-              <UserCircle className="size-8 text-white" />
-              <div className="absolute -top-1 -right-1 w-5 h-5 bg-linear-to-br from-yellow-400 to-orange-400 rounded-full flex items-center justify-center">
-                <Sparkles className="size-3 text-white" />
+        <Card className="shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-[#5d4037] bg-[#1a110d]/90 backdrop-blur-md relative z-10 text-[#eaddcf]">
+          <CardHeader className="space-y-3 pb-6 border-b border-[#3e2723]">
+            
+            {/* Icon Container */}
+            <div className="mx-auto w-16 h-16 bg-linear-to-br from-[#2c1810] to-[#0f0b0a] border border-[#d4af37]/50 rounded-2xl flex items-center justify-center shadow-lg relative group">
+              <UserCircle className="size-8 text-[#d4af37] group-hover:scale-110 transition-transform duration-300" />
+              <div className="absolute -top-1 -right-1 w-6 h-6 bg-[#d4af37] rounded-full flex items-center justify-center shadow-md border border-[#1a110d]">
+                <Sparkles className="size-3 text-[#1a110d]" />
               </div>
             </div>
             
-            <CardTitle className="text-3xl font-bold text-center bg-linear-to-br from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            <CardTitle className="text-3xl font-bold text-center text-[#d4af37] tracking-tight drop-shadow-sm">
               One last thing...
             </CardTitle>
             
-            <CardDescription className="text-center text-base">
+            <CardDescription className="text-center text-base text-[#a1887f] font-light">
               Choose a username to complete your setup
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="space-y-5">
+          <CardContent className="space-y-5 pt-6">
             <div 
               className="space-y-5"
               onKeyDown={(e) => {
@@ -78,32 +96,34 @@ export default function OnboardingPage() {
               }}
             >
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-sm font-medium">
+                <Label htmlFor="username" className="text-xs font-medium text-[#d4af37]/80 uppercase tracking-wider">
                   Username
                 </Label>
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Choose your username"
-                  className="h-11 transition-all focus:ring-2 focus:ring-primary/20"
+                  placeholder="Sensei_Dev"
+                  className="h-11 bg-[#0f0b0a]/50 border-[#3e2723] text-[#eaddcf] placeholder:text-[#5d4037] focus:ring-1 focus:ring-[#d4af37] focus:border-[#d4af37] transition-all"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   minLength={4}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Minimum 4 characters
+                <p className="text-xs text-[#5d4037] flex justify-between">
+                  <span>Minimum 4 characters</span>
+                  <span>{username.length} / 4+</span>
                 </p>
               </div>
 
               {error && (
-                <Alert variant="destructive" className="animate-in fade-in slide-in-from-top-1">
+                <Alert variant="destructive" className="bg-red-900/20 border-red-900/50 text-red-200 animate-in fade-in slide-in-from-top-1">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
 
               <Button 
                 onClick={handleSubmit}
-                className="w-full h-11 text-base font-medium shadow-md hover:shadow-lg transition-all"
+                className="w-full h-12 text-base font-bold tracking-widest uppercase shadow-md transition-all cursor-pointer 
+                         bg-[#d4af37] text-[#1a110d] hover:bg-[#b5952f] hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] border border-[#d4af37]"
                 disabled={loading || username.length < 4}
               >
                 {loading ? (
@@ -118,25 +138,25 @@ export default function OnboardingPage() {
             </div>
           </CardContent>
 
-          <CardFooter className="flex-col space-y-4 pt-2">
+          <CardFooter className="flex-col space-y-4 pt-4 border-t border-[#3e2723] bg-[#120c0a]/30">
             <div className="relative w-full">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-slate-200" />
+                <span className="w-full border-t border-[#3e2723]" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-slate-500">Almost there</span>
+                <span className="bg-[#1a110d] px-2 text-[#5d4037] tracking-widest">Almost there</span>
               </div>
             </div>
             
-            <p className="text-sm text-center text-muted-foreground">
-              Welcome aboard! We're excited to have you join the Dojo 🥋
+            <p className="text-sm text-center text-[#a1887f]">
+              Welcome aboard! We're excited to have you join the Dojo <span className="text-[#d4af37]">🥋</span>
             </p>
           </CardFooter>
         </Card>
 
         <div className="mt-6 text-center">
-          <p className="text-xs text-slate-400">
-            By continuing, you agree to our Terms of Service
+          <p className="text-xs text-[#3e2723] tracking-widest font-mono opacity-60">
+             NEKODOJO // PROFILE_INIT
           </p>
         </div>
       </div>
