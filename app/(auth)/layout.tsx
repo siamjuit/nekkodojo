@@ -1,14 +1,17 @@
 "use client";
 
-import { useSession } from "@clerk/nextjs";
+import { useSession, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   const router = useRouter();
   const { isSignedIn, isLoaded } = useSession();
+  const user = useUser();
   useEffect(() => {
-    if (isSignedIn && isLoaded) router.push("/");
+    if (isSignedIn && isLoaded) {
+      if (user.user?.username) router.push("/");
+    }
   }, [isSignedIn, isLoaded, router]);
 
   if (!isLoaded) return;

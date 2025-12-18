@@ -43,7 +43,7 @@ export const fira_code = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "NekoDojo - The master awaits",
+  title: "NekkoDojo - The master awaits",
   description: "Learn to code and solve problems in DoJo style",
 };
 

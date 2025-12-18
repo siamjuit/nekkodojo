@@ -13,8 +13,6 @@ const SignOut = () => {
   const handleSignOut = async () => {
     setLoading(true);
     try {
-      // passing a callback to signOut ensures the redirect happens 
-      // ONLY after the local session is completely destroyed.
       await signOut(() => router.push("/"));
     } catch (error) {
       console.error("Sign out error:", error);
@@ -26,26 +24,20 @@ const SignOut = () => {
     <button
       onClick={handleSignOut}
       disabled={loading}
-      className="group relative w-full flex items-center gap-3 px-4 py-3 text-left 
+      className="group relative flex items-center justify-center p-2 rounded-lg 
                  text-[#a1887f] hover:text-[#d4af37] 
-                 bg-[#2c1810]/30 hover:bg-[#2c1810]/50 
-                 border border-transparent hover:border-[#d4af37]/30
-                 transition-all duration-300 rounded-md disabled:opacity-50"
+                 hover:bg-[#d4af37]/10 
+                 transition-all duration-300 disabled:opacity-50"
+      title="Exit Dojo"
     >
       {loading ? (
         <Loader2 className="size-5 animate-spin text-[#d4af37]" />
       ) : (
-        <LogOut className="size-5 group-hover:-translate-x-1 transition-transform" />
+        <LogOut className="size-5 transition-transform duration-300 group-hover:-translate-x-1" />
       )}
-
-      <div className="flex flex-col">
-        <span className="font-mono text-sm tracking-widest uppercase font-bold">
-          Sign Out
-        </span>
-        <span className="text-[10px] opacity-60 group-hover:text-[#d4af37]/70">
-          Exit the Dojo
-        </span>
-      </div>
+      
+      {/* Optional: Tooltip-style text for screen readers or hover */}
+      <span className="sr-only">Sign Out</span>
     </button>
   );
 };
