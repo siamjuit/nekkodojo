@@ -23,6 +23,68 @@ model User {
   noOfQuestionsSolved Int?
   beltRank            String? @default("white-belt")
 
+  discussions Discussions[]
+
+  comments Comments[]
+
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+}
+
+model Discussions {
+  id          String @id @default(uuid())
+  title       String
+  description String
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  comments Comments[]
+
+  attachments Attachment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comments {
+  id          String @id @default(uuid())
+  description String
+
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
+
+  discussionId String
+  discussion   Discussions @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   Comments?   @relation("CommentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  replies  Comments[] @relation("CommentChildren")
+
+  attachments Attachment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Attachment {
+  id String @id @default(uuid())
+
+  postUrl String
+  type    AttachmentType
+
+  discussionId String?
+  discussion   Discussions? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+
+  commentId String?
+  comment   Comments? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum AttachmentType {
+  image
+  video
+  gif
 }
