@@ -5,7 +5,6 @@ export default function Page() {
     <div className="min-h-screen flex items-center justify-center px-4 bg-[#0f0b0a] font-sans text-[#eaddcf] relative overflow-hidden">
       <div className="absolute inset-0 bg-[#120c0a]">
         <div className="absolute top-[-50%] left-[-50%] right-[-50%] bottom-[-50%] bg-[radial-gradient(circle_at_center,rgba(62,39,35,0.2)_0%,rgba(10,5,3,1)_60%)] pointer-events-none"></div>
-        {/* Floor Texture */}
         <div
           className="absolute inset-0 opacity-10 pointer-events-none"
           style={{

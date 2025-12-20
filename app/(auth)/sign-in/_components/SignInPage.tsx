@@ -67,8 +67,7 @@ const SignInPage = () => {
   }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-
-    // Determine which identifier to use based on the active tab
+    
     const identifier = activeTab === "email" ? email : username;
 
     if (!isLoaded || !identifier || !password) {
@@ -216,7 +215,7 @@ const SignInPage = () => {
                 Password
               </Label>
               <Link
-                href="#"
+                href={"/forgot-password"}
                 className="text-xs text-[#a1887f] hover:text-[#d4af37] transition-colors"
               >
                 Forgot?

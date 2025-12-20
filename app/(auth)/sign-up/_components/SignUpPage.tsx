@@ -67,8 +67,8 @@ const SignUpPage = () => {
   async function onPressVerify(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    setIsLoading(true);
     if (!isLoaded || !code) return;
+    setIsLoading(true);
 
     try {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
@@ -90,9 +90,9 @@ const SignUpPage = () => {
     setIsLoading(false);
   }
   async function googleSignIn() {
-    setIsLoading(true);
     setError("");
     if (!isLoaded) return;
+    setIsLoading(true);
     try {
       await signUp.authenticateWithRedirect({
         strategy: "oauth_google",
@@ -162,7 +162,6 @@ const SignUpPage = () => {
       <CardContent className="space-y-5 pt-6">
         {!pendingVerification ? (
           <div className="space-y-5 flex flex-col w-full">
-            {/* Social Buttons */}
             <div className="flex gap-4 w-full items-center justify-center">
               <Button
                 onClick={googleSignIn}
