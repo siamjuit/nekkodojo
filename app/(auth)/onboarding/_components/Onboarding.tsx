@@ -14,35 +14,53 @@ import {
 } from "@/components/ui/card";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { Loader2, UserCircle, Sparkles, User, FileText } from "lucide-react";
+import { Loader2, User, FileText, Camera, Sparkles } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { updateUser } from "../action";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Image from "next/image";
 
 interface UserData {
   firstName?: string | null;
   lastName?: string | null;
   name?: string | null;
   bio?: string | null;
+  profileUrl?: string | null;
 }
 interface Props {
   initialData: UserData | null;
 }
 
 const Onboarding = ({ initialData }: Props) => {
+  const { user } = useUser();
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     firstName: initialData?.firstName || "",
     lastName: initialData?.lastName || "",
     username: initialData?.name || "",
     bio: initialData?.bio || "",
   });
-  const { user } = useUser();
-  const router = useRouter();
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    initialData?.profileUrl || user?.imageUrl || null
+  );
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,12 +76,19 @@ const Onboarding = ({ initialData }: Props) => {
         firstName: formData.firstName,
         lastName: formData.lastName,
       });
+
+      if (imageFile) {
+        await user.setProfileImage({
+          file: imageFile,
+        });
+      }
+
       const dataToSend = new FormData();
       dataToSend.append("username", formData.username);
       dataToSend.append("firstName", formData.firstName);
       dataToSend.append("lastName", formData.lastName);
       dataToSend.append("bio", formData.bio);
-      
+
       await updateUser(dataToSend);
 
       router.push("/");
@@ -74,19 +99,49 @@ const Onboarding = ({ initialData }: Props) => {
       setLoading(false);
     }
   };
-  console.log(formData);
+
   return (
     <div className="w-full max-w-lg relative z-10">
       <Card className="shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-[#5d4037] bg-[#1a110d]/90 backdrop-blur-md relative z-10 text-[#eaddcf]">
         <CardHeader className="space-y-3 pb-6 border-b border-[#3e2723]">
-          <div className="mx-auto w-16 h-16 bg-linear-to-br from-[#2c1810] to-[#0f0b0a] border border-[#d4af37]/50 rounded-2xl flex items-center justify-center shadow-lg relative group">
-            <UserCircle className="size-8 text-[#d4af37] group-hover:scale-110 transition-transform duration-300" />
-            <div className="absolute -top-1 -right-1 w-6 h-6 bg-[#d4af37] rounded-full flex items-center justify-center shadow-md border border-[#1a110d]">
-              <Sparkles className="size-3 text-[#1a110d]" />
+          
+          <div
+            className="mx-auto relative group cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <div className="w-24 h-24 rounded-2xl overflow-hidden border-2 border-[#d4af37]/50 shadow-lg relative">
+              {imagePreview ? (
+                <Image
+                  src={imagePreview}
+                  alt="Profile"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              ) : (
+                <div className="w-full h-full bg-[#2c1810] flex items-center justify-center">
+                  <User className="size-10 text-[#d4af37]" />
+                </div>
+              )}
+
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <Camera className="text-white size-8" />
+              </div>
+            </div>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/png, image/jpeg"
+              onChange={handleImageChange}
+            />
+
+            <div className="absolute -top-2 -right-2 w-8 h-8 bg-[#d4af37] rounded-full flex items-center justify-center shadow-md border border-[#1a110d] animate-bounce">
+              <Sparkles className="size-4 text-[#1a110d]" />
             </div>
           </div>
 
-          <CardTitle className="text-3xl font-bold text-center text-[#d4af37] tracking-tight drop-shadow-sm">
+          <CardTitle className="text-3xl font-bold text-center text-[#d4af37] tracking-tight drop-shadow-sm mt-2">
             Complete Your Profile
           </CardTitle>
 
@@ -122,6 +177,7 @@ const Onboarding = ({ initialData }: Props) => {
                 <span>{formData.username.length} / 4+</span>
               </p>
             </div>
+            
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label
@@ -156,6 +212,7 @@ const Onboarding = ({ initialData }: Props) => {
                 />
               </div>
             </div>
+            
             <div className="space-y-2">
               <Label
                 htmlFor="bio"
@@ -171,7 +228,9 @@ const Onboarding = ({ initialData }: Props) => {
                 onChange={handleChange}
                 maxLength={160}
               />
-              <p className="text-[10px] text-[#5d4037] text-right">{formData.bio.length} / 160</p>
+              <p className="text-[10px] text-[#5d4037] text-right">
+                {formData.bio.length} / 160
+              </p>
             </div>
 
             {error && (
@@ -186,7 +245,7 @@ const Onboarding = ({ initialData }: Props) => {
             <Button
               type="submit"
               className="w-full h-12 text-base font-bold tracking-widest uppercase shadow-md transition-all cursor-pointer 
-                           bg-[#d4af37] text-[#1a110d] hover:bg-[#b5952f] hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] border border-[#d4af37]"
+                          bg-[#d4af37] text-[#1a110d] hover:bg-[#b5952f] hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] border border-[#d4af37]"
               disabled={loading || formData.username.length < 4}
             >
               {loading ? (
@@ -207,7 +266,9 @@ const Onboarding = ({ initialData }: Props) => {
               <span className="w-full border-t border-[#3e2723]" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-[#1a110d] px-2 text-[#5d4037] tracking-widest">Almost there</span>
+              <span className="bg-[#1a110d] px-2 text-[#5d4037] tracking-widest">
+                Almost there
+              </span>
             </div>
           </div>
 

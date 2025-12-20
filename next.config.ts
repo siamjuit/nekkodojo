@@ -7,6 +7,19 @@ const nextConfig: NextConfig = {
       allowedOrigins: ["https://ericka-trophied-azucena.ngrok-free.dev", "localhost:3000"],
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ik.imagekit.io",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

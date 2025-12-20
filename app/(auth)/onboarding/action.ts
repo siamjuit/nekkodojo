@@ -29,6 +29,7 @@ export async function updateUser(formData: FormData) {
         firstName: data.firstName,
         lastName: data.lastName,
         bio: data.bio,
+        profileUrl: user.imageUrl,
         isOnboarded: true,
       },
       create: {
@@ -38,6 +39,7 @@ export async function updateUser(formData: FormData) {
         firstName: data.firstName,
         lastName: data.lastName,
         bio: data.bio,
+        profileUrl: user.imageUrl,
         isOnboarded: true,
       },
     });
