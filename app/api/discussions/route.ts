@@ -8,6 +8,11 @@ export async function GET(request: Request) {
     const query = searchParams.get("query") || "";
     const sort = searchParams.get("sort") || "top";
 
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+
+    const skip = (page - 1) * limit;
+
     const whereClause: Prisma.DiscussionsWhereInput = {
       OR: [
         { title: { contains: query, mode: "insensitive" } },
@@ -41,28 +46,41 @@ export async function GET(request: Request) {
         break;
     }
 
-    const discussions = await prisma.discussions.findMany({
-      where: whereClause,
-      orderBy: orderBy,
-      include: {
-        author: {
-          select: {
-            firstName: true,
-            lastName: true,
-            profileUrl: true,
-            beltRank: true,
+    const [discussions, total] = await prisma.$transaction([
+      prisma.discussions.findMany({
+        where: whereClause,
+        orderBy: orderBy,
+        take: limit,
+        skip: skip,
+        include: {
+          author: {
+            select: {
+              firstName: true,
+              lastName: true,
+              profileUrl: true,
+              beltRank: true,
+            },
+          },
+          _count: {
+            select: {
+              comments: true,
+              likes: true,
+            },
           },
         },
-        _count: {
-          select: {
-            comments: true,
-            likes: true,
-          },
-        },
+      }),
+      prisma.discussions.count({ where: whereClause }),
+    ]);
+
+    return NextResponse.json({
+      data: discussions,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
       },
     });
-
-    return NextResponse.json(discussions);
   } catch (error) {
     return NextResponse.json("Failed to fetch discussions!", { status: 500 });
   }

@@ -3,15 +3,19 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { PlusCircle, Loader2, Search, Filter } from "lucide-react";
-import DiscussionPreviewCard from "@/components/Discussion/DiscussionPreview"; 
-import { Input } from "@/components/ui/input"; 
+import DiscussionPreviewCard from "@/components/Discussion/DiscussionPreview";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import DiscussionPagination from "@/components/Discussion/Pagination";
 
 type SortOption = "latest" | "top" | "controversial" | "oldest";
 
 export default function ForumPage() {
   const [discussions, setDiscussions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(1);
 
   const [sortBy, setSortBy] = useState<SortOption>("top");
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,13 +26,16 @@ export default function ForumPage() {
       try {
         const params = new URLSearchParams();
         params.set("sort", sortBy);
+        params.set("page", currentPage.toString());
+        params.set("limit", "10");
         if (searchQuery) params.set("query", searchQuery);
 
         const response = await fetch(`/api/discussions?${params.toString()}`);
         if (!response.ok) throw new Error("Failed to fetch");
 
-        const data = await response.json();
-        setDiscussions(data);
+        const result = await response.json();
+        setDiscussions(result.data);
+        setTotalPage(result.meta.totalPages);
       } catch (error) {
         console.error("Error fetching discussions:", error);
       } finally {
@@ -40,8 +47,12 @@ export default function ForumPage() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [sortBy, searchQuery]);
+  }, [sortBy, searchQuery, currentPage]);
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
   return (
     <div className="min-h-screen bg-[#0f0b0a] pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 space-y-8">
@@ -68,7 +79,7 @@ export default function ForumPage() {
             <Input
               placeholder="Search discussions..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearch}
               className="pl-10 bg-[#1a110d] border-[#3e2723] text-[#eaddcf] placeholder:text-[#5d4037] focus:border-[#d4af37] h-11"
             />
           </div>
@@ -108,6 +119,16 @@ export default function ForumPage() {
             </div>
           )}
         </div>
+        {!loading && (
+          <DiscussionPagination
+            currentPage={currentPage}
+            totalPages={totalPage}
+            onPageChange={(page) => {
+              setCurrentPage(page);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
+        )}
       </div>
     </div>
   );
