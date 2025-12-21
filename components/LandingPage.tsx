@@ -235,8 +235,6 @@ export default function LandingPage() {
             EST. 2025 // AENANSH
           </p>
         </div>
-
-        {/* Scroll Hint Animation */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: isDoorOpen ? 1 : 0 }}
@@ -252,6 +250,7 @@ export default function LandingPage() {
             <ChevronDown className="text-[#d4af37]/60 size-5" />
           </motion.div>
         </motion.div>
+        <div className="absolute top-0 left-0 w-full h-48 bg-linear-to-b from-[#0f0b0a] via-[#0f0b0a]/90 to-transparent pointer-events-none z-20"></div>
         <div className="absolute bottom-0 left-0 w-full h-48 bg-linear-to-t from-[#0f0b0a] via-[#0f0b0a]/90 to-transparent pointer-events-none z-20"></div>
       </main>
     </>

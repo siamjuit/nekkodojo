@@ -23,6 +23,7 @@ const SignOut = () => {
   return (
     <button
       onClick={handleSignOut}
+      suppressHydrationWarning
       disabled={loading}
       className="group relative flex items-center justify-center p-2 rounded-lg 
                  text-[#a1887f] hover:text-[#d4af37] 

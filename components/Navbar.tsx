@@ -20,15 +20,27 @@ const Navbar = () => {
           </Link>
         </div>
         <nav className="hidden md:flex flex-1 justify-center items-center">
-          {/* <div className="flex gap-8 text-sm font-medium text-[#a1887f]">
-                    <Link href="/dashboard" className="hover:text-[#d4af37] transition-colors">Dashboard</Link>
-                    <Link href="/roadmap" className="hover:text-[#d4af37] transition-colors">Roadmap</Link>
-                  </div>  */}
+          <div className="flex gap-8 text-sm font-medium text-[#a1887f]">
+            <Link href={"/"} className="hover:text-[#d4af37] transition-colors">
+              Home
+            </Link>
+            <Link href={"/profile"} className="hover:text-[#d4af37] transition-colors">
+              Profile
+            </Link>
+            <Link href="/problems" className="hover:text-[#d4af37] transition-colors">
+              Problems
+            </Link>
+            <Link href="/discussions" className="hover:text-[#d4af37] transition-colors">
+              Discussions
+            </Link>
+            <Link href="/dashboard" className="hover:text-[#d4af37] transition-colors">
+              Dashboard
+            </Link>
+          </div>
           <div className="w-px h-0"></div>
         </nav>
         <div className="shrink-0 flex items-center gap-4">
           <SignedOut>
-            {/* Sign In (Secondary Ghost Style) */}
             <SignInButton>
               <button className="hidden md:block group relative px-5 py-2 overflow-hidden rounded-sm border border-[#d4af37]/30 text-[#d4af37] font-mono text-xs tracking-[0.15em] uppercase hover:border-[#d4af37] transition-all duration-300 cursor-pointer">
                 <span className="absolute inset-0 w-0 bg-[#d4af37]/10 transition-all duration-250 ease-out group-hover:w-full"></span>
