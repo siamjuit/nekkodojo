@@ -8,6 +8,7 @@ import { FileVideo, ImageIcon, Loader2 } from "lucide-react";
 export interface UploadFile {
   postUrl: string;
   type: "image" | "video";
+  id: string;
   name: string;
 }
 
@@ -102,6 +103,7 @@ const PostUploader = ({ onUploadSuccess, acceptType, maxFiles = 4 }: Props) => {
 
           return {
             postUrl: response.url,
+            id: response.fileId,
             type: acceptType,
             name: response.name,
           } as UploadFile;

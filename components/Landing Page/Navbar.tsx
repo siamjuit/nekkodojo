@@ -55,7 +55,7 @@ const Navbar = () => {
           </SignedOut>
 
           <SignedIn>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4" suppressHydrationWarning={true}>
               <UserButton
                 appearance={{
                   elements: {

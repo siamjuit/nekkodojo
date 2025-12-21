@@ -7,8 +7,8 @@ import { X, FileVideo, PenLine, Sparkles, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import RichTextEditor from "@/components/TextEditor";
-import ImageKitUploader, { UploadFile } from "@/components/PostUploader";
+import RichTextEditor from "@/components/Discussion/Create/TextEditor";
+import ImageKitUploader, { UploadFile } from "@/components/Discussion/Create/PostUploader";
 import { useUser } from "@clerk/nextjs";
 
 export default function CreateDiscussionPage() {
@@ -16,7 +16,7 @@ export default function CreateDiscussionPage() {
   const [loading, setLoading] = useState(false);
 
   const user = useUser();
-  if(!user) return;
+  if (!user) return;
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -55,10 +55,11 @@ export default function CreateDiscussionPage() {
           title,
           description,
           authorId: user.user?.id,
-          attachments: attachments.map(att => ({
+          attachments: attachments.map((att) => ({
+            id: att.id,
             postUrl: att.postUrl,
-            type: att.type
-          })), 
+            type: att.type,
+          })),
         }),
       });
 
@@ -68,9 +69,8 @@ export default function CreateDiscussionPage() {
 
       const data = await response.json();
       toast.success("Discussion created successfully!");
-      
-      router.push(`/forum/${data.id}`);
 
+      router.push(`/discussions/${data}`);
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong. Please try again.");
@@ -84,19 +84,23 @@ export default function CreateDiscussionPage() {
       <div className="w-full max-w-4xl space-y-8">
         <div className="space-y-2 border-b border-[#3e2723] pb-6">
           <h1 className="text-3xl font-bold text-[#d4af37] flex items-center gap-3 tracking-tight">
-            <PenLine className="size-8" /> 
+            <PenLine className="size-8" />
             Start a Discussion
           </h1>
           <p className="text-[#a1887f] max-w-2xl">
-            Share your knowledge, ask questions, or showcase your projects to the Dojo.
-            Remember to follow the <span className="text-[#d4af37] underline cursor-pointer">Code of Bushido</span>.
+            Share your knowledge, ask questions, or showcase your projects to the Dojo. Remember to
+            follow the{" "}
+            <span className="text-[#d4af37] underline cursor-pointer">Code of Bushido</span>.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="space-y-3">
             <div className="flex justify-between">
-              <Label htmlFor="title" className="text-[#d4af37] uppercase text-xs tracking-widest font-bold">
+              <Label
+                htmlFor="title"
+                className="text-[#d4af37] uppercase text-xs tracking-widest font-bold"
+              >
                 Title
               </Label>
               <span className={`text-xs ${title.length > 80 ? "text-red-400" : "text-[#5d4037]"}`}>
@@ -126,9 +130,7 @@ export default function CreateDiscussionPage() {
                 <Label className="text-[#d4af37] uppercase text-xs tracking-widest font-bold flex items-center gap-2">
                   <Sparkles size={14} /> Attachments
                 </Label>
-                <p className="text-xs text-[#a1887f]">
-                  Images or Videos to support your post.
-                </p>
+                <p className="text-xs text-[#a1887f]">Images or Videos to support your post.</p>
               </div>
               <div className="px-3 py-1 rounded-full bg-[#1a110d] border border-[#3e2723] text-xs font-mono text-[#d4af37]">
                 {attachments.length} / {MAX_FILES} Used
@@ -137,28 +139,29 @@ export default function CreateDiscussionPage() {
 
             {remainingSlots > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <ImageKitUploader 
-                  acceptType="image" 
-                  maxFiles={remainingSlots} 
-                  onUploadSuccess={handleUploadSuccess} 
+                <ImageKitUploader
+                  acceptType="image"
+                  maxFiles={remainingSlots}
+                  onUploadSuccess={handleUploadSuccess}
                 />
-                <ImageKitUploader 
-                  acceptType="video" 
-                  maxFiles={remainingSlots} 
-                  onUploadSuccess={handleUploadSuccess} 
+                <ImageKitUploader
+                  acceptType="video"
+                  maxFiles={remainingSlots}
+                  onUploadSuccess={handleUploadSuccess}
                 />
               </div>
             ) : (
               <div className="p-4 bg-[#1a110d] border border-[#d4af37]/30 rounded-xl text-center">
-                <p className="text-sm text-[#d4af37] font-medium">
-                  Maximum limit allowed reached.
-                </p>
+                <p className="text-sm text-[#d4af37] font-medium">Maximum limit allowed reached.</p>
               </div>
             )}
             {attachments.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 animate-in fade-in slide-in-from-bottom-2">
                 {attachments.map((file, idx) => (
-                  <div key={idx} className="relative group aspect-square bg-black rounded-lg overflow-hidden border border-[#3e2723]">
+                  <div
+                    key={idx}
+                    className="relative group aspect-square bg-black rounded-lg overflow-hidden border border-[#3e2723]"
+                  >
                     <button
                       type="button"
                       onClick={() => removeAttachment(idx)}
@@ -170,12 +173,12 @@ export default function CreateDiscussionPage() {
                     {file.type === "video" ? (
                       <div className="w-full h-full flex items-center justify-center bg-[#1a110d]">
                         <FileVideo className="size-8 text-[#d4af37] opacity-80" />
-                        <video 
-                          src={file.postUrl} 
-                          className="absolute inset-0 w-full h-full object-cover opacity-60" 
+                        <video
+                          src={file.postUrl}
+                          className="absolute inset-0 w-full h-full object-cover opacity-60"
                           muted
-                          onMouseOver={event => (event.target as HTMLVideoElement).play()}
-                          onMouseOut={event => (event.target as HTMLVideoElement).pause()}
+                          onMouseOver={(event) => (event.target as HTMLVideoElement).play()}
+                          onMouseOut={(event) => (event.target as HTMLVideoElement).pause()}
                         />
                         <span className="absolute bottom-2 left-2 text-[10px] bg-black/80 text-[#d4af37] px-1.5 rounded font-bold uppercase tracking-wider">
                           Video
@@ -183,7 +186,11 @@ export default function CreateDiscussionPage() {
                       </div>
                     ) : (
                       <>
-                        <img src={file.postUrl} alt="Attachment" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        <img
+                          src={file.postUrl}
+                          alt="Attachment"
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
                         <span className="absolute bottom-2 left-2 text-[10px] bg-black/80 text-[#d4af37] px-1.5 rounded font-bold uppercase tracking-wider">
                           Image
                         </span>
@@ -203,8 +210,8 @@ export default function CreateDiscussionPage() {
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={loading}
               className="bg-[#d4af37] text-[#1a110d] font-bold px-8 py-6 rounded-lg uppercase tracking-widest shadow-[0_0_20px_rgba(212,175,55,0.2)] hover:shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:bg-[#c5a028] transition-all"
             >
@@ -217,7 +224,6 @@ export default function CreateDiscussionPage() {
               )}
             </Button>
           </div>
-
         </form>
       </div>
     </div>

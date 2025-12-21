@@ -27,6 +27,7 @@ export async function POST(request: Request) {
         authorId: authorId,
         attachments: {
           create: attachments.map((post: any) => ({
+            id: post.id,
             postUrl: post.postUrl,
             type: post.type,
           })),

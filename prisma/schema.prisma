@@ -24,8 +24,9 @@ model User {
   beltRank            String? @default("white-belt")
 
   discussions Discussions[]
+  comments    Comments[]
 
-  comments Comments[]
+  likes Likes[]
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
@@ -39,9 +40,12 @@ model Discussions {
   authorId String
   author   User   @relation(fields: [authorId], references: [id])
 
-  comments Comments[]
-
+  comments    Comments[]
   attachments Attachment[]
+
+  likes        Likes[]
+  likeCount    Int     @default(0)
+  disLikeCount Int     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,24 +55,28 @@ model Comments {
   id          String @id @default(uuid())
   description String
 
-  author   User   @relation(fields: [authorId], references: [id])
   authorId String
+  author   User   @relation(fields: [authorId], references: [id])
 
   discussionId String
   discussion   Discussions @relation(fields: [discussionId], references: [id], onDelete: Cascade)
 
   parentId String?
-  parent   Comments?   @relation("CommentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parent   Comments?  @relation("CommentChildren", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   replies  Comments[] @relation("CommentChildren")
 
   attachments Attachment[]
+
+  likes        Likes[]
+  likeCount    Int     @default(0)
+  dislikeCount Int     @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Attachment {
-  id String @id @default(uuid())
+  id String @id
 
   postUrl String
   type    AttachmentType
@@ -83,8 +91,34 @@ model Attachment {
   updatedAt DateTime @updatedAt
 }
 
+model Likes {
+  id String @id @default(uuid())
+
+  type LikeType
+
+  discussionId String?
+  discussion   Discussions? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+
+  commentId String?
+  comment   Comments? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, discussionId])
+  @@unique([userId, commentId])
+}
+
 enum AttachmentType {
   image
   video
   gif
+}
+
+enum LikeType {
+  like
+  dislike
 }

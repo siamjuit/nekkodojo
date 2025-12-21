@@ -141,6 +141,18 @@ export default function RichTextEditor({ value, onChange, placeholder, label }: 
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
+                    // --- FIXED: ADDED UL AND OL STYLES ---
+                    ul: ({ children }) => (
+                      <ul className="list-disc list-inside ml-4 space-y-1 text-[#eaddcf] mb-4 marker:text-[#d4af37]">
+                        {children}
+                      </ul>
+                    ),
+                    ol: ({ children }) => (
+                      <ol className="list-decimal list-inside ml-4 space-y-1 text-[#eaddcf] mb-4 marker:text-[#d4af37]">
+                        {children}
+                      </ol>
+                    ),
+                    // -------------------------------------
                     a: ({ node, ...props }) => (
                       <a
                         {...props}
@@ -181,6 +193,7 @@ export default function RichTextEditor({ value, onChange, placeholder, label }: 
     </div>
   );
 }
+
 const ToolbarButton = ({
   icon,
   onClick,

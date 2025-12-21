@@ -1,9 +1,9 @@
 "use client";
 
-import LandingPage from "@/components/LandingPage";
+import LandingPage from "@/components/Landing Page/LandingPage";
 import dynamic from "next/dynamic";
 
-const AboutHero = dynamic(() => import("@/components/Hero"), {
+const AboutHero = dynamic(() => import("@/components/Landing Page/Hero"), {
   ssr: false,
   loading: () => <div className="min-h-screen bg-[#0f0b0a]" />,
 });
