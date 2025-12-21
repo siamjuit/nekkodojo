@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       },
     });
 
-    if (newDiscussion) return NextResponse.json("Discussion created!", { status: 200 });
+    if (newDiscussion) return NextResponse.json(newDiscussion.id, { status: 200 });
   } catch (error) {
     console.error("Failed to create the discussion!", error);
     return NextResponse.json("Error: failed to create the discussion", { status: 500 });

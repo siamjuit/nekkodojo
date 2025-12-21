@@ -3,6 +3,7 @@ import { Inter, Nunito, Poppins, Roboto, JetBrains_Mono, Fira_Code } from "next/
 import "./globals.css";
 import { dark } from "@clerk/themes";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner";
 
 export const inter = Inter({
   subsets: ["latin"],
@@ -59,6 +60,7 @@ export default function RootLayout({
           className={`${nunito.variable} ${inter.variable} ${poppins.variable} ${fira_code.variable} ${jetbrains_mono.variable} ${roboto.variable} antialiased`}
         >
           {children}
+          <Toaster/>
         </body>
       </html>
     </ClerkProvider>
