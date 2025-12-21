@@ -6,6 +6,7 @@ import { Share2 } from "lucide-react";
 import MarkdownViewer from "@/components/Discussion/Create/MarkdownViewer";
 import VoteControl from "@/components/Discussion/VoteControl";
 import DiscussionDropDown from "./DiscussionDropDown";
+import Share from "./Share";
 
 interface DiscussionProps {
   id: string;
@@ -105,12 +106,7 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
           isDisliked={discussion.chkDis || false}
         />
 
-        <div className="flex gap-4">
-          <button className="flex items-center gap-2 text-[#a1887f] hover:text-[#d4af37] text-sm transition-colors">
-            <Share2 size={16} />
-            <span className="hidden sm:inline">Share</span>
-          </button>
-        </div>
+        <Share/>
       </div>
     </article>
   );

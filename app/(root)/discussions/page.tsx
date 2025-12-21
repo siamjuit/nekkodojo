@@ -3,27 +3,23 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { PlusCircle, Loader2, Search, Filter } from "lucide-react";
-import DiscussionPreviewCard from "@/components/Discussion/DiscussionPreview"; // Import component
-import { Input } from "@/components/ui/input"; // Assuming you have shadcn Input
+import DiscussionPreviewCard from "@/components/Discussion/DiscussionPreview"; 
+import { Input } from "@/components/ui/input"; 
 import { Button } from "@/components/ui/button";
 
-// Types for your Sort Options
 type SortOption = "latest" | "top" | "controversial" | "oldest";
 
 export default function ForumPage() {
   const [discussions, setDiscussions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // State for Sorting and Searching
   const [sortBy, setSortBy] = useState<SortOption>("top");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Fetch Logic
   useEffect(() => {
     const fetchDiscussions = async () => {
       setLoading(true);
       try {
-        // Construct URL with Query Params
         const params = new URLSearchParams();
         params.set("sort", sortBy);
         if (searchQuery) params.set("query", searchQuery);
@@ -39,19 +35,16 @@ export default function ForumPage() {
         setLoading(false);
       }
     };
-
-    // Debounce search slightly to avoid spamming API
     const timer = setTimeout(() => {
       fetchDiscussions();
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [sortBy, searchQuery]); // Re-run when sort or search changes
+  }, [sortBy, searchQuery]);
 
   return (
     <div className="min-h-screen bg-[#0f0b0a] pb-20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-8 space-y-8">
-        {/* 1. Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#3e2723] pb-6">
           <div>
             <h1 className="text-3xl font-bold text-[#eaddcf]">The Dojo Forum</h1>
@@ -69,9 +62,7 @@ export default function ForumPage() {
           </Link>
         </div>
 
-        {/* 2. Controls Section (Search & Sort) */}
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between sticky top-24 z-30 bg-[#0f0b0a]/95 backdrop-blur py-2">
-          {/* Search Input */}
           <div className="relative w-full sm:max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5d4037]" size={18} />
             <Input
@@ -81,8 +72,6 @@ export default function ForumPage() {
               className="pl-10 bg-[#1a110d] border-[#3e2723] text-[#eaddcf] placeholder:text-[#5d4037] focus:border-[#d4af37] h-11"
             />
           </div>
-
-          {/* Sort Tabs */}
           <div className="flex items-center bg-[#1a110d] p-1 rounded-lg border border-[#3e2723] overflow-x-auto w-full sm:w-auto gap-1">
             {(["top", "latest", "controversial", "oldest"] as SortOption[]).map((option) => (
               <Button
@@ -102,8 +91,6 @@ export default function ForumPage() {
             ))}
           </div>
         </div>
-
-        {/* 3. Discussion List Render */}
         <div className="space-y-4 min-h-[400px]">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">

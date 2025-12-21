@@ -65,16 +65,18 @@ const Navbar = () => {
 
           <SignedIn>
             <div className="flex items-center gap-4" suppressHydrationWarning={true}>
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox:
-                      "w-8 h-8 border border-[#d4af37]/50 ring-2 ring-transparent hover:ring-[#d4af37]/20 transition-all",
-                    userButtonPopoverCard: "border border-[#5d4037] bg-[#1a110d] text-[#eaddcf]",
-                    userButtonPopoverFooter: "hidden",
-                  },
-                }}
-              />
+              <div className="min-w-8 min-h-8">
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox:
+                        "w-8 h-8 border border-[#d4af37]/50 ring-2 ring-transparent hover:ring-[#d4af37]/20 transition-all",
+                      userButtonPopoverCard: "border border-[#5d4037] bg-[#1a110d] text-[#eaddcf]",
+                      userButtonPopoverFooter: "hidden",
+                    },
+                  }}
+                />
+              </div>
               <div className="w-px h-5 bg-[#3e2723]"></div>
               <SignOut />
             </div>

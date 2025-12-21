@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     console.error("Error verifying webhook", error);
     return new Response("Error occured", { status: 500 });
   }
-  const { id } = evt.data;
+
   const eventType = evt.type;
   if (eventType === "user.updated") {
     try {
