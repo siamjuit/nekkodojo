@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -8,8 +9,10 @@ export async function GET(
   try {
     const { discussionId: id } = await params;
     if (!id) return NextResponse.json("No discussion with this ID found!", { status: 400 });
+    const user = await currentUser();
+    if (!user) return NextResponse.json("Unauthorized", { status: 401 });
 
-    const discussion = await prisma.discussions.findUnique({
+    const flatdiscussion = await prisma.discussions.findUnique({
       where: {
         id: id,
       },
@@ -44,10 +47,33 @@ export async function GET(
             attachments: true,
           },
         },
+        likes: {
+          where: {
+            userId: user.id,
+          },
+          select: {
+            type: true,
+          },
+        },
+        bookmarks: {
+          where: { userId: user.id },
+          select: {
+            id: true,
+          },
+        },
       },
     });
+    if (!flatdiscussion) return NextResponse.json("No such discussion!", { status: 404 });
 
-    if (!discussion) return NextResponse.json("No such discussion!", { status: 404 });
+    const discussion = {
+      ...flatdiscussion,
+      isLiked: flatdiscussion.likes.length > 0 && flatdiscussion.likes[0].type === "like",
+      isDisliked: flatdiscussion.likes.length > 0 && flatdiscussion.likes[0].type === "dislike",
+      isBookmarked: flatdiscussion.bookmarks.length > 0,
+      likes: undefined,
+      bookmarks: undefined,
+    };
+
     return NextResponse.json(discussion);
   } catch (error) {
     return NextResponse.json("Failed to fetch this discussion!", { status: 500 });

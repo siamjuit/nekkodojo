@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
-import { useDebounce } from "use-debounce"; 
+import { useDebounce } from "use-debounce";
 import { toast } from "sonner";
 import {
   ThumbsUp,
@@ -12,6 +12,8 @@ import {
   Flag,
   ChevronDown,
   ChevronUp,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -32,6 +34,7 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(comment.isBookmarked || false);
 
   const [localReplies, setLocalReplies] = useState<CommentProps[]>(comment.replies || []);
 
@@ -39,7 +42,11 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
   const replyCount = (comment._count?.replies || 0) + (localReplies.length - originalLength);
 
   const [voteState, setVoteState] = useState({
-    userVote: comment.isLiked ? "like" : comment.isDisliked ? "dislike" : (null as "like" | "dislike" | null),
+    userVote: comment.isLiked
+      ? "like"
+      : comment.isDisliked
+        ? "dislike"
+        : (null as "like" | "dislike" | null),
     likeCount: comment.likeCount,
     dislikeCount: comment.dislikeCount,
   });
@@ -58,8 +65,8 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
       const type = debouncedVote || "remove";
       try {
         await fetch(`/api/comments/${comment.id}/${type}`, {
-           method: "PUT",
-           body: JSON.stringify({ commentId: comment.id, type }) 
+          method: "PUT",
+          body: JSON.stringify({ commentId: comment.id, type }),
         });
         previousVoteRef.current = debouncedVote;
       } catch (error) {
@@ -97,7 +104,29 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
     });
   };
 
-  // --- 3. OTHER HANDLERS ---
+  const handleBookmark = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const previousState = isBookmarked;
+    setIsBookmarked(!previousState);
+
+    const action = !previousState ? "Bookmarked" : "Removed bookmark";
+    toast.success(action);
+
+    try {
+      const res = await fetch(`/api/comments/${comment.id}/bookmark`, {
+        method: "PUT",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed");
+      }
+    } catch (error) {
+      setIsBookmarked(previousState);
+      toast.error("Failed to update bookmark");
+      console.error(error);
+    }
+  };
+
   const isLongText = comment.description.length > 300;
   const displayText = isExpanded ? comment.description : comment.description.slice(0, 300);
   const fullName = `${comment.author.firstName || "User"} ${comment.author.lastName || ""}`.trim();
@@ -184,9 +213,9 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
                   : "text-[#a1887f] hover:text-[#d4af37] hover:bg-[#3e2723]/20"
               }`}
             >
-              <ThumbsUp 
-                 size={14} 
-                 className={`mr-1.5 transition-transform ${voteState.userVote === "like" ? "fill-current scale-110" : ""}`} 
+              <ThumbsUp
+                size={14}
+                className={`mr-1.5 transition-transform ${voteState.userVote === "like" ? "fill-current scale-110" : ""}`}
               />
               <span className="text-xs font-mono font-bold">{voteState.likeCount}</span>
             </Button>
@@ -196,14 +225,14 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
               size="sm"
               onClick={() => handleVote("dislike")}
               className={`h-8 px-2 transition-colors duration-200 rounded-full ${
-                 voteState.userVote === "dislike"
+                voteState.userVote === "dislike"
                   ? "text-red-400 bg-red-900/10"
                   : "text-[#a1887f] hover:text-red-400 hover:bg-[#3e2723]/20"
               }`}
             >
-              <ThumbsDown 
-                 size={14} 
-                 className={`transition-transform ${voteState.userVote === "dislike" ? "fill-current scale-110" : ""}`}
+              <ThumbsDown
+                size={14}
+                className={`transition-transform ${voteState.userVote === "dislike" ? "fill-current scale-110" : ""}`}
               />
               <span className="ml-1.5 text-xs font-mono font-bold">{voteState.dislikeCount}</span>
             </Button>
@@ -220,11 +249,26 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
             <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-[#5d4037] hover:text-[#d4af37] rounded-full">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-[#5d4037] hover:text-[#d4af37] rounded-full"
+                  >
                     <MoreVertical size={14} />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-[#1a110d] border-[#3e2723] text-[#eaddcf]">
+                <DropdownMenuContent
+                  align="end"
+                  className="bg-[#1a110d] border-[#3e2723] text-[#eaddcf]"
+                >
+                  <DropdownMenuItem className="focus:bg-[#3e2723]/40 focus:text-[#d4af37] cursor-pointer" onClick={handleBookmark}>
+                    {isBookmarked ? (
+                      <BookmarkCheck size={14} className="mr-2" />
+                    ) : (
+                      <Bookmark size={14} className="mr-2" />
+                    )}
+                    {isBookmarked ? "Remove Bookmark" : "Bookmark"}
+                  </DropdownMenuItem>
                   <DropdownMenuItem className="focus:bg-[#3e2723]/40 focus:text-[#d4af37] cursor-pointer">
                     <Flag size={14} className="mr-2" />
                     Report
@@ -272,22 +316,18 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
 
             <div className="space-y-2">
               {/* FIX: Map over localReplies instead of comment.replies */}
-              {localReplies.length > 0 ? (
-                localReplies.map((reply) => (
-                  <CommentItem
-                    key={reply.id}
-                    comment={reply}
-                    currentUserAvatar={currentUserAvatar}
-                    currentUserId={currentUserId}
-                  />
-                ))
-              ) : (
-                !isReplying && (
-                  <p className="text-xs text-[#5d4037] italic py-2 pl-2">
-                    No replies loaded.
-                  </p>
-                )
-              )}
+              {localReplies.length > 0
+                ? localReplies.map((reply) => (
+                    <CommentItem
+                      key={reply.id}
+                      comment={reply}
+                      currentUserAvatar={currentUserAvatar}
+                      currentUserId={currentUserId}
+                    />
+                  ))
+                : !isReplying && (
+                    <p className="text-xs text-[#5d4037] italic py-2 pl-2">No replies loaded.</p>
+                  )}
             </div>
           </div>
         </div>

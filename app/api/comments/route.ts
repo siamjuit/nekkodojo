@@ -51,15 +51,23 @@ export async function GET(request: Request) {
             userId: user.id,
           },
         },
+        bookmarks: {
+          where: {
+            userId: user.id,
+          },
+        },
       },
     });
     const commentsWithStatus = comments.map((comment) => {
       const userVote = comment.likes[0];
+      const isBookmarked = comment.bookmarks.length > 0;
       return {
         ...comment,
         isLiked: userVote?.type === "like",
         isDisliked: userVote?.type === "dislike",
+        isBookmarked,
         likes: undefined,
+        bookmarks: undefined,
       };
     });
     const totalComments = await prisma.comments.count({

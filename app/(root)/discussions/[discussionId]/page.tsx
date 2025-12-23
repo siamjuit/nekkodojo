@@ -8,6 +8,7 @@ import DiscussionViewer from "@/components/Discussion/DiscussionView";
 import { checkDislike, checkLike } from "@/lib/actions/isLiked";
 import CommentSection from "@/components/Comment/CommentSection";
 import { useUser } from "@clerk/nextjs";
+import { checkIsDiscussionMarked } from "@/lib/actions/isMarked";
 
 export default function DiscussionPage() {
   const params = useParams();
@@ -35,8 +36,9 @@ export default function DiscussionPage() {
         const data = await res.json();
         const chkLike = await checkLike(discussionId);
         const chkDis = await checkDislike(discussionId);
+        const isBookmarked = await checkIsDiscussionMarked(discussionId);
         console.log("Dis", data);
-        setDiscussion({ ...data, chkLike, chkDis });
+        setDiscussion({ ...data, chkLike, chkDis, isBookmarked });
       } catch (err: any) {
         setError(err.message);
       } finally {

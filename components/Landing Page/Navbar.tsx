@@ -1,5 +1,14 @@
+"use client";
+
 import SignOut from "./SignOut";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useUser,
+} from "@clerk/nextjs";
 import { BookOpen, HomeIcon, LayoutDashboard, MenuIcon, MessageSquare, User } from "lucide-react";
 import Link from "next/link";
 import {
@@ -12,6 +21,7 @@ import {
 } from "@/components/ui/menubar";
 
 const Navbar = () => {
+  const { user } = useUser();
   return (
     <header className="fixed top-6 left-0 right-0 mx-auto w-[95%] max-w-7xl h-20 z-40 rounded-2xl border border-[#d4af37]/10 bg-[#1a110d]/40 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05), 0_8px_32px_0_rgba(0,0,0,0.36)] transition-all duration-300">
       <div className="w-full h-full px-6 md:px-8 flex items-center justify-between">
@@ -29,23 +39,25 @@ const Navbar = () => {
           </Link>
         </div>
         <nav className="hidden md:flex flex-1 justify-center items-center">
-          <div className="flex gap-8 text-sm font-medium text-[#a1887f]">
-            <Link href={"/"} className="hover:text-[#d4af37] transition-colors">
-              Home
-            </Link>
-            <Link href={"/profile"} className="hover:text-[#d4af37] transition-colors">
-              Profile
-            </Link>
-            <Link href="/problems" className="hover:text-[#d4af37] transition-colors">
-              Problems
-            </Link>
-            <Link href="/discussions" className="hover:text-[#d4af37] transition-colors">
-              Discussions
-            </Link>
-            <Link href="/dashboard" className="hover:text-[#d4af37] transition-colors">
-              Dashboard
-            </Link>
-          </div>
+          {user && (
+            <div className="flex gap-8 text-sm font-medium text-[#a1887f]">
+              <Link href={"/profile"} className="hover:text-[#d4af37] transition-colors">
+                Profile
+              </Link>
+              <Link href="/problems" className="hover:text-[#d4af37] transition-colors">
+                Problems
+              </Link>
+              <Link href="/discussions" className="hover:text-[#d4af37] transition-colors">
+                Discussions
+              </Link>
+              <Link href="/dashboard" className="hover:text-[#d4af37] transition-colors">
+                Dashboard
+              </Link>
+              <Link href={"/bookmarks"} className="hover:text-[#d4af37] transition-colors">
+                Bookmarks
+              </Link>
+            </div>
+          )}
           <div className="w-px h-0"></div>
         </nav>
         <div className="shrink-0 flex items-center gap-4">

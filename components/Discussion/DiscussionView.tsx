@@ -8,6 +8,7 @@ import DiscussionDropDown from "./DiscussionDropDown";
 import Share from "./Share";
 import { TAGS } from "@/constants/tags";
 import { Badge } from "../ui/badge";
+import { AttachmentCarousel } from "../Attachment/AttCarousal";
 
 export default function DiscussionViewer({ discussion }: { discussion: DiscussionProps }) {
   const postTag = TAGS.find((t) => t.value === discussion.tag);
@@ -54,31 +55,15 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
               </div>
             </div>
           </div>
-          <DiscussionDropDown discussionId={discussion.id} authorId={discussion.authorId} />
+          <DiscussionDropDown discussion={discussion} authorId={discussion.authorId} />
         </div>
       </div>
       <div className="p-6 sm:p-8 space-y-8">
         <div className="min-h-20">
           <MarkdownViewer content={discussion.description} />
         </div>
-
         {discussion.attachments && discussion.attachments.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-            {discussion.attachments.map((file) => (
-              <div
-                key={file.id}
-                className="relative rounded-lg overflow-hidden border border-[#3e2723] bg-black aspect-video group shadow-lg"
-              >
-                {file.type === "video" ? (
-                  <video src={file.postUrl} controls className="w-full h-full object-contain" />
-                ) : (
-                  <div className="relative w-full h-full">
-                    <Image src={file.postUrl} alt="Attachment" fill className="object-contain" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          <AttachmentCarousel attachments={discussion.attachments} />
         )}
       </div>
 

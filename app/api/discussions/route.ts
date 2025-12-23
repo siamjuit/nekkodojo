@@ -1,10 +1,13 @@
 import { Prisma, TagType } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const user = await currentUser();
+    if (!user) return NextResponse.json("Unauthorized", { status: 401 });
     const query = searchParams.get("query") || "";
     const sort = searchParams.get("sort") || "top";
     const tagParams = searchParams.get("tag");
@@ -83,13 +86,41 @@ export async function GET(request: Request) {
               likes: true,
             },
           },
+          bookmarks: {
+            where: {
+              userId: user.id,
+            },
+            select: {
+              id: true,
+            },
+          },
+          likes: {
+            where: {
+              userId: user.id,
+            },
+            select: {
+              type: true,
+            },
+          },
         },
       }),
       prisma.discussions.count({ where: whereClause }),
     ]);
 
+    const discussionsWithStatus = discussions.map((d) => {
+      const isBookmarked = d.bookmarks.length > 0;
+      const userVote = d.likes[0]?.type;
+      return {
+        ...d,
+        isBookmarked,
+        isLiked: userVote === "like",
+        isDisliked: userVote === "dislike",
+        bookmarks: undefined,
+        likes: undefined,
+      };
+    });
     return NextResponse.json({
-      data: discussions,
+      data: discussionsWithStatus,
       meta: {
         total,
         page,

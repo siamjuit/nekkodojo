@@ -24,6 +24,7 @@ declare interface DiscussionProps {
   userVote?: "like" | "dislike" | null;
   chkLike: Boolean;
   chkDis: Boolean;
+  isBookmarked?: Boolean;
 }
 
 declare interface CommentProps {
@@ -54,4 +55,5 @@ declare interface CommentProps {
   replies?: CommentProps[];
   isLiked?: Boolean;
   isDisliked?: Boolean;
+  isBookmarked?: Boolean;
 }

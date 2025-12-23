@@ -26,7 +26,8 @@ model User {
   discussions Discussions[]
   comments    Comments[]
 
-  likes Likes[]
+  likes     Likes[]
+  bookmarks Bookmark[]
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
@@ -47,6 +48,8 @@ model Discussions {
   likes        Likes[]
   likeCount    Int     @default(0)
   disLikeCount Int     @default(0)
+
+  bookmarks Bookmark[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -72,6 +75,8 @@ model Comments {
   likeCount    Int     @default(0)
   dislikeCount Int     @default(0)
 
+  bookmarks Bookmark[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -85,7 +90,7 @@ model Attachment {
   discussionId String?
   discussion   Discussions? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
 
-  commentId String? @unique
+  commentId String?   @unique
   comment   Comments? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -96,6 +101,25 @@ model Likes {
   id String @id @default(uuid())
 
   type LikeType
+
+  discussionId String?
+  discussion   Discussions? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+
+  commentId String?
+  comment   Comments? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, discussionId])
+  @@unique([userId, commentId])
+}
+
+model Bookmark {
+  id String @id @default(uuid())
 
   discussionId String?
   discussion   Discussions? @relation(fields: [discussionId], references: [id], onDelete: Cascade)

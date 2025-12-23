@@ -3,32 +3,26 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
-import { MessageSquare, ThumbsUp, ArrowUpRight } from "lucide-react";
+import { MessageSquare, ThumbsUp, ArrowUpRight, Bookmark } from "lucide-react"; // Import Bookmark
 import { Badge } from "@/components/ui/badge";
 import { TAGS } from "@/constants/tags";
-
-interface DiscussionProps {
-  id: string;
-  title: string;
-  likeCount: number;
-  author: {
-    firstName: string | null;
-    lastName: string | null;
-    profileUrl: string | null;
-    beltRank: string | null;
-  };
-  _count: {
-    comments: number;
-  };
-  createdAt: string;
-  tag: string;
-}
 
 export default function DiscussionPreviewCard({ data }: { data: DiscussionProps }) {
   const tagConfig = TAGS.find((t) => t.value === data.tag);
 
   return (
-    <div className="group relative bg-[#1a110d]/40 border border-[#3e2723] rounded-xl p-5 hover:border-[#d4af37]/50 hover:bg-[#1a110d]/60 transition-all duration-300">
+    <div className="group relative bg-[#1a110d]/40 border border-[#3e2723] rounded-xl p-5 hover:border-[#d4af37]/50 hover:bg-[#1a110d]/60 transition-all duration-300 overflow-hidden">
+      
+      {/* --- BOOKMARK INDICATOR --- */}
+      {data.isBookmarked && (
+        <div className="absolute top-0 right-4">
+           {/* Ribbon Shape */}
+           <div className="bg-[#d4af37] w-6 h-8 flex items-center justify-center rounded-b-sm shadow-[0_4px_10px_rgba(212,175,55,0.3)] animate-in slide-in-from-top-2">
+              <Bookmark size={14} className="fill-[#1a110d] text-[#1a110d]" />
+           </div>
+        </div>
+      )}
+
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2 text-xs text-[#a1887f]">
@@ -52,9 +46,10 @@ export default function DiscussionPreviewCard({ data }: { data: DiscussionProps 
 
           <Link
             href={`/discussions/${data.id}`}
+            target="_top"
             className="block group-hover:translate-x-1 transition-transform duration-300"
           >
-            <h3 className="text-lg font-bold text-[#eaddcf] group-hover:text-[#d4af37] truncate pr-4">
+            <h3 className="text-lg font-bold text-[#eaddcf] group-hover:text-[#d4af37] truncate pr-8">
               {data.title}
             </h3>
           </Link>
@@ -81,9 +76,13 @@ export default function DiscussionPreviewCard({ data }: { data: DiscussionProps 
           </div>
         </div>
 
+        {/* Hide default arrow if bookmarked to avoid crowding, or shift it down/left */}
         <Link
           href={`/discussions/${data.id}`}
-          className="hidden sm:flex h-10 w-10 items-center justify-center rounded-full border border-[#3e2723] text-[#5d4037] group-hover:text-[#d4af37] group-hover:border-[#d4af37] transition-all"
+          target="_top"
+          className={`hidden sm:flex h-10 w-10 items-center justify-center rounded-full border border-[#3e2723] text-[#5d4037] group-hover:text-[#d4af37] group-hover:border-[#d4af37] transition-all
+             ${data.isBookmarked ? "mt-8" : ""} 
+          `}
         >
           <ArrowUpRight size={20} />
         </Link>
