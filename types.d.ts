@@ -57,3 +57,9 @@ declare interface CommentProps {
   isDisliked?: Boolean;
   isBookmarked?: Boolean;
 }
+
+declare interface NavLinkProps {
+  name: string;
+  url: string;
+  icon: LucideIcon;
+}

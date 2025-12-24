@@ -9,16 +9,18 @@ import {
   UserButton,
   useUser,
 } from "@clerk/nextjs";
-import { BookOpen, HomeIcon, LayoutDashboard, MenuIcon, MessageSquare, User } from "lucide-react";
+import { MenuIcon, UserCircleIcon } from "lucide-react";
 import Link from "next/link";
 import {
   Menubar,
   MenubarContent,
   MenubarItem,
+  MenubarLabel,
   MenubarMenu,
   MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
+import { NavLinks } from "@/constants/nav-links";
 
 const Navbar = () => {
   const { user } = useUser();
@@ -41,21 +43,15 @@ const Navbar = () => {
         <nav className="hidden md:flex flex-1 justify-center items-center">
           {user && (
             <div className="flex gap-8 text-sm font-medium text-[#a1887f]">
-              <Link href={"/profile"} className="hover:text-[#d4af37] transition-colors">
-                Profile
-              </Link>
-              <Link href="/problems" className="hover:text-[#d4af37] transition-colors">
-                Problems
-              </Link>
-              <Link href="/discussions" className="hover:text-[#d4af37] transition-colors">
-                Discussions
-              </Link>
-              <Link href="/dashboard" className="hover:text-[#d4af37] transition-colors">
-                Dashboard
-              </Link>
-              <Link href={"/bookmarks"} className="hover:text-[#d4af37] transition-colors">
-                Bookmarks
-              </Link>
+              {NavLinks.map((navLink) => (
+                <Link
+                  key={navLink.name}
+                  href={navLink.url}
+                  className="hover:text-[#d4af37] transition-colors"
+                >
+                  {navLink.name}
+                </Link>
+              ))}
             </div>
           )}
           <div className="w-px h-0"></div>
@@ -102,80 +98,45 @@ const Navbar = () => {
 
                 <MenubarContent
                   align="end"
-                  className="min-w-[200px] mt-2 bg-[#1a110d]/95 backdrop-blur-xl border border-[#3e2723] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] rounded-xl p-2 mr-4"
+                  className="min-w-[200px] mt-2 z-60 bg-[#1a110d]/95 backdrop-blur-xl border border-[#3e2723] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.8)] rounded-xl p-2 mr-4"
                 >
-                  <MenubarItem
-                    asChild
-                    className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
-                  >
-                    <Link
-                      href={"/"}
-                      className="flex items-center gap-3 font-mono text-sm tracking-wide"
+                  {user && (
+                    <MenubarLabel className="text-xs font-mono text-[#a1887f] uppercase tracking-wider px-2 py-1.5">
+                      Click to visit
+                    </MenubarLabel>
+                  )}
+                  {user ? (
+                    NavLinks.map((navLink) => {
+                      const Icon = navLink.icon;
+                      return (
+                        <div key={navLink.name}>
+                          <MenubarSeparator className="bg-[#3e2723]/50 my-1" />
+                          <MenubarItem
+                            asChild
+                            className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
+                          >
+                            <Link
+                              href={navLink.url}
+                              className="flex items-center gap-3 font-mono text-sm tracking-wide"
+                            >
+                              <Icon size={16} className="opacity-70" />
+                              {navLink.name}
+                            </Link>
+                          </MenubarItem>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <MenubarItem
+                      asChild
+                      className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
                     >
-                      <HomeIcon size={16} className="opacity-70" />
-                      Home
-                    </Link>
-                  </MenubarItem>
-
-                  <MenubarSeparator className="bg-[#3e2723]/50 my-1" />
-
-                  <MenubarItem
-                    asChild
-                    className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
-                  >
-                    <Link
-                      href={"/profile"}
-                      className="flex items-center gap-3 font-mono text-sm tracking-wide"
-                    >
-                      <User size={16} className="opacity-70" />
-                      Profile
-                    </Link>
-                  </MenubarItem>
-
-                  <MenubarSeparator className="bg-[#3e2723]/50 my-1" />
-
-                  <MenubarItem
-                    asChild
-                    className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
-                  >
-                    <Link
-                      href={"/problems"}
-                      className="flex items-center gap-3 font-mono text-sm tracking-wide"
-                    >
-                      <BookOpen size={16} className="opacity-70" />
-                      Problems
-                    </Link>
-                  </MenubarItem>
-
-                  <MenubarSeparator className="bg-[#3e2723]/50 my-1" />
-
-                  <MenubarItem
-                    asChild
-                    className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
-                  >
-                    <Link
-                      href={"/discussions"}
-                      className="flex items-center gap-3 font-mono text-sm tracking-wide"
-                    >
-                      <MessageSquare size={16} className="opacity-70" />
-                      Discussions
-                    </Link>
-                  </MenubarItem>
-
-                  <MenubarSeparator className="bg-[#3e2723]/50 my-1" />
-
-                  <MenubarItem
-                    asChild
-                    className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
-                  >
-                    <Link
-                      href={"/dashboard"}
-                      className="flex items-center gap-3 font-mono text-sm tracking-wide"
-                    >
-                      <LayoutDashboard size={16} className="opacity-70" />
-                      Dashboard
-                    </Link>
-                  </MenubarItem>
+                      <Link href={"/guest"}>
+                        <UserCircleIcon size={16} className="opacity-70" />
+                        Join as guest
+                      </Link>
+                    </MenubarItem>
+                  )}
                 </MenubarContent>
               </MenubarMenu>
             </Menubar>

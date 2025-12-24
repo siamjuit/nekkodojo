@@ -28,9 +28,10 @@ interface Props {
   comment: CommentProps;
   currentUserAvatar?: string | null;
   currentUserId?: string;
+  depth: number;
 }
 
-const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
+const CommentItem = ({ comment, currentUserAvatar, currentUserId, depth = 0 }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
@@ -137,12 +138,13 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
     setShowReplies(true);
   };
 
-  // FIX: Update local state immediately on submit
   const handleReplySubmit = (newReply: CommentProps) => {
     setIsReplying(false);
-    setLocalReplies((prev) => [...prev, newReply]); // Append new reply
-    setShowReplies(true); // Ensure list is open
+    setLocalReplies((prev) => [...prev, newReply]);
+    setShowReplies(true);
   };
+  const MAX_INDENT_DEPTH = 3;
+  const shouldIndent = depth < MAX_INDENT_DEPTH;
 
   return (
     <div className="flex flex-col w-full animate-in fade-in duration-500">
@@ -252,7 +254,7 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 text-[#5d4037] hover:text-[#d4af37] rounded-full"
+                    className="h-8 w-8 text-[#5d4037] hover:text-[#d4af37] hover:bg-[#5d4037] rounded-full"
                   >
                     <MoreVertical size={14} />
                   </Button>
@@ -261,9 +263,12 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
                   align="end"
                   className="bg-[#1a110d] border-[#3e2723] text-[#eaddcf]"
                 >
-                  <DropdownMenuItem className="focus:bg-[#3e2723]/40 focus:text-[#d4af37] cursor-pointer" onClick={handleBookmark}>
+                  <DropdownMenuItem
+                    className="focus:bg-[#3e2723]/40 focus:text-[#d4af37] cursor-pointer"
+                    onClick={handleBookmark}
+                  >
                     {isBookmarked ? (
-                      <BookmarkCheck size={14} className="mr-2" />
+                      <BookmarkCheck size={14} className="mr-2 text-[#d4af37] fill-[#d4af37]/20" />
                     ) : (
                       <Bookmark size={14} className="mr-2" />
                     )}
@@ -297,9 +302,11 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
       {/* NESTED REPLY SECTION */}
       {showReplies && (
         <div className="flex w-full">
-          <div className="w-10 flex justify-center shrink-0 group-hover:bg-[#3e2723]/10 transition-colors">
-            <div className="w-px bg-[#3e2723]/40 h-full"></div>
-          </div>
+          {shouldIndent && (
+            <div className="w-10 flex justify-center shrink-0 group-hover:bg-[#3e2723]/10 transition-colors">
+              <div className="w-px bg-[#3e2723]/40 h-full"></div>
+            </div>
+          )}
 
           <div className="flex-1 pb-2">
             {isReplying && (
@@ -314,8 +321,9 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
               </div>
             )}
 
-            <div className="space-y-2">
-              {/* FIX: Map over localReplies instead of comment.replies */}
+            <div
+              className={`space-y-2 ${!shouldIndent ? "mt-2 pl-2 ml-1 border-l-2 border-[#d4af37]/30" : ""}`}
+            >
               {localReplies.length > 0
                 ? localReplies.map((reply) => (
                     <CommentItem
@@ -323,6 +331,7 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId }: Props) => {
                       comment={reply}
                       currentUserAvatar={currentUserAvatar}
                       currentUserId={currentUserId}
+                      depth={depth + 1}
                     />
                   ))
                 : !isReplying && (
