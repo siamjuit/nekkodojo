@@ -4,9 +4,6 @@ import { useEffect, useState } from "react";
 import {
   Share2,
   Link as LinkIcon,
-  Twitter,
-  Linkedin,
-  MessageCircle,
   Check,
   Copy,
 } from "lucide-react";

@@ -34,7 +34,7 @@ export default function GlobalLoading() {
         className="mt-8 text-center space-y-2"
       >
         <h2 className="text-2xl font-bold text-[#eaddcf] tracking-widest uppercase">
-          Neko<span className="text-[#d4af37]">Dojo</span>
+          Nekko<span className="text-[#d4af37]">Dojo</span>
         </h2>
         <p className="text-[#a1887f] text-sm font-mono animate-pulse">
           Loading assets...

@@ -10,11 +10,7 @@ declare interface DiscussionProps {
     profileUrl: string | null;
     beltRank: string | null;
   };
-  attachments: {
-    id: string;
-    postUrl: string;
-    type: "image" | "video" | "gif";
-  }[];
+  attachments: Attachment[];
   tag: string;
   likeCount: number;
   disLikeCount: number;
@@ -22,8 +18,8 @@ declare interface DiscussionProps {
     comments: number;
   };
   userVote?: "like" | "dislike" | null;
-  chkLike: Boolean;
-  chkDis: Boolean;
+  isLiked: Boolean;
+  isDisliked: Boolean;
   isBookmarked?: Boolean;
 }
 
@@ -40,11 +36,7 @@ declare interface CommentProps {
     profileUrl: string;
     beltRank: string;
   };
-  attachments?: {
-    id: string;
-    postUrl: string;
-    type: string;
-  };
+  attachments?: Attachment;
   parentId?: string;
   createdAt: string | Date;
   likeCount: number;
@@ -56,6 +48,12 @@ declare interface CommentProps {
   isLiked?: Boolean;
   isDisliked?: Boolean;
   isBookmarked?: Boolean;
+}
+
+declare interface Attachment {
+  id: string;
+  postUrl: string;
+  type: string;
 }
 
 declare interface NavLinkProps {

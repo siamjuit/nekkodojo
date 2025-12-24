@@ -6,20 +6,19 @@ import { formatDistanceToNow } from "date-fns";
 import { MessageSquare, ThumbsUp, ArrowUpRight, Bookmark } from "lucide-react"; // Import Bookmark
 import { Badge } from "@/components/ui/badge";
 import { TAGS } from "@/constants/tags";
+import BeltBadge from "../User/BeltBadge";
 
 export default function DiscussionPreviewCard({ data }: { data: DiscussionProps }) {
   const tagConfig = TAGS.find((t) => t.value === data.tag);
 
   return (
     <div className="group relative bg-[#1a110d]/40 border border-[#3e2723] rounded-xl p-5 hover:border-[#d4af37]/50 hover:bg-[#1a110d]/60 transition-all duration-300 overflow-hidden">
-      
-      {/* --- BOOKMARK INDICATOR --- */}
       {data.isBookmarked && (
         <div className="absolute top-0 right-4">
-           {/* Ribbon Shape */}
-           <div className="bg-[#d4af37] w-6 h-8 flex items-center justify-center rounded-b-sm shadow-[0_4px_10px_rgba(212,175,55,0.3)] animate-in slide-in-from-top-2">
-              <Bookmark size={14} className="fill-[#1a110d] text-[#1a110d]" />
-           </div>
+          {/* Ribbon Shape */}
+          <div className="bg-[#d4af37] w-6 h-8 flex items-center justify-center rounded-b-sm shadow-[0_4px_10px_rgba(212,175,55,0.3)] animate-in slide-in-from-top-2">
+            <Bookmark size={14} className="fill-[#1a110d] text-[#1a110d]" />
+          </div>
         </div>
       )}
 
@@ -37,9 +36,7 @@ export default function DiscussionPreviewCard({ data }: { data: DiscussionProps 
             <span className="font-bold text-[#d4af37]">
               {data.author.firstName} {data.author.lastName}
             </span>
-            <span className="text-[10px] uppercase tracking-wider text-[#5d4037] border border-[#3e2723] px-1.5 py-0.5 rounded ml-auto sm:ml-0">
-              {data.author.beltRank || "White Belt"}
-            </span>
+            <BeltBadge belt={data.author.beltRank!} />
             <span className="w-1 h-1 rounded-full bg-[#3e2723]" />
             <span>{formatDistanceToNow(new Date(data.createdAt))} ago</span>
           </div>

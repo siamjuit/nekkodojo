@@ -34,11 +34,7 @@ export default function DiscussionPage() {
         }
 
         const data = await res.json();
-        const chkLike = await checkLike(discussionId);
-        const chkDis = await checkDislike(discussionId);
-        const isBookmarked = await checkIsDiscussionMarked(discussionId);
-        console.log("Dis", data);
-        setDiscussion({ ...data, chkLike, chkDis, isBookmarked });
+        setDiscussion(data);
       } catch (err: any) {
         setError(err.message);
       } finally {

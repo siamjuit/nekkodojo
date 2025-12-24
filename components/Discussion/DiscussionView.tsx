@@ -9,6 +9,7 @@ import Share from "./Share";
 import { TAGS } from "@/constants/tags";
 import { Badge } from "../ui/badge";
 import { AttachmentCarousel } from "../Attachment/AttCarousal";
+import BeltBadge from "../User/BeltBadge";
 
 export default function DiscussionViewer({ discussion }: { discussion: DiscussionProps }) {
   const postTag = TAGS.find((t) => t.value === discussion.tag);
@@ -45,9 +46,7 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
                   <span className="text-sm font-bold text-[#d4af37]">
                     {discussion.author.firstName} {discussion.author.lastName}
                   </span>
-                  <span className="px-1.5 py-0.5 rounded text-[10px] uppercase font-mono tracking-wider bg-[#d4af37]/10 text-[#d4af37] border border-[#d4af37]/20">
-                    {discussion.author.beltRank || "White Belt"}
-                  </span>
+                  <BeltBadge belt={discussion.author.beltRank!} />
                 </div>
                 <p className="text-xs text-[#a1887f]">
                   posted {formatDistanceToNow(new Date(discussion.createdAt))} ago
@@ -73,8 +72,8 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
           initialUpvotes={discussion.likeCount || 0}
           initialDownvotes={discussion.disLikeCount || 0}
           initialUserVote={discussion.userVote || null}
-          isLiked={discussion.chkLike || false}
-          isDisliked={discussion.chkDis || false}
+          isLiked={discussion.isLiked || false}
+          isDisliked={discussion.isDisliked || false}
         />
 
         <Share />

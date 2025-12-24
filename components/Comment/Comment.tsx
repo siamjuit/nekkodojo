@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import WriteComment from "./Create/WriteComment";
+import BeltBadge from "../User/BeltBadge";
+import CommentAttachment from "../Attachment/AttLightbox";
 
 interface Props {
   comment: CommentProps;
@@ -173,9 +175,7 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId, depth = 0 }: P
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[11px] text-[#a1887f] font-mono">{handle}</span>
-              <span className="px-1 py-px rounded border border-[#3e2723] bg-[#1a110d] text-[9px] text-[#d4af37] font-mono uppercase tracking-wide opacity-80">
-                {comment.author.beltRank || "White Belt"}
-              </span>
+              <BeltBadge belt={comment.author.beltRank} />
             </div>
           </div>
 
@@ -193,13 +193,8 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId, depth = 0 }: P
 
           {comment.attachments && (
             <div className="mt-2">
-              <div className="relative h-48 w-full sm:w-80 rounded-lg overflow-hidden border border-[#3e2723]/50 bg-[#0f0b0a]">
-                <Image
-                  src={comment.attachments.postUrl}
-                  alt="Attachment"
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-500 cursor-zoom-in"
-                />
+              <div className="relative h-48 sm:w-80 rounded-lg overflow-hidden border border-[#3e2723]/50 bg-[#0f0b0a]">
+                <CommentAttachment attachment={comment.attachments} />
               </div>
             </div>
           )}

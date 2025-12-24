@@ -21,7 +21,7 @@ model User {
   isOnboarded Boolean? @default(false)
 
   noOfQuestionsSolved Int?
-  beltRank            String? @default("white-belt")
+  beltRank            BeltType @default(white_belt)
 
   discussions Discussions[]
   comments    Comments[]
@@ -53,6 +53,8 @@ model Discussions {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([tag])
 }
 
 model Comments {
@@ -175,4 +177,15 @@ enum TagType {
   Backend
   Job
   Placement
+}
+
+enum BeltType {
+  white_belt
+  yellow_belt
+  orange_belt
+  green_belt
+  blue_belt
+  purple_belt
+  brown_belt
+  black_belt
 }
