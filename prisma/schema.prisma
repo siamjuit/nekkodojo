@@ -29,8 +29,13 @@ model User {
   likes     Likes[]
   bookmarks Bookmark[]
 
+  role           String  @default("user")
+  isShadowBanned Boolean @default(false)
+  isBanned       Boolean @default(false)
+
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+  reports   Report[]
 }
 
 model Discussions {
@@ -53,6 +58,7 @@ model Discussions {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  reports   Report[]
 
   @@index([tag])
 }
@@ -81,6 +87,7 @@ model Comments {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  reports   Report[]
 }
 
 model Attachment {
@@ -139,6 +146,24 @@ model Bookmark {
   @@unique([userId, commentId])
 }
 
+model Report {
+  id String @id @default(uuid())
+
+  reason String
+
+  reporterId String
+  reporter   User   @relation(fields: [reporterId], references: [id])
+
+  discussionId String?
+  discussion   Discussions? @relation(fields: [discussionId], references: [id])
+
+  commentId String?
+  comment   Comments? @relation(fields: [commentId], references: [id])
+
+  status    ReportStatusType @default(PENDING)
+  createdAt DateTime         @default(now())
+}
+
 enum AttachmentType {
   image
   video
@@ -188,4 +213,10 @@ enum BeltType {
   purple_belt
   brown_belt
   black_belt
+}
+
+enum ReportStatusType {
+  PENDING
+  REVIEWED
+  DISMISSED
 }

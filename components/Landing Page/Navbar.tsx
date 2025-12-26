@@ -53,8 +53,8 @@ const Navbar = () => {
                   {navLink.name}
                 </Link>
               ))}
-              {user.publicMetadata.role === "admin" ? (
-                <Link href={"/admin"} className="hover:text-[#d4af37] transition-colors">
+              {user.publicMetadata.role === "admin" || user?.publicMetadata.role === "moderator" ? (
+                <Link href={"/admin/dashboard"} className="hover:text-[#d4af37] transition-colors">
                   Dashboard
                 </Link>
               ) : (
@@ -145,14 +145,14 @@ const Navbar = () => {
                       </Link>
                     </MenubarItem>
                   )}
-                  {user?.publicMetadata.role === "admin" ? (
+                  {user?.publicMetadata.role === "admin" || user?.publicMetadata.role === "moderator" ? (
                     <>
                       <MenubarSeparator className="bg-[#3e2723]/50 my-1" />
                       <MenubarItem
                         asChild
                         className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
                       >
-                        <Link href={"/admin"}>
+                        <Link href={"/admin/dashboard"}>
                           <LayoutDashboard size={16} className="opacity-70" />
                           Dashboard
                         </Link>

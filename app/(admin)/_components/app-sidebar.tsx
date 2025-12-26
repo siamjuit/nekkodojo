@@ -9,10 +9,11 @@ import {
   LogOut,
   ChevronsUpDown,
   Home,
+  MessageSquareWarning,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUser, useClerk } from "@clerk/nextjs"; // Import useClerk for sign out
+import { useUser, useClerk } from "@clerk/nextjs"; 
 
 import {
   Sidebar,
@@ -36,34 +37,47 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// Menu Configuration
+// 1. Updated Configuration: Explicitly list who can see what
 const items = [
   {
     title: "Dashboard",
     url: "/admin/dashboard",
     icon: LayoutDashboard,
+    allowedRoles: ["admin"], // Admin Only
   },
   {
     title: "Disciples",
     url: "/admin/users",
     icon: Users,
+    allowedRoles: ["admin"], // Admin Only
   },
   {
     title: "Scrolls",
     url: "/admin/content",
     icon: ScrollText,
+    allowedRoles: ["admin", "moderator"], // Both can see
+  },
+  {
+    title: "Reports", // (Tribunal/Infractions)
+    url: "/admin/reports",
+    icon: MessageSquareWarning,
+    allowedRoles: ["admin", "moderator"], // Both can see
   },
   {
     title: "Settings",
     url: "/admin/settings",
     icon: Settings,
+    allowedRoles: ["admin"], // Admin Only
   },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { user, isLoaded } = useUser();
-  const { signOut } = useClerk(); // Hook to handle logout
+  const { signOut } = useClerk();
+
+  // Helper to safely get the role string
+  const userRole = (user?.publicMetadata.role as string) || "user";
 
   return (
     <Sidebar className="border-r border-[#3e2723] bg-[#1a110d] text-[#eaddcf]">
@@ -74,11 +88,9 @@ export function AppSidebar() {
             <ShieldAlert size={18} />
           </div>
           <div className="flex flex-col">
-            <span className="font-black tracking-tight text-[#eaddcf]">
-              NEKODOJO
-            </span>
+            <span className="font-black tracking-tight text-[#eaddcf]">NEKODOJO</span>
             <span className="text-[10px] font-mono uppercase tracking-widest text-[#d4af37]">
-              Admin
+              {userRole === "admin" ? "Admin" : "Moderator"} Panel
             </span>
           </div>
         </div>
@@ -94,6 +106,13 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => {
                 const isActive = pathname === item.url;
+                
+                // 2. LOGIC CHECK:
+                // If the user's role is NOT in the allowed list, render nothing (null).
+                if (!item.allowedRoles.includes(userRole)) {
+                  return null;
+                }
+
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
@@ -109,9 +128,7 @@ export function AppSidebar() {
                       `}
                     >
                       <Link href={item.url} className="flex items-center gap-3">
-                        <item.icon
-                          className={isActive ? "text-[#d4af37]" : "opacity-70"}
-                        />
+                        <item.icon className={isActive ? "text-[#d4af37]" : "opacity-70"} />
                         <span className="font-medium">{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -123,7 +140,6 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* --- FOOTER --- */}
       <SidebarFooter className="border-t border-[#3e2723] bg-[#1a110d] p-4">
         <SidebarMenu>
           {isLoaded && user && (
@@ -135,18 +151,13 @@ export function AppSidebar() {
                     className="data-[state=open]:bg-[#3e2723]/20 data-[state=open]:text-[#eaddcf] hover:bg-[#3e2723]/20 hover:text-[#eaddcf] transition-colors"
                   >
                     <Avatar className="h-8 w-8 rounded-lg border border-[#3e2723]">
-                      <AvatarImage
-                        src={user.imageUrl}
-                        alt={user.fullName || "User"}
-                      />
+                      <AvatarImage src={user.imageUrl} alt={user.fullName || "User"} />
                       <AvatarFallback className="rounded-lg bg-[#3e2723] text-[#d4af37]">
                         {user.firstName?.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold text-[#eaddcf]">
-                        {user.fullName}
-                      </span>
+                      <span className="truncate font-semibold text-[#eaddcf]">{user.fullName}</span>
                       <span className="truncate text-xs text-[#a1887f]">
                         {user.primaryEmailAddress?.emailAddress}
                       </span>
@@ -155,7 +166,6 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
 
-                {/* Styled Dropdown Content */}
                 <DropdownMenuContent
                   className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg bg-[#1a110d] border-[#3e2723] text-[#eaddcf]"
                   side="bottom"
@@ -171,9 +181,9 @@ export function AppSidebar() {
                       Return to Dojo
                     </Link>
                   </DropdownMenuItem>
-                  
+
                   <DropdownMenuSeparator className="bg-[#3e2723]" />
-                  
+
                   <DropdownMenuItem
                     className="cursor-pointer flex items-center gap-2 text-red-400 focus:bg-red-900/10 focus:text-red-300"
                     onClick={() => signOut({ redirectUrl: "/" })}

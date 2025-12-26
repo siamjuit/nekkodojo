@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { checkRole } from "@/utils/roles";
-import { SearchUsers } from "./SearchUsers";
+import { SearchUsers } from "../SearchUsers";
 import { clerkClient } from "@clerk/nextjs/server";
 import { ShieldAlert, User } from "lucide-react";
-import { UserRoleCard } from "../_components/UserRoleCard"; // Import the new component
+import { UserRoleCard } from "../../_components/UserRoleCard"; // Import the new component
 
 export default async function AdminDashboard(params: {
   searchParams: Promise<{ search?: string }>;

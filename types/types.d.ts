@@ -61,3 +61,17 @@ declare interface NavLinkProps {
   url: string;
   icon: LucideIcon;
 }
+
+declare interface UserProps {
+  id: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  profileUrl: string;
+  role: string;
+  beltRank: string;
+  createdAt: string;
+  isBanned?: Boolean;
+  isShadowBanned?: Boolean;
+}
