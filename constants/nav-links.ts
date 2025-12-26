@@ -17,11 +17,6 @@ export const NavLinks: NavLinkProps[] = [
     icon: MessageSquare,
   },
   {
-    name: "Dashboard",
-    url: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
     name: "Bookmark",
     url: "/bookmarks",
     icon: Bookmark,

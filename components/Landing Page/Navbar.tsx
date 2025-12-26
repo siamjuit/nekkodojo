@@ -9,7 +9,7 @@ import {
   UserButton,
   useUser,
 } from "@clerk/nextjs";
-import { MenuIcon, UserCircleIcon } from "lucide-react";
+import { LayoutDashboard, MenuIcon, UserCircleIcon } from "lucide-react";
 import Link from "next/link";
 import {
   Menubar,
@@ -21,6 +21,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { NavLinks } from "@/constants/nav-links";
+import { checkRole } from "@/utils/roles";
 
 const Navbar = () => {
   const { user } = useUser();
@@ -52,6 +53,13 @@ const Navbar = () => {
                   {navLink.name}
                 </Link>
               ))}
+              {user.publicMetadata.role === "admin" ? (
+                <Link href={"/admin"} className="hover:text-[#d4af37] transition-colors">
+                  Dashboard
+                </Link>
+              ) : (
+                ""
+              )}
             </div>
           )}
           <div className="w-px h-0"></div>
@@ -136,6 +144,22 @@ const Navbar = () => {
                         Join as guest
                       </Link>
                     </MenubarItem>
+                  )}
+                  {user?.publicMetadata.role === "admin" ? (
+                    <>
+                      <MenubarSeparator className="bg-[#3e2723]/50 my-1" />
+                      <MenubarItem
+                        asChild
+                        className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
+                      >
+                        <Link href={"/admin"}>
+                          <LayoutDashboard size={16} className="opacity-70" />
+                          Dashboard
+                        </Link>
+                      </MenubarItem>
+                    </>
+                  ) : (
+                    ""
                   )}
                 </MenubarContent>
               </MenubarMenu>
