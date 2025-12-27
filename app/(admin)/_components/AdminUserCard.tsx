@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { removeRole, setRole } from "../admin/_actions"; // Adjust import if needed
+import { removeRole, setRole } from "../_actions"; // Adjust import if needed
 import { toast } from "sonner";
 import BeltBadge from "@/components/User/BeltBadge";
 

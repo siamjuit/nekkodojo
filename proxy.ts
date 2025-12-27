@@ -12,16 +12,19 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+const isModeratorRoute = createRouteMatcher(["/moderator(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
     await auth.protect();
   }
 
-  if (
-    (isAdminRoute(req) && (await auth()).sessionClaims?.metadata?.role !== "admin") &&
-    (isAdminRoute(req) && (await auth()).sessionClaims?.metadata?.role !== "moderator")
-  ) {
+  if (isAdminRoute(req) && (await auth()).sessionClaims?.metadata?.role !== "admin") {
+    const url = new URL("/", req.url);
+    return NextResponse.redirect(url);
+  }
+
+  if (isModeratorRoute(req) && (await auth()).sessionClaims?.metadata?.role !== "moderator") {
     const url = new URL("/", req.url);
     return NextResponse.redirect(url);
   }

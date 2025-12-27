@@ -21,7 +21,6 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { NavLinks } from "@/constants/nav-links";
-import { checkRole } from "@/utils/roles";
 
 const Navbar = () => {
   const { user } = useUser();
@@ -54,7 +53,12 @@ const Navbar = () => {
                 </Link>
               ))}
               {user.publicMetadata.role === "admin" || user?.publicMetadata.role === "moderator" ? (
-                <Link href={"/admin/dashboard"} className="hover:text-[#d4af37] transition-colors">
+                <Link
+                  href={
+                    user.publicMetadata.role === "admin" ? "/admin/dashboard" : "/moderator/dashboard"
+                  }
+                  className="hover:text-[#d4af37] transition-colors"
+                >
                   Dashboard
                 </Link>
               ) : (
@@ -145,14 +149,21 @@ const Navbar = () => {
                       </Link>
                     </MenubarItem>
                   )}
-                  {user?.publicMetadata.role === "admin" || user?.publicMetadata.role === "moderator" ? (
+                  {user?.publicMetadata.role === "admin" ||
+                  user?.publicMetadata.role === "moderator" ? (
                     <>
                       <MenubarSeparator className="bg-[#3e2723]/50 my-1" />
                       <MenubarItem
                         asChild
                         className="focus:bg-[#d4af37]/10 focus:text-[#d4af37] text-[#eaddcf] cursor-pointer rounded-lg px-3 py-2.5 my-0.5"
                       >
-                        <Link href={"/admin/dashboard"}>
+                        <Link
+                          href={
+                            user.publicMetadata.role === "admin"
+                              ? "/admin/dashboard"
+                              : "/moderator/dashboard"
+                          }
+                        >
                           <LayoutDashboard size={16} className="opacity-70" />
                           Dashboard
                         </Link>

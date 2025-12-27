@@ -4,16 +4,17 @@ import {
   LayoutDashboard,
   Users,
   ScrollText,
-  Settings,
   ShieldAlert,
   LogOut,
   ChevronsUpDown,
   Home,
   MessageSquareWarning,
+  Feather,
+  MessageSquareText,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useUser, useClerk } from "@clerk/nextjs"; 
+import { useUser, useClerk } from "@clerk/nextjs";
 
 import {
   Sidebar,
@@ -37,47 +38,59 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-// 1. Updated Configuration: Explicitly list who can see what
-const items = [
-  {
-    title: "Dashboard",
-    url: "/admin/dashboard",
-    icon: LayoutDashboard,
-    allowedRoles: ["admin"], // Admin Only
-  },
-  {
-    title: "Disciples",
-    url: "/admin/users",
-    icon: Users,
-    allowedRoles: ["admin"], // Admin Only
-  },
-  {
-    title: "Scrolls",
-    url: "/admin/content",
-    icon: ScrollText,
-    allowedRoles: ["admin", "moderator"], // Both can see
-  },
-  {
-    title: "Reports", // (Tribunal/Infractions)
-    url: "/admin/reports",
-    icon: MessageSquareWarning,
-    allowedRoles: ["admin", "moderator"], // Both can see
-  },
-  {
-    title: "Settings",
-    url: "/admin/settings",
-    icon: Settings,
-    allowedRoles: ["admin"], // Admin Only
-  },
-];
-
 export function AppSidebar() {
   const pathname = usePathname();
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
 
-  // Helper to safely get the role string
+  // 1. DETERMINE BASE PATH
+  // If the user is on a /moderator page, use "/moderator" base. Otherwise "/admin".
+  const isModeratorPath = pathname.startsWith("/moderator");
+  const basePath = isModeratorPath ? "/moderator" : "/admin";
+
+  // Helper to safely get the user's role
   const userRole = (user?.publicMetadata.role as string) || "user";
+
+  // 2. DYNAMIC ITEMS CONFIGURATION
+  // We recreate this array on every render so 'basePath' is always correct.
+  const items = [
+    {
+      title: "Dashboard",
+      url: `${basePath}/dashboard`, // e.g. /moderator/dashboard
+      icon: LayoutDashboard,
+      allowedRoles: ["admin", "moderator"],
+    },
+    {
+      title: "Disciples",
+      url: `${basePath}/users`,
+      icon: Users,
+      allowedRoles: ["admin"], // Admin Only
+    },
+    {
+      title: "Scrolls",
+      url: `${basePath}/content`,
+      icon: ScrollText,
+      allowedRoles: ["admin", "moderator"], // Both
+    },
+    {
+      title: "Inscriptions", // Thematic name for Comments
+      url: `${basePath}/comments`,
+      icon: MessageSquareText,
+      allowedRoles: ["admin", "moderator"],
+    },
+    {
+      title: "Reports",
+      url: `${basePath}/reports`,
+      icon: MessageSquareWarning,
+      allowedRoles: ["admin", "moderator"], // Both
+    },
+    {
+      title: "Add Katas",
+      url: `${basePath}/questions`,
+      icon: Feather,
+      allowedRoles: ["admin"],
+    },
+  ];
 
   return (
     <Sidebar className="border-r border-[#3e2723] bg-[#1a110d] text-[#eaddcf]">
@@ -90,7 +103,8 @@ export function AppSidebar() {
           <div className="flex flex-col">
             <span className="font-black tracking-tight text-[#eaddcf]">NEKODOJO</span>
             <span className="text-[10px] font-mono uppercase tracking-widest text-[#d4af37]">
-              {userRole === "admin" ? "Admin" : "Moderator"} Panel
+              {/* Dynamic Label based on Path */}
+              {isModeratorPath ? "Moderator Panel" : "Admin Panel"}
             </span>
           </div>
         </div>
@@ -105,10 +119,11 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
-                const isActive = pathname === item.url;
-                
-                // 2. LOGIC CHECK:
-                // If the user's role is NOT in the allowed list, render nothing (null).
+                // 3. ACTIVE STATE CHECK
+                // Since item.url now includes the correct base path, exact matching works
+                const isActive = pathname === item.url || pathname.startsWith(item.url + "/");
+
+                // 4. PERMISSION CHECK
                 if (!item.allowedRoles.includes(userRole)) {
                   return null;
                 }
@@ -141,6 +156,7 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="border-t border-[#3e2723] bg-[#1a110d] p-4">
+        {/* ... Footer logic remains exactly the same ... */}
         <SidebarMenu>
           {isLoaded && user && (
             <SidebarMenuItem>

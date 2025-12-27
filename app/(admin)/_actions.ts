@@ -59,9 +59,6 @@ export async function deleteDiscussion(formData: FormData) {
 
   try {
     const id = formData.get("id") as string;
-
-    // Delete the discussion (Prisma will cascade delete comments/likes if configured, 
-    // otherwise you might need to delete related data first depending on your schema)
     await prisma.discussions.delete({
       where: { id },
     });
@@ -71,5 +68,29 @@ export async function deleteDiscussion(formData: FormData) {
   } catch (err) {
     console.error(err);
     return { message: "Error deleting discussion" };
+  }
+}
+
+export async function deleteComment(formData: FormData) {
+  const client = await clerkClient();
+  
+  if (!checkRole("admin") && !checkRole("moderator")) {
+    return { message: "Not Authorized" };
+  }
+
+  try {
+    const id = formData.get("id") as string;
+
+    await prisma.comments.delete({
+      where: { id },
+    });
+
+    // Revalidate both admin and moderator paths just in case
+    revalidatePath("/admin/comments");
+    revalidatePath("/moderator/comments");
+    return { message: "Success" };
+  } catch (err) {
+    console.error(err);
+    return { message: "Error deleting comment" };
   }
 }

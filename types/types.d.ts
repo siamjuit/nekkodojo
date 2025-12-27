@@ -36,6 +36,7 @@ declare interface CommentProps {
     profileUrl: string;
     beltRank: string;
   };
+  discussion: DiscussionProps,
   attachments?: Attachment;
   parentId?: string;
   createdAt: string | Date;
