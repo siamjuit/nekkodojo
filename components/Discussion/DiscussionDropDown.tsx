@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
+import { ReportDialog } from "../Report/ReportDialog";
 
 interface Props {
   discussion: DiscussionProps;
@@ -37,7 +38,7 @@ const DiscussionDropDown = ({ discussion, authorId }: Props) => {
 
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  
+
   // 1. OPTIMISTIC STATE: Initialize with prop value
   const [isBookmarked, setIsBookmarked] = useState(discussion.isBookmarked || false);
 
@@ -46,10 +47,10 @@ const DiscussionDropDown = ({ discussion, authorId }: Props) => {
   const isAuthor = user.id === authorId;
 
   const handleBookmark = async (e: React.MouseEvent) => {
-    e.preventDefault(); 
+    e.preventDefault();
     const previousState = isBookmarked;
     setIsBookmarked(!previousState);
-    
+
     const action = !previousState ? "Bookmarked" : "Removed bookmark";
     toast.success(action); // Instant feedback
 
@@ -100,23 +101,24 @@ const DiscussionDropDown = ({ discussion, authorId }: Props) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button 
+          <button
             className={`
                 relative group transition-all p-2 rounded-md focus:outline-none flex items-center justify-center
-                ${isBookmarked 
-                    ? "text-[#d4af37] bg-[#d4af37]/10 hover:bg-[#d4af37]/20" 
+                ${
+                  isBookmarked
+                    ? "text-[#d4af37] bg-[#d4af37]/10 hover:bg-[#d4af37]/20"
                     : "text-[#5d4037] hover:text-[#d4af37] hover:bg-[#3e2723]/20"
                 }
             `}
             title="Options"
           >
             <MoreHorizontal size={20} />
-            
+
             {/* Visual Marker: A small bookmark badge if active */}
             {isBookmarked && (
-                <span className="absolute -top-1 -right-1">
-                    <BookmarkCheck size={12} className="text-[#d4af37] fill-[#d4af37]" />
-                </span>
+              <span className="absolute -top-1 -right-1">
+                <BookmarkCheck size={12} className="text-[#d4af37] fill-[#d4af37]" />
+              </span>
             )}
           </button>
         </DropdownMenuTrigger>
@@ -136,9 +138,9 @@ const DiscussionDropDown = ({ discussion, authorId }: Props) => {
             onClick={handleBookmark}
           >
             {isBookmarked ? (
-                <BookmarkCheck size={16} className="text-[#d4af37] fill-[#d4af37]/20" />
+              <BookmarkCheck size={16} className="text-[#d4af37] fill-[#d4af37]/20" />
             ) : (
-                <Bookmark size={16} />
+              <Bookmark size={16} />
             )}
             <span>{isBookmarked ? "Remove Bookmark" : "Bookmark"}</span>
           </DropdownMenuItem>
@@ -163,12 +165,21 @@ const DiscussionDropDown = ({ discussion, authorId }: Props) => {
               </DropdownMenuItem>
             </>
           )}
-          
+
           {!isAuthor && (
-            <DropdownMenuItem className="cursor-pointer focus:bg-[#d4af37]/10 focus:text-[#d4af37] gap-2 py-2">
-              <Flag size={16} />
-              <span>Report</span>
-            </DropdownMenuItem>
+            <ReportDialog
+              contentId={discussion.id}
+              type="discussion"
+              trigger={
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()} // CRITICAL: Prevents dropdown from closing
+                  className="cursor-pointer focus:bg-[#d4af37]/10 focus:text-[#d4af37] gap-2 py-2 w-full"
+                >
+                  <Flag size={16} />
+                  <span>Report</span>
+                </DropdownMenuItem>
+              }
+            />
           )}
         </DropdownMenuContent>
       </DropdownMenu>

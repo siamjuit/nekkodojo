@@ -1,8 +1,8 @@
 import { Users, UserX, ShieldAlert, ShieldCheck } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 // Ensure this path matches your file structure exactly
-import { AdminUserCard } from "../../_components/AdminUserCard";
-import PaginationControls from "../../_components/PaginationControls";
+import { AdminUserCard } from "../../../../components/Admin/AdminUserCard";
+import PaginationControls from "../../../../components/Admin/PaginationControls";
 import { currentUser } from "@clerk/nextjs/server";
 import { Badge } from "@/components/ui/badge";
 

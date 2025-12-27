@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import WriteComment from "./Create/WriteComment";
 import BeltBadge from "../User/BeltBadge";
 import CommentAttachment from "../Attachment/AttLightbox";
+import { ReportDialog } from "../Report/ReportDialog";
 
 interface Props {
   comment: CommentProps;
@@ -269,10 +270,19 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId, depth = 0 }: P
                     )}
                     {isBookmarked ? "Remove Bookmark" : "Bookmark"}
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="focus:bg-[#3e2723]/40 focus:text-[#d4af37] cursor-pointer">
-                    <Flag size={14} className="mr-2" />
-                    Report
-                  </DropdownMenuItem>
+                  <ReportDialog
+                    contentId={comment.id}
+                    type="comment"
+                    trigger={
+                      <DropdownMenuItem
+                        onSelect={(e) => e.preventDefault()}
+                        className="focus:bg-[#3e2723]/40 focus:text-[#d4af37] cursor-pointer"
+                      >
+                        <Flag size={14} className="mr-2" />
+                        Report
+                      </DropdownMenuItem>
+                    }
+                  />
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

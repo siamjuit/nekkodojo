@@ -76,3 +76,18 @@ declare interface UserProps {
   isBanned?: Boolean;
   isShadowBanned?: Boolean;
 }
+
+declare interface ReportProps {
+  id: string;
+  reason: string;
+  createdAt: Date;
+  status: string;
+  reporter: {
+    firstName: string | null;
+    lastName: string | null;
+    imageUrl: string;
+  };
+  // Optional content fields depending on type
+  discussion?: { id: string; title: string };
+  comment?: { id: string; content: string; discussionId: string };
+}

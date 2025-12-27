@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { removeRole, setRole } from "../_actions"; // Import your server actions directly
+import { removeRole, setRole } from "../../app/(admin)/_actions"; // Import your server actions directly
 import { toast } from "sonner"; // Optional: For success/error feedback
 
 interface UserProps {

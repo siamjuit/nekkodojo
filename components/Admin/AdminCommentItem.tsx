@@ -6,7 +6,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Trash2, Loader2, ArrowUpRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { deleteComment } from "../_actions"; // Check path
+import { deleteComment } from "../../app/(admin)/_actions"; // Check path
 import { toast } from "sonner";
 
 // Define the interface here if not imported

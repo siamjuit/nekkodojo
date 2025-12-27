@@ -53,12 +53,28 @@ export async function removeRole(formData: FormData) {
 
 export async function deleteDiscussion(formData: FormData) {
   const client = await clerkClient();
-  
+
   // Security Check
   if (!checkRole("admin")) return { message: "Not Authorized" };
 
   try {
     const id = formData.get("id") as string;
+    const isReported = await prisma.report.findMany({
+      where: {
+        discussionId: id,
+      },
+    });
+
+    if (isReported && isReported.length > 0) {
+      await prisma.report.updateMany({
+        where: {
+          discussionId: id,
+        },
+        data: {
+          status: "REVIEWED",
+        },
+      });
+    }
     await prisma.discussions.delete({
       where: { id },
     });
@@ -73,7 +89,44 @@ export async function deleteDiscussion(formData: FormData) {
 
 export async function deleteComment(formData: FormData) {
   const client = await clerkClient();
-  
+
+  if (!checkRole("admin") && !checkRole("moderator")) {
+    return { message: "Not Authorized" };
+  }
+
+  try {
+    const id = formData.get("id") as string;
+    const isReported = await prisma.report.findMany({
+      where: {
+        commentId: id,
+      },
+    });
+
+    if (isReported && isReported.length > 0) {
+      await prisma.report.updateMany({
+        where: {
+          commentId: id,
+        },
+        data: {
+          status: "REVIEWED",
+        },
+      });
+    }
+    await prisma.comments.delete({
+      where: { id },
+    });
+
+    revalidatePath("/admin/comments");
+    revalidatePath("/moderator/comments");
+    return { message: "Success" };
+  } catch (err) {
+    console.error(err);
+    return { message: "Error deleting comment" };
+  }
+}
+
+export async function dismissReport(formData: FormData) {
+  const client = await clerkClient();
   if (!checkRole("admin") && !checkRole("moderator")) {
     return { message: "Not Authorized" };
   }
@@ -81,16 +134,15 @@ export async function deleteComment(formData: FormData) {
   try {
     const id = formData.get("id") as string;
 
-    await prisma.comments.delete({
+    await prisma.report.update({
       where: { id },
+      data: { status: "DISMISSED" },
     });
 
-    // Revalidate both admin and moderator paths just in case
-    revalidatePath("/admin/comments");
-    revalidatePath("/moderator/comments");
+    revalidatePath("/admin/reports");
+    revalidatePath("/moderator/reports");
     return { message: "Success" };
   } catch (err) {
-    console.error(err);
-    return { message: "Error deleting comment" };
+    return { message: "Error" };
   }
 }

@@ -13,7 +13,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { ActivityChart } from "../../_components/ActivityCharts"; 
+import { ActivityChart } from "../../../../components/Admin/ActivityCharts"; 
 import { getWeeklyStats } from "@/lib/activity";
 
 // --- REUSABLE WIDGETS ---

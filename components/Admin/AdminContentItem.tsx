@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { deleteDiscussion } from "../_actions";  // Check path
+import { deleteDiscussion } from "../../app/(admin)/_actions";  // Check path
 import { toast } from "sonner";
 
 interface DiscussionProps {

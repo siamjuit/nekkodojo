@@ -10,9 +10,10 @@ import {
   ShieldCheck,
   Settings,
   Activity,
-  User
+  User,
+  MessageSquareText // Added Icon
 } from "lucide-react";
-import { prisma } from "@/lib/prisma"; // Direct DB access
+import { prisma } from "@/lib/prisma";
 import { clerkClient } from "@clerk/nextjs/server";
 import { checkRole } from "@/utils/roles";
 import { redirect } from "next/navigation";
@@ -20,9 +21,9 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 
 // Components
-import { SearchUsers } from "../../_components/SearchUsers";
-import { UserRoleCard } from "../../_components/UserRoleCard";
-import { ActivityChart } from "../../_components/ActivityCharts"; 
+import { SearchUsers } from "@/components/Admin/SearchUsers"; 
+import { UserRoleCard } from "@/components/Admin/UserRoleCard"; 
+import { ActivityChart } from "@/components/Admin/ActivityCharts"; 
 import { getWeeklyStats } from "@/lib/activity";
 
 // --- WIDGETS ---
@@ -76,6 +77,7 @@ export default async function AdminDashboard(params: {
     reportCount,
     todaysJoiners,
     recentUsers,
+    recentComments, // <--- New Data Point
     chartData
   ] = await Promise.all([
     // A. Stats
@@ -86,23 +88,29 @@ export default async function AdminDashboard(params: {
       where: { createdAt: { gte: new Date(new Date().setHours(0,0,0,0)) } }
     }),
     
-    // B. Recent Activity List
+    // B. Recent Activity List (User Joins)
     prisma.user.findMany({
       take: 5,
       orderBy: { createdAt: "desc" },
       select: { id: true, firstName: true, lastName: true, createdAt: true }
     }),
 
-    // C. Chart Data
+    // C. Recent Inscriptions (Comments) <--- Added
+    prisma.comments.findMany({
+      take: 5,
+      orderBy: { createdAt: "desc" },
+      select: { description: true, createdAt: true, author: { select: { firstName: true } } }
+    }),
+
+    // D. Chart Data
     getWeeklyStats(),
   ]);
 
   // 2. SEARCH LOGIC (Existing Feature)
-  // Only fetch Clerk users if we are actually searching
   const searchedUsers = query ? (await client.users.getUserList({ query })).data : [];
 
   return (
-    <div className="min-h-screen bg-[#0f0b0a] text-[#eaddcf] p-6 md:p-10 space-y-8 animate-in fade-in duration-500">
+    <div className="min-h-screen text-[#eaddcf] p-6 md:p-10 space-y-8 animate-in fade-in duration-500">
       
       {/* --- 1. HEADER & VITALS --- */}
       <div className="max-w-7xl mx-auto space-y-8">
@@ -116,7 +124,7 @@ export default async function AdminDashboard(params: {
           </p>
         </div>
 
-        {/* Stats Grid (Always Visible) */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           <StatCard 
             title="Total Disciples" 
@@ -162,13 +170,13 @@ export default async function AdminDashboard(params: {
 
         {/* DYNAMIC CONTENT SWITCHER */}
         {query ? (
-          // === MODE A: SEARCH RESULTS (Your existing grid) ===
+          // === MODE A: SEARCH RESULTS ===
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-[#eaddcf] flex items-center gap-2">
               <Search size={20} className="text-[#d4af37]" />
               Search Results
             </h2>
-            
+            {/* ... (Existing User Grid Code) ... */}
             {searchedUsers.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-[#3e2723] rounded-2xl bg-[#1a110d]/30">
                 <div className="bg-[#3e2723]/20 p-6 rounded-full mb-4">
@@ -200,10 +208,10 @@ export default async function AdminDashboard(params: {
             )}
           </div>
         ) : (
-          // === MODE B: ACTIVITY DASHBOARD (Default view) ===
+          // === MODE B: ACTIVITY DASHBOARD ===
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {/* LEFT: Activity Chart & Feed */}
+            {/* LEFT: Activity Chart & User Joins */}
             <div className="lg:col-span-2 space-y-8">
               <ActivityChart chartData={chartData} />
 
@@ -232,8 +240,10 @@ export default async function AdminDashboard(params: {
               </div>
             </div>
 
-            {/* RIGHT: Quick Actions */}
+            {/* RIGHT: Actions & Fresh Inscriptions */}
             <div className="space-y-6">
+              
+              {/* Admin Actions */}
               <div className="rounded-xl border border-[#3e2723] bg-[#1a110d] p-6">
                 <h2 className="text-lg font-bold text-[#eaddcf] mb-4">Admin Actions</h2>
                 <div className="space-y-3">
@@ -258,6 +268,32 @@ export default async function AdminDashboard(params: {
                 </div>
               </div>
 
+              {/* --- NEW: FRESH INSCRIPTIONS (Fills the gap) --- */}
+              <div className="rounded-xl border border-[#3e2723] bg-[#1a110d] p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-bold text-[#eaddcf]">Fresh Inscriptions</h2>
+                  <Link href="/admin/comments" className="text-xs text-[#d4af37] hover:underline flex items-center gap-1">
+                    View All <ArrowRight size={12} />
+                  </Link>
+                </div>
+                
+                <div className="flex flex-col">
+                  {recentComments.length > 0 ? (
+                    recentComments.map((comment: any, i: number) => (
+                      <ActivityItem 
+                        key={i}
+                        icon={MessageSquareText}
+                        text={`"${comment.description}" by ${comment.author.firstName}`}
+                        time={formatDistanceToNow(new Date(comment.createdAt)) + " ago"}
+                        color="bg-emerald-500 text-emerald-500" // Emerald Green for Inscriptions
+                      />
+                    ))
+                  ) : (
+                    <p className="text-sm text-[#5d4037] italic">No inscriptions found recently.</p>
+                  )}
+                </div>
+              </div>
+
               {/* System Status Badge */}
               <div className="p-4 rounded-xl border border-green-900/30 bg-green-900/10 flex items-center gap-3">
                 <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
@@ -266,6 +302,7 @@ export default async function AdminDashboard(params: {
                   <p className="text-[10px] text-green-500/70">Database & Auth services operational</p>
                 </div>
               </div>
+
             </div>
           </div>
         )}
