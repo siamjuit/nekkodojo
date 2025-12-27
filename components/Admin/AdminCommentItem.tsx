@@ -3,16 +3,27 @@
 import { useTransition } from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { Trash2, Loader2, ArrowUpRight } from "lucide-react";
+import { Trash2, Loader2, ArrowUpRight, AlertTriangle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { deleteComment } from "../../app/(admin)/_actions"; // Check path
 import { toast } from "sonner";
 
 // Define the interface here if not imported
 interface CommentProps {
   id: string;
-  description: string; // Changed from 'content' to match your usage
+  description: string;
   createdAt: Date;
   author: {
     firstName: string | null;
@@ -28,16 +39,14 @@ interface CommentProps {
 export function AdminCommentItem({ data }: { data: CommentProps }) {
   const [isPending, startTransition] = useTransition();
 
-  const handleDelete = async () => {
-    if (!confirm("Burn this inscription?")) return;
-
+  const executeDelete = async () => {
     const formData = new FormData();
     formData.append("id", data.id);
 
     startTransition(async () => {
       try {
         await deleteComment(formData);
-        toast.success("Inscription burned");
+        toast.success("Inscription burned (deleted)");
       } catch (error) {
         toast.error("Failed to delete");
       }
@@ -70,7 +79,7 @@ export function AdminCommentItem({ data }: { data: CommentProps }) {
           </div>
         </div>
         
-        {/* Context Link (Truncates nicely on small screens instead of hiding) */}
+        {/* Context Link */}
         <Link 
           href={`/discussions/${data.discussion.id}`} 
           target="_blank"
@@ -91,22 +100,48 @@ export function AdminCommentItem({ data }: { data: CommentProps }) {
         </p>
       </div>
 
-      {/* Actions */}
+      {/* Actions with Alert Dialog */}
       <div className="flex justify-end pt-2 border-t border-[#3e2723]/50 mt-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleDelete}
-          disabled={isPending}
-          className="h-7 px-2 text-xs text-[#5d4037] hover:text-red-400 hover:bg-red-900/10 transition-colors"
-        >
-          {isPending ? (
-            <Loader2 size={12} className="animate-spin mr-1.5" />
-          ) : (
-            <Trash2 size={12} className="mr-1.5" />
-          )}
-          Burn Inscription
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={isPending}
+              className="h-7 px-2 text-xs text-[#5d4037] hover:text-red-400 hover:bg-red-900/10 transition-colors"
+            >
+              {isPending ? (
+                <Loader2 size={12} className="animate-spin mr-1.5" />
+              ) : (
+                <Trash2 size={12} className="mr-1.5" />
+              )}
+              Burn Inscription
+            </Button>
+          </AlertDialogTrigger>
+
+          <AlertDialogContent className="bg-[#1a110d] border-[#3e2723] text-[#eaddcf]">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-red-500 flex items-center gap-2">
+                <AlertTriangle size={20} />
+                Confirm Deletion
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-[#a1887f]">
+                This action cannot be undone. This will permanently remove the inscription from the dojo walls.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel className="bg-transparent border-[#3e2723] text-[#a1887f] hover:bg-[#3e2723]/20 hover:text-[#eaddcf]">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={executeDelete}
+                className="bg-red-900/20 text-red-500 hover:bg-red-600 hover:text-white border border-red-900/50"
+              >
+                Delete Permanently
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

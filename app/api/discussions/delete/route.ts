@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function DELETE(request: Request) {
   try {
     const user = await currentUser();
     if (!user) return NextResponse.json("Unauthorized!", { status: 401 });
@@ -32,7 +32,6 @@ export async function POST(request: Request) {
             authorId: user.id,
           },
         });
-
         return NextResponse.json("Discussion deleted!", { status: 200 });
       }
     }

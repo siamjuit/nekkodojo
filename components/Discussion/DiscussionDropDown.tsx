@@ -74,7 +74,7 @@ const DiscussionDropDown = ({ discussion, authorId }: Props) => {
     const id = discussion.id;
     try {
       const res = await fetch("/api/discussions/delete", {
-        method: "POST",
+        method: "DELETE",
         body: JSON.stringify({ id }),
       });
 
