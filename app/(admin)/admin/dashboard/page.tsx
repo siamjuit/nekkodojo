@@ -82,7 +82,7 @@ export default async function AdminDashboard(params: {
   ] = await Promise.all([
     // A. Stats
     prisma.user.count(),
-    prisma.discussions.count(),
+    prisma.discussion.count(),
     prisma.report?.count({ where: { status: "PENDING" } }) || 0,
     prisma.user.count({
       where: { createdAt: { gte: new Date(new Date().setHours(0,0,0,0)) } }
@@ -96,7 +96,7 @@ export default async function AdminDashboard(params: {
     }),
 
     // C. Recent Inscriptions (Comments) <--- Added
-    prisma.comments.findMany({
+    prisma.comment.findMany({
       take: 5,
       orderBy: { createdAt: "desc" },
       select: { description: true, createdAt: true, author: { select: { firstName: true } } }

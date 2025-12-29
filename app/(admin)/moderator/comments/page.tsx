@@ -22,7 +22,7 @@ export default async function AdminCommentsPage(props: {
 
   // Fetch Comments
   const [comments, totalCount] = await prisma.$transaction([
-    prisma.comments.findMany({
+    prisma.comment.findMany({
       take: limit,
       skip: skip,
       orderBy: { createdAt: "desc" },
@@ -35,7 +35,7 @@ export default async function AdminCommentsPage(props: {
         }
       }
     }),
-    prisma.comments.count()
+    prisma.comment.count()
   ]);
 
   const totalPages = Math.ceil(totalCount / limit);

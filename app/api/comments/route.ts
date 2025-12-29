@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     if (!user) return NextResponse.json("Unauthorized", { status: 401 });
     if (!discussionId) return NextResponse.json("No discussion found!", { status: 404 });
 
-    const totalRoots = await prisma.comments.count({
+    const totalRoots = await prisma.comment.count({
       where: {
         discussionId,
         parentId: null,
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
         ? [{ likeCount: "desc" }, { replies: { _count: "desc" } }]
         : { createdAt: "desc" };
 
-    const rootComments = await prisma.comments.findMany({
+    const rootComments = await prisma.comment.findMany({
       where: {
         discussionId: discussionId,
         parentId: null,
@@ -72,7 +72,7 @@ export async function GET(request: Request) {
       },
     });
 
-    const allReplies = await prisma.comments.findMany({
+    const allReplies = await prisma.comment.findMany({
       where: {
         discussionId,
         parentId: { not: null },
@@ -109,7 +109,7 @@ export async function GET(request: Request) {
       bookmarks: undefined,
     }));
 
-    const totalComments = await prisma.comments.count({
+    const totalComments = await prisma.comment.count({
       where: {
         discussionId,
       },

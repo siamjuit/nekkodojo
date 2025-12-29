@@ -75,7 +75,7 @@ export async function deleteDiscussion(formData: FormData) {
         },
       });
     }
-    await prisma.discussions.delete({
+    await prisma.discussion.delete({
       where: { id },
     });
 
@@ -112,7 +112,7 @@ export async function deleteComment(formData: FormData) {
         },
       });
     }
-    await prisma.comments.delete({
+    await prisma.comment.delete({
       where: { id },
     });
 

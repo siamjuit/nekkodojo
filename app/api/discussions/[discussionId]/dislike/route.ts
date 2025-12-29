@@ -11,7 +11,7 @@ export async function PUT(
     const user = await currentUser();
     if (!user) return NextResponse.json("Unauthorized!", { status: 401 });
 
-    const isLiked = await prisma.likes.findUnique({
+    const isLiked = await prisma.like.findUnique({
       where: {
         userId_discussionId: { userId: user.id, discussionId: id },
       },
@@ -19,27 +19,27 @@ export async function PUT(
     if (isLiked) {
       if (isLiked.type === "dislike") {
         await prisma.$transaction([
-          prisma.likes.delete({
+          prisma.like.delete({
             where: {
               id: isLiked.id,
             },
           }),
-          prisma.discussions.update({
+          prisma.discussion.update({
             where: { id: id },
-            data: { disLikeCount: { decrement: 1 } },
+            data: { dislikeCount: { decrement: 1 } },
           }),
         ]);
 
         return NextResponse.json("Dislike removed", { status: 201 });
       } else {
         await prisma.$transaction([
-          prisma.likes.update({
+          prisma.like.update({
             where: { id: isLiked.id },
             data: { type: "dislike" },
           }),
-          prisma.discussions.update({
+          prisma.discussion.update({
             where: { id: id },
-            data: { disLikeCount: { increment: 1 }, likeCount: { decrement: 1 } },
+            data: { dislikeCount: { increment: 1 }, likeCount: { decrement: 1 } },
           }),
         ]);
 
@@ -48,7 +48,7 @@ export async function PUT(
     }
 
     const newDislike = await prisma.$transaction(async (tx) => {
-      const dislike = await tx.likes.create({
+      const dislike = await tx.like.create({
         data: {
           type: "dislike",
           userId: user.id,
@@ -56,12 +56,12 @@ export async function PUT(
         },
       });
 
-      await tx.discussions.update({
+      await tx.discussion.update({
         where: {
           id,
         },
         data: {
-          disLikeCount: { increment: 1 },
+          dislikeCount: { increment: 1 },
         },
       });
       return dislike;

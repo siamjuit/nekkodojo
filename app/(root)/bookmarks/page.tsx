@@ -136,9 +136,7 @@ export default function BookmarksPage() {
                 <div className="pl-2 border-l-2 border-[#3e2723]">
                   <CommentItem
                     comment={comment}
-                    // Pass these if you have them in a context wrapper
-                    // currentUserId={user?.id}
-                    // currentUserAvatar={user?.imageUrl}
+                    depth={0}
                   />
                 </div>
               </div>

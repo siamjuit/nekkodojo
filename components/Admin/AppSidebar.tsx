@@ -188,10 +188,10 @@ export function AppSidebar() {
                   align="end"
                   sideOffset={4}
                 >
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem asChild className="focus:bg-[#3e2723]/30 focus:text-[#d4af37]">
                     <Link
                       href="/"
-                      className="cursor-pointer flex items-center gap-2 focus:bg-[#3e2723]/30 focus:text-[#d4af37]"
+                      className="cursor-pointer flex items-center gap-2"
                     >
                       <Home className="size-4 opacity-70" />
                       Return to Dojo
@@ -199,7 +199,6 @@ export function AppSidebar() {
                   </DropdownMenuItem>
 
                   <DropdownMenuSeparator className="bg-[#3e2723]" />
-
                   <DropdownMenuItem
                     className="cursor-pointer flex items-center gap-2 text-red-400 focus:bg-red-900/10 focus:text-red-300"
                     onClick={() => signOut({ redirectUrl: "/" })}

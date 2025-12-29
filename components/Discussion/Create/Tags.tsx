@@ -13,20 +13,33 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { TAGS } from "@/constants/tags"; // Ensure you have the file from previous steps
-import { TagType } from "@/generated/prisma/client";
 import { cn } from "@/lib/utils";
+import { getTags } from "@/lib/getTags";
+import { careerSlugs, isDojoTheme, languageSlugs, technicalSlugs } from "@/constants/tagGroups";
 
 interface Props {
-  value?: TagType;
-  onChange: (value: TagType) => void;
+  value: TagProps;
+  onChange: (value: TagProps) => void;
 }
 
 export function TagSelector({ value, onChange }: Props) {
+  const [tags, setTags] = React.useState<TagProps[]>([]);
   const [open, setOpen] = React.useState(false);
 
-  // Find the full config object based on the current value
-  const selectedTag = TAGS.find((tag) => tag.value === value);
+  React.useEffect(() => {
+    const getAllTags = async () => {
+      try {
+        const t: TagProps[] = await getTags();
+        if (t) setTags(t);
+      } catch (error) {
+        console.error("Failed to fetch tags:", error);
+      }
+    };
+    getAllTags();
+  }, []);
+
+  const selectedTag =
+    tags.find((tag) => tag.slug === value.slug) || tags.find((t) => t.name === "General Discussion");
 
   return (
     <div className="w-full">
@@ -40,18 +53,12 @@ export function TagSelector({ value, onChange }: Props) {
           >
             {selectedTag ? (
               <div className="flex items-center gap-2">
-                {/* Render the selected tag with its specific color style */}
-                <span
-                  className={cn(
-                    "w-3 h-3 rounded-full",
-                    selectedTag.style.split(" ")[0].replace("bg-", "bg-")
-                  )}
-                />
-                <span className="font-mono text-sm">{selectedTag.label}</span>
+                <span className={cn("w-3 h-3 rounded-full", selectedTag.color!.split(" ")[0])} />
+                <span className="font-mono text-sm">{selectedTag.name}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2 text-[#5d4037]">
-                <Hash size={4} />
+                <Hash size={16} />
                 <span className="text-sm">Select Tag...</span>
               </div>
             )}
@@ -73,129 +80,94 @@ export function TagSelector({ value, onChange }: Props) {
                 No category found.
               </CommandEmpty>
               <CommandGroup heading="Dojo Themes" className="text-[#a1887f]">
-                {TAGS.filter(
-                  (t) =>
-                    ![
-                      "TypeScript_JavaScript",
-                      "Python",
-                      "Java",
-                      "CPP_n_C",
-                      "Rust",
-                      "SQL",
-                      "NoSQL",
-                      "Frontend",
-                      "Backend",
-                      "Dynamic_Programming",
-                      "Graphs_n_Trees",
-                      "Arrays_n_Strings",
-                      "Recursion",
-                      "Bit_Manipulation",
-                      "System_Design",
-                      "Math_n_Geometry",
-                      "Job",
-                      "Placement",
-                      "Gate",
-                    ].includes(t.value)
-                ).map((tag) => (
-                  <CommandItem
-                    key={tag.value}
-                    value={tag.label} // Search by label
-                    onSelect={() => {
-                      onChange(tag.value);
-                      setOpen(false);
-                    }}
-                    className="cursor-pointer aria-selected:bg-[#3e2723]/30 aria-selected:text-[#d4af37] focus:bg-[#3e2723]/30 focus:text-[#d4af37] my-1"
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <span className={cn("w-2 h-2 rounded-full", tag.style.split(" ")[0])} />
-                      <span>{tag.label}</span>
-                      {value === tag.value && <Check className="ml-auto h-4 w-4 text-[#d4af37]" />}
-                    </div>
-                  </CommandItem>
-                ))}
+                {tags
+                  .filter((t) => isDojoTheme(t.slug))
+                  .map((tag) => (
+                    <CommandItem
+                      key={tag.slug}
+                      value={tag.name} // Search by name
+                      onSelect={() => {
+                        onChange(tag);
+                        setOpen(false);
+                      }}
+                      className="cursor-pointer aria-selected:bg-[#3e2723]/30 aria-selected:text-[#d4af37] focus:bg-[#3e2723]/30 focus:text-[#d4af37] my-1"
+                    >
+                      <div className="flex items-center gap-2 w-full">
+                        <span className={cn("w-2 h-2 rounded-full", tag.color!.split(" ")[0])} />
+                        <span>{tag.name}</span>
+                        {value.slug === tag.slug && <Check className="ml-auto h-4 w-4 text-[#d4af37]" />}
+                      </div>
+                    </CommandItem>
+                  ))}
               </CommandGroup>
 
+              {/* Group 2: Technical Topics */}
               <CommandGroup heading="Technical Topics" className="text-[#a1887f]">
-                {TAGS.filter((t) =>
-                  [
-                    "Dynamic_Programming",
-                    "Graphs_n_Trees",
-                    "Arrays_n_Strings",
-                    "Recursion",
-                    "Bit_Manipulation",
-                    "System_Design",
-                    "Math_n_Geometry",
-                  ].includes(t.value)
-                ).map((tag) => (
-                  <CommandItem
-                    key={tag.value}
-                    value={tag.label}
-                    onSelect={() => {
-                      onChange(tag.value);
-                      setOpen(false);
-                    }}
-                    className="cursor-pointer aria-selected:bg-[#3e2723]/30 aria-selected:text-[#d4af37] focus:bg-[#3e2723]/30 focus:text-[#d4af37] my-1"
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <span className={cn("w-2 h-2 rounded-full", tag.style.split(" ")[0])} />
-                      <span>{tag.label}</span>
-                      {value === tag.value && <Check className="ml-auto h-4 w-4 text-[#d4af37]" />}
-                    </div>
-                  </CommandItem>
-                ))}
+                {tags
+                  .filter((t) => technicalSlugs.includes(t.slug))
+                  .map((tag) => (
+                    <CommandItem
+                      key={tag.slug}
+                      value={tag.name}
+                      onSelect={() => {
+                        onChange(tag);
+                        setOpen(false);
+                      }}
+                      className="cursor-pointer aria-selected:bg-[#3e2723]/30 aria-selected:text-[#d4af37] focus:bg-[#3e2723]/30 focus:text-[#d4af37] my-1"
+                    >
+                      <div className="flex items-center gap-2 w-full">
+                        <span className={cn("w-2 h-2 rounded-full", tag.color!.split(" ")[0])} />
+                        <span>{tag.name}</span>
+                        {value.slug === tag.slug && <Check className="ml-auto h-4 w-4 text-[#d4af37]" />}
+                      </div>
+                    </CommandItem>
+                  ))}
               </CommandGroup>
 
-              {/* Add more groups if needed for Languages, etc. */}
+              {/* Group 3: Languages */}
               <CommandGroup heading="Languages and Stack" className="text-[#a1887f]">
-                {TAGS.filter((t) =>
-                  [
-                    "TypeScript_JavaScript",
-                    "Python",
-                    "CPP_n_C",
-                    "Java",
-                    "Rust",
-                    "SQL",
-                    "NoSQL",
-                    "Frontend",
-                    "Backend",
-                  ].includes(t.value)
-                ).map((tag) => (
-                  <CommandItem
-                    key={tag.value}
-                    value={tag.label}
-                    onSelect={() => {
-                      onChange(tag.value);
-                      setOpen(false);
-                    }}
-                    className="cursor-pointer aria-selected:bg-[#3e2723]/30 aria-selected:text-[#d4af37] focus:bg-[#3e2723]/30 focus:text-[#d4af37] my-1"
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <span className={cn("w-2 h-2 rounded-full", tag.style.split(" ")[0])} />
-                      <span>{tag.label}</span>
-                      {value === tag.value && <Check className="ml-auto h-4 w-4 text-[#d4af37]" />}
-                    </div>
-                  </CommandItem>
-                ))}
+                {tags
+                  .filter((t) => languageSlugs.includes(t.slug))
+                  .map((tag) => (
+                    <CommandItem
+                      key={tag.slug}
+                      value={tag.name}
+                      onSelect={() => {
+                        onChange(tag);
+                        setOpen(false);
+                      }}
+                      className="cursor-pointer aria-selected:bg-[#3e2723]/30 aria-selected:text-[#d4af37] focus:bg-[#3e2723]/30 focus:text-[#d4af37] my-1"
+                    >
+                      <div className="flex items-center gap-2 w-full">
+                        <span className={cn("w-2 h-2 rounded-full", tag.color!.split(" ")[0])} />
+                        <span>{tag.name}</span>
+                        {value.slug === tag.slug && <Check className="ml-auto h-4 w-4 text-[#d4af37]" />}
+                      </div>
+                    </CommandItem>
+                  ))}
               </CommandGroup>
 
+              {/* Group 4: Career */}
               <CommandGroup heading="Career" className="text-[#a1887f]">
-                {TAGS.filter((t) => ["Job", "Placement", "Gate"].includes(t.value)).map((tag) => (
-                  <CommandItem
-                    key={tag.value}
-                    value={tag.label}
-                    onSelect={() => {
-                      onChange(tag.value);
-                      setOpen(false);
-                    }}
-                    className="cursor-pointer aria-selected:bg-[#3e2723]/30 aria-selected:text-[#d4af37] focus:bg-[#3e2723]/30 focus:text-[#d4af37] my-1"
-                  >
-                    <div className="flex items-center gap-2 w-full">
-                      <span className={cn("w-2 h-2 rounded-full", tag.style.split(" ")[0])} />
-                      <span>{tag.label}</span>
-                      {value === tag.value && <Check className="ml-auto h-4 w-4 text-[#d4af37]" />}
-                    </div>
-                  </CommandItem>
-                ))}
+                {tags
+                  .filter((t) => careerSlugs.includes(t.slug))
+                  .map((tag) => (
+                    <CommandItem
+                      key={tag.slug}
+                      value={tag.name}
+                      onSelect={() => {
+                        onChange(tag);
+                        setOpen(false);
+                      }}
+                      className="cursor-pointer aria-selected:bg-[#3e2723]/30 aria-selected:text-[#d4af37] focus:bg-[#3e2723]/30 focus:text-[#d4af37] my-1"
+                    >
+                      <div className="flex items-center gap-2 w-full">
+                        <span className={cn("w-2 h-2 rounded-full", tag.color!.split(" ")[0])} />
+                        <span>{tag.name}</span>
+                        {value.slug === tag.slug && <Check className="ml-auto h-4 w-4 text-[#d4af37]" />}
+                      </div>
+                    </CommandItem>
+                  ))}
               </CommandGroup>
             </CommandList>
           </Command>

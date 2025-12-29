@@ -6,13 +6,28 @@ import MarkdownViewer from "@/components/Discussion/Create/MarkdownViewer";
 import VoteControl from "@/components/Discussion/VoteControl";
 import DiscussionDropDown from "./DiscussionDropDown";
 import Share from "./Share";
-import { TAGS } from "@/constants/tags";
 import { Badge } from "../ui/badge";
 import { AttachmentCarousel } from "../Attachment/AttCarousal";
 import BeltBadge from "../User/BeltBadge";
+import { useEffect, useState } from "react";
+import { getTags } from "@/lib/getTags"; 
 
 export default function DiscussionViewer({ discussion }: { discussion: DiscussionProps }) {
-  const postTag = TAGS.find((t) => t.value === discussion.tag);
+  const [tags, setTags] = useState<TagProps[]>([]);
+  console.log(discussion)
+  useEffect(() => {
+    const getAllTags = async () => {
+      try {
+        const t: TagProps[] = await getTags();
+        if (t) setTags(t);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getAllTags();
+  }, []);
+
+  const postTag = tags.find((t) => t.slug === discussion.tag.slug);
 
   return (
     <article className="bg-[#1a110d]/40 border border-[#3e2723] rounded-xl overflow-hidden shadow-2xl shadow-black/50 animate-in fade-in zoom-in-95 duration-500">
@@ -22,16 +37,20 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
             <h1 className="text-2xl sm:text-3xl font-bold text-[#eaddcf] leading-tight">
               {discussion.title}
             </h1>
+            
             {postTag && (
               <div className="mt-2">
                 <Badge
                   variant="outline"
-                  className={`px-2 py-0.5 rounded text-[10px] font-mono whitespace-nowrap border ${postTag.style} hover:bg-transparent`}
+                  // CHANGE 2: Use 'color' instead of 'style'
+                  className={`px-2 py-0.5 rounded text-[10px] font-mono whitespace-nowrap border ${postTag.color} hover:bg-transparent`}
                 >
-                  {postTag.label}
+                  {/* CHANGE 3: Use 'name' instead of 'label' */}
+                  {postTag.name}
                 </Badge>
               </div>
             )}
+
             <div className="flex items-center gap-3">
               <div className="relative w-10 h-10 rounded-full border border-[#d4af37]/30 overflow-hidden bg-black shrink-0">
                 <Image
@@ -70,7 +89,7 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
         <VoteControl
           discussionId={discussion.id}
           initialUpvotes={discussion.likeCount || 0}
-          initialDownvotes={discussion.disLikeCount || 0}
+          initialDownvotes={discussion.dislikeCount || 0}
           initialUserVote={discussion.userVote || null}
           isLiked={discussion.isLiked || false}
           isDisliked={discussion.isDisliked || false}

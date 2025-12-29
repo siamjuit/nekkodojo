@@ -10,7 +10,7 @@ export async function DELETE(request: Request) {
     const { discussionId } = await request.json();
     if (!discussionId) return NextResponse.json("No discussion selected", { status: 400 });
 
-    const discussion = await prisma.discussions.findUnique({
+    const discussion = await prisma.discussion.findUnique({
       where: {
         id: discussionId,
       },
@@ -26,7 +26,7 @@ export async function DELETE(request: Request) {
       } else {
         const fileIds = discussion.attachments.map((att) => att.id);
         imagekit.bulkDeleteFiles(fileIds);
-        await prisma.discussions.delete({
+        await prisma.discussion.delete({
           where: {
             id: discussionId,
             authorId: user.id,

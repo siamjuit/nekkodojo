@@ -1,3 +1,9 @@
+declare interface TagProps {
+  name: string;
+  slug: string;
+  color: string | null;
+}
+
 declare interface DiscussionProps {
   id: string;
   title: string;
@@ -11,9 +17,9 @@ declare interface DiscussionProps {
     beltRank: string | null;
   };
   attachments: Attachment[];
-  tag: string;
+  tag: TagProps;
   likeCount: number;
-  disLikeCount: number;
+  dislikeCount: number;
   _count: {
     comments: number;
   };
@@ -36,7 +42,7 @@ declare interface CommentProps {
     profileUrl: string;
     beltRank: string;
   };
-  discussion: DiscussionProps,
+  discussion: DiscussionProps;
   attachments?: Attachment;
   parentId?: string;
   createdAt: string | Date;

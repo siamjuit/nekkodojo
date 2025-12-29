@@ -17,13 +17,17 @@ export default function CreateDiscussionPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const user = useUser();
+  const { user } = useUser();
   if (!user) return;
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [attachments, setAttachments] = useState<UploadFile[]>([]);
-  const [tag, setTag] = useState<TagType>("Discussion");
+  const [tag, setTag] = useState<TagProps>({
+    name: "General Discussion",
+    slug: "discussion",
+    color: "bg-[#2a110c] text-[#a1887f] border-[#3e2723]",
+  });
 
   const MAX_FILES = 4;
   const remainingSlots = MAX_FILES - attachments.length;
@@ -57,8 +61,8 @@ export default function CreateDiscussionPage() {
         body: JSON.stringify({
           title,
           description,
+          authorId: user.id,
           tag,
-          authorId: user.user?.id,
           attachments: attachments.map((att) => ({
             id: att.id,
             postUrl: att.postUrl,
@@ -74,7 +78,7 @@ export default function CreateDiscussionPage() {
       const data = await response.json();
       toast.success("Discussion created successfully!");
 
-      router.push(`/discussions/${data}`);
+      router.push(`/discussions/${data}`, { scroll: true });
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong. Please try again.");

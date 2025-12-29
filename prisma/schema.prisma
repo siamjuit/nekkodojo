@@ -23,71 +23,75 @@ model User {
   noOfQuestionsSolved Int?
   beltRank            BeltType @default(white_belt)
 
-  discussions Discussions[]
-  comments    Comments[]
+  discussions Discussion[]
+  comments    Comment[]
 
-  likes     Likes[]
+  likes     Like[]
   bookmarks Bookmark[]
 
   role           String  @default("user")
   isShadowBanned Boolean @default(false)
   isBanned       Boolean @default(false)
 
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
-  reports   Report[]
+  reports Report[]
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  userProgresses UserProgress[]
 }
 
-model Discussions {
-  id          String  @id @default(uuid())
+model Discussion {
+  id          String @id @default(cuid())
   title       String
   description String
-  tag         TagType @default(Discussion)
 
   authorId String
   author   User   @relation(fields: [authorId], references: [id])
 
-  comments    Comments[]
+  comments    Comment[]
   attachments Attachment[]
 
-  likes        Likes[]
-  likeCount    Int     @default(0)
-  disLikeCount Int     @default(0)
+  likes        Like[]
+  likeCount    Int    @default(0)
+  dislikeCount Int    @default(0)
 
   bookmarks Bookmark[]
 
+  reports Report[]
+
+  tagId String
+  tag   Tag    @relation(fields: [tagId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  reports   Report[]
-
-  @@index([tag])
 }
 
-model Comments {
-  id          String @id @default(uuid())
+model Comment {
+  id          String @id @default(cuid())
   description String
 
   authorId String
   author   User   @relation(fields: [authorId], references: [id])
 
   discussionId String
-  discussion   Discussions @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
 
   parentId String?
-  parent   Comments?  @relation("CommentChildren", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  replies  Comments[] @relation("CommentChildren")
+  parent   Comment?  @relation("CommentChildren", fields: [parentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  replies  Comment[] @relation("CommentChildren")
 
   attachments Attachment?
 
-  likes        Likes[]
-  likeCount    Int     @default(0)
-  dislikeCount Int     @default(0)
+  likes        Like[]
+  likeCount    Int    @default(0)
+  dislikeCount Int    @default(0)
 
   bookmarks Bookmark[]
 
+  reports Report[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  reports   Report[]
 }
 
 model Attachment {
@@ -97,25 +101,25 @@ model Attachment {
   type    AttachmentType
 
   discussionId String?
-  discussion   Discussions? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  discussion   Discussion? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
 
-  commentId String?   @unique
-  comment   Comments? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String?  @unique
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Likes {
-  id String @id @default(uuid())
+model Like {
+  id String @id @default(cuid())
 
   type LikeType
 
   discussionId String?
-  discussion   Discussions? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  discussion   Discussion? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
 
   commentId String?
-  comment   Comments? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -128,13 +132,13 @@ model Likes {
 }
 
 model Bookmark {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   discussionId String?
-  discussion   Discussions? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  discussion   Discussion? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
 
   commentId String?
-  comment   Comments? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -147,7 +151,7 @@ model Bookmark {
 }
 
 model Report {
-  id String @id @default(uuid())
+  id String @id @default(cuid())
 
   reason String
 
@@ -155,13 +159,105 @@ model Report {
   reporter   User   @relation(fields: [reporterId], references: [id])
 
   discussionId String?
-  discussion   Discussions? @relation(fields: [discussionId], references: [id])
+  discussion   Discussion? @relation(fields: [discussionId], references: [id], onDelete: SetNull)
 
   commentId String?
-  comment   Comments? @relation(fields: [commentId], references: [id])
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
 
   status    ReportStatusType @default(PENDING)
   createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model Question {
+  id String @id @default(cuid())
+
+  slug        String     @unique
+  title       String
+  description String
+  difficulty  Difficulty @default(medium)
+
+  categories Category[]
+  companyTag Company[]
+
+  externalPlatformUrl String
+  solutionUrl         String
+
+  noOfSubmissions  Int @default(0)
+  noOfPeopleSolved Int @default(0)
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  userProgresses UserProgress[]
+}
+
+model Category {
+  id String @id @default(cuid())
+
+  name              String     @unique
+  categoryOrder     Int        @default(99)
+  prerequisiteArray Category[] @relation("CategoryDependencies")
+  unlocks           Category[] @relation("CategoryDependencies")
+
+  questions Question[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryOrder])
+}
+
+model Company {
+  id String @id @default(cuid())
+
+  name       String  @unique
+  logo       String? @unique
+  websiteUrl String?
+
+  questions Question[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserProgress {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  status QuestionStatusType @default(unvisited)
+
+  userCode String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, questionId])
+}
+
+model Tag {
+  id String @id @default(cuid())
+
+  name String @unique
+  slug String @unique
+
+  color String? @default("blue")
+
+  discussions Discussion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+//enums
+enum QuestionStatusType {
+  completed
+  attempted
+  unvisited
 }
 
 enum AttachmentType {
@@ -219,4 +315,10 @@ enum ReportStatusType {
   PENDING
   REVIEWED
   DISMISSED
+}
+
+enum Difficulty {
+  easy
+  hard
+  medium
 }

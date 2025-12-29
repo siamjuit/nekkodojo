@@ -19,7 +19,7 @@ import { DiscussionSkeleton } from "@/components/Discussion/DiscussionSkeleton";
 import { AnimatePresence, motion } from "framer-motion";
 import DiscussionPreviewCard from "@/components/Discussion/DiscussionPreview";
 
-export default function ForumPage() {
+export default function DiscussionPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 

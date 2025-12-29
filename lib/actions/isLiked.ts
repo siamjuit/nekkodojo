@@ -8,7 +8,7 @@ export async function checkLike(discussionId: string) {
     const user = await currentUser();
     if (!user) throw new Error("Unauthorized!");
 
-    const isLiked = await prisma.likes.findUnique({
+    const isLiked = await prisma.like.findUnique({
       where: {
         userId_discussionId: { userId: user.id, discussionId },
         type: "like",
@@ -27,7 +27,7 @@ export async function checkDislike(discussionId: string) {
     const user = await currentUser();
     if (!user) throw new Error("Unauthorized!");
 
-    const isDisliked = await prisma.likes.findUnique({
+    const isDisliked = await prisma.like.findUnique({
       where: {
         userId_discussionId: { userId: user.id, discussionId },
         type: "dislike",

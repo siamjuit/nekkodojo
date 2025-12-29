@@ -70,23 +70,23 @@ export default async function ModeratorDashboard() {
     chartData
   ] = await Promise.all([
     prisma.report?.count({ where: { status: "PENDING" } }) || 0,
-    prisma.discussions.count(),
+    prisma.discussion.count(),
     
     // Fetch Recent Scrolls
-    prisma.discussions.findMany({
+    prisma.discussion.findMany({
       take: 5,
       orderBy: { createdAt: "desc" },
       select: { title: true, createdAt: true, author: { select: { firstName: true } } }
     }),
 
     // Fetch Recent Comments (Inscriptions)
-    prisma.comments.findMany({
+    prisma.comment.findMany({
       take: 5,
       orderBy: { createdAt: "desc" },
       select: { description: true, createdAt: true, author: { select: { firstName: true } } }
     }),
 
-    prisma.discussions.count({
+    prisma.discussion.count({
       where: { createdAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) } }
     }),
 

@@ -12,7 +12,7 @@ export async function GET(
     const user = await currentUser();
     if (!user) return NextResponse.json("Unauthorized", { status: 401 });
 
-    const flatdiscussion = await prisma.discussions.findUnique({
+    const flatdiscussion = await prisma.discussion.findUnique({
       where: {
         id: id,
       },
@@ -61,6 +61,7 @@ export async function GET(
             id: true,
           },
         },
+        tag: true,
       },
     });
     if (!flatdiscussion) return NextResponse.json("No such discussion!", { status: 404 });

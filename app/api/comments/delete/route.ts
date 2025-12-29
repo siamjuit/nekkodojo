@@ -10,7 +10,7 @@ export async function DELETE(request: Request) {
     const { commentId: id } = await request.json();
     if (!id) return NextResponse.json("No such comment found!", { status: 404 });
 
-    const res = await prisma.comments.findUnique({
+    const res = await prisma.comment.findUnique({
       where: {
         id,
       },
@@ -31,7 +31,7 @@ export async function DELETE(request: Request) {
     } else {
       if (res.attachments) imagekit.deleteFile(res.attachments.id);
 
-      await prisma.comments.delete({
+      await prisma.comment.delete({
         where: { id, authorId: res.authorId },
       });
     }

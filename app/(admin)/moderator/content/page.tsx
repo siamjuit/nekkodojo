@@ -25,7 +25,7 @@ export default async function AdminContentPage(props: {
 
   // Fetch Discussions with Filter & Pagination
   const [discussions, totalCount] = await prisma.$transaction([
-    prisma.discussions.findMany({
+    prisma.discussion.findMany({
       where: search ? {
         OR: [
           { title: { contains: search, mode: "insensitive" } },
@@ -51,7 +51,7 @@ export default async function AdminContentPage(props: {
         }
       }
     }),
-    prisma.discussions.count({
+    prisma.discussion.count({
       where: search ? {
         OR: [
           { title: { contains: search, mode: "insensitive" } },

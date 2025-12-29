@@ -16,17 +16,25 @@ interface DiscussionProps {
 
 export async function POST(request: Request) {
   try {
-    const { title, description, tag, authorId, attachments = [] } = await request.json();
+    const { title, description, authorId, tag, attachments = [] } = await request.json();
 
     if (!title || !description || !authorId) {
       return NextResponse.json("Missing fields!", { status: 400 });
     }
-    const newDiscussion = await prisma.discussions.create({
+    const newDiscussion = await prisma.discussion.create({
       data: {
         title,
         description,
-        tag,
-        authorId: authorId,
+        tag: {
+          connect: {
+            slug: tag.slug,
+          },
+        },
+        author: {
+          connect: {
+            id: authorId,
+          },
+        },
         attachments: {
           create: attachments.map((post: any) => ({
             id: post.id,

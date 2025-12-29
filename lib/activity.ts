@@ -13,7 +13,7 @@ export const getWeeklyStats = async () => {
         select: { createdAt: true },
       }),
 
-      prisma.discussions.findMany({
+      prisma.discussion.findMany({
         where: { createdAt: { gte: startOfDay(startDate) } },
         select: { createdAt: true },
       }),

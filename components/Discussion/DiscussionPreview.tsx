@@ -5,11 +5,25 @@ import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquare, ThumbsUp, ArrowUpRight, Bookmark } from "lucide-react"; // Import Bookmark
 import { Badge } from "@/components/ui/badge";
-import { TAGS } from "@/constants/tags";
 import BeltBadge from "../User/BeltBadge";
+import { useEffect, useState } from "react";
+import { getTags } from "@/lib/getTags";
 
 export default function DiscussionPreviewCard({ data }: { data: DiscussionProps }) {
-  const tagConfig = TAGS.find((t) => t.value === data.tag);
+  const [tags, setTags] = useState<TagProps[]>([]);
+
+  useEffect(() => {
+    const getAllTags = async () => {
+      try {
+        const t: TagProps[] = await getTags();
+        if (t) setTags(t);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getAllTags();
+  }, []);
+  const postTag = tags.find((t) => t.slug === data.tag.slug);
 
   return (
     <div className="group relative bg-[#1a110d]/40 border border-[#3e2723] rounded-xl p-5 hover:border-[#d4af37]/50 hover:bg-[#1a110d]/60 transition-all duration-300 overflow-hidden">
@@ -52,12 +66,12 @@ export default function DiscussionPreviewCard({ data }: { data: DiscussionProps 
           </Link>
 
           <div className="flex flex-wrap items-center gap-4 mt-4">
-            {tagConfig && (
+            {postTag && (
               <Badge
                 variant="outline"
-                className={`px-2 py-0 rounded text-[10px] font-mono whitespace-nowrap border ${tagConfig.style} hover:bg-transparent`}
+                className={`px-2 py-0 rounded text-[10px] font-mono whitespace-nowrap border ${postTag.color} hover:bg-transparent`}
               >
-                {tagConfig.label}
+                {postTag.name}
               </Badge>
             )}
 

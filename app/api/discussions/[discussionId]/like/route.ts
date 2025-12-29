@@ -11,7 +11,7 @@ export async function PUT(
     const user = await currentUser();
     if (!user) return NextResponse.json("Unauthorized!", { status: 401 });
 
-    const isLiked = await prisma.likes.findUnique({
+    const isLiked = await prisma.like.findUnique({
       where: {
         userId_discussionId: { userId: user.id, discussionId: id },
       },
@@ -19,12 +19,12 @@ export async function PUT(
     if (isLiked) {
       if (isLiked.type === "like") {
         await prisma.$transaction([
-          prisma.likes.delete({
+          prisma.like.delete({
             where: {
               id: isLiked.id,
             },
           }),
-          prisma.discussions.update({
+          prisma.discussion.update({
             where: { id: id },
             data: { likeCount: { decrement: 1 } },
           }),
@@ -33,13 +33,13 @@ export async function PUT(
         return NextResponse.json("Like removed", { status: 201 });
       } else {
         await prisma.$transaction([
-          prisma.likes.update({
+          prisma.like.update({
             where: { id: isLiked.id },
             data: { type: "like" },
           }),
-          prisma.discussions.update({
+          prisma.discussion.update({
             where: { id: id },
-            data: { disLikeCount: { decrement: 1 }, likeCount: { increment: 1 } },
+            data: { dislikeCount: { decrement: 1 }, likeCount: { increment: 1 } },
           }),
         ]);
 
@@ -48,7 +48,7 @@ export async function PUT(
     }
 
     const newLike = await prisma.$transaction(async (tx) => {
-      const like = await tx.likes.create({
+      const like = await tx.like.create({
         data: {
           type: "like",
           userId: user.id,
@@ -56,7 +56,7 @@ export async function PUT(
         },
       });
 
-      await tx.discussions.update({
+      await tx.discussion.update({
         where: {
           id,
         },

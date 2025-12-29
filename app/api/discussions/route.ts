@@ -7,17 +7,18 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const user = await currentUser();
+    
     if (!user) return NextResponse.json("Unauthorized", { status: 401 });
+
     const query = searchParams.get("query") || "";
     const sort = searchParams.get("sort") || "top";
     const tagParams = searchParams.get("tag");
 
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-
     const skip = (page - 1) * limit;
 
-    const whereClause: Prisma.DiscussionsWhereInput = {
+    const whereClause: Prisma.DiscussionWhereInput = {
       AND: [
         query
           ? {
@@ -37,9 +38,11 @@ export async function GET(request: Request) {
             }
           : {},
 
-        tagParams && Object.values(TagType).includes(tagParams as TagType)
+        tagParams
           ? {
-              tag: { equals: tagParams as TagType },
+              tag: {
+                slug: tagParams,
+              },
             }
           : {},
       ],
@@ -56,7 +59,7 @@ export async function GET(request: Request) {
         break;
 
       case "controversial":
-        orderBy = [{ disLikeCount: "desc" }, { comments: { _count: "desc" } }];
+        orderBy = [{ dislikeCount: "desc" }, { comments: { _count: "desc" } }];
         break;
 
       case "top":
@@ -66,12 +69,13 @@ export async function GET(request: Request) {
     }
 
     const [discussions, total] = await prisma.$transaction([
-      prisma.discussions.findMany({
+      prisma.discussion.findMany({
         where: whereClause,
         orderBy: orderBy,
         take: limit,
         skip: skip,
         include: {
+          tag: true,
           author: {
             select: {
               firstName: true,
@@ -104,7 +108,7 @@ export async function GET(request: Request) {
           },
         },
       }),
-      prisma.discussions.count({ where: whereClause }),
+      prisma.discussion.count({ where: whereClause }),
     ]);
 
     const discussionsWithStatus = discussions.map((d) => {
