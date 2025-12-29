@@ -11,20 +11,38 @@ const isPublicRoute = createRouteMatcher([
   "/guest(.*)",
 ]);
 
-const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+const isAdminRoute = createRouteMatcher([
+  "/admin(.*)",
+  "/api/discussions/tag(.*)",
+  "/api/questions/category(.*)",
+  "/api/questions/create(.*)",
+  "/api/questions/delete(.*)",
+]);
 const isModeratorRoute = createRouteMatcher(["/moderator(.*)"]);
+
+const isApiRoute = (req: Request) => {
+  return req.url.includes("/api/");
+};
 
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
     await auth.protect();
   }
 
-  if (isAdminRoute(req) && (await auth()).sessionClaims?.metadata?.role !== "admin") {
+  const { sessionClaims } = await auth();
+
+  if (isAdminRoute(req) && sessionClaims?.metadata?.role !== "admin") {
+    if (isApiRoute(req)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     const url = new URL("/", req.url);
     return NextResponse.redirect(url);
   }
 
-  if (isModeratorRoute(req) && (await auth()).sessionClaims?.metadata?.role !== "moderator") {
+  if (isModeratorRoute(req) && sessionClaims?.metadata?.role !== "moderator") {
+    if (isApiRoute(req)) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
     const url = new URL("/", req.url);
     return NextResponse.redirect(url);
   }
