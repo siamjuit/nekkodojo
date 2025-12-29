@@ -1,22 +1,13 @@
 import { prisma } from "@/lib/prisma";
+import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-
-interface DiscussionProps {
-  title: string;
-  description: string;
-  attachment: [
-    {
-      id: string;
-      postUrl: string;
-      type: "image" | "video";
-    },
-  ];
-  authorId: string;
-}
 
 export async function POST(request: Request) {
   try {
-    const { title, description, authorId, tag, attachments = [] } = await request.json();
+    const user = await currentUser();
+    if (!user) return NextResponse.json("Unauthorized", { status: 401 });
+    const body = await request.json();
+    const { title, description, authorId, tag, attachments = [] } = body;
 
     if (!title || !description || !authorId) {
       return NextResponse.json("Missing fields!", { status: 400 });

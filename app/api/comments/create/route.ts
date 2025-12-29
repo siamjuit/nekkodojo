@@ -3,27 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-interface CommentProps {
-  description: string;
-  authorId: string;
-  discussionId: string;
-  parentId?: string;
-  attachments?: [
-    {
-      id: string;
-      postUrl: string;
-      type: string;
-    },
-  ];
-}
-
 export async function POST(request: Request) {
   let attId = "";
   try {
     const user = await currentUser();
     if (!user) return NextResponse.json("Unauthorized!", { status: 401 });
 
-    const { description, discussionId, attachment, parentId } = await request.json();
+    const body = await request.json();
+    const { description, discussionId, attachment, parentId } = body;
     if (!description || !discussionId) {
       return NextResponse.json("Invalid comment!", { status: 400 });
     }

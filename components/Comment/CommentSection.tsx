@@ -114,7 +114,6 @@ const CommentSection = ({ discussionId }: { discussionId: string }) => {
         </Select>
       </div>
 
-      {/* 2. ROOT INPUT */}
       <div className="w-full">
         <WriteComment
           discussionId={discussionId}

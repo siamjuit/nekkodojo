@@ -186,15 +186,17 @@ model Question {
   noOfSubmissions  Int @default(0)
   noOfPeopleSolved Int @default(0)
 
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
   userProgresses UserProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Category {
   id String @id @default(cuid())
 
   name              String     @unique
+  slug              String     @unique
   categoryOrder     Int        @default(99)
   prerequisiteArray Category[] @relation("CategoryDependencies")
   unlocks           Category[] @relation("CategoryDependencies")
@@ -211,6 +213,7 @@ model Company {
   id String @id @default(cuid())
 
   name       String  @unique
+  slug       String  @unique
   logo       String? @unique
   websiteUrl String?
 

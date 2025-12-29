@@ -8,7 +8,8 @@ export async function POST(
 ) {
   try {
     const { discussionId: id } = await params;
-    const { reason } = await request.json();
+    const body = await request.json()
+    const { reason } = body;
     const user = await currentUser();
     if (!user) return NextResponse.json("Unauthorized!", { status: 401 });
 

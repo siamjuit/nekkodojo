@@ -56,7 +56,7 @@ const DiscussionDropDown = ({ discussion, authorId }: Props) => {
 
     try {
       const res = await fetch(`/api/discussions/${discussion.id}/bookmark`, {
-        method: "PUT",
+        method: "PATCH",
       });
 
       if (!res.ok) {
@@ -73,9 +73,9 @@ const DiscussionDropDown = ({ discussion, authorId }: Props) => {
     setIsDeleting(true);
     const id = discussion.id;
     try {
-      const res = await fetch("/api/discussions/delete", {
+      const params = new URLSearchParams({ discussionId: id });
+      const res = await fetch(`/api/discussions/delete?${params.toString()}`, {
         method: "DELETE",
-        body: JSON.stringify({ id }),
       });
 
       if (!res.ok) throw new Error("Failed to delete");

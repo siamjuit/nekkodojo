@@ -34,23 +34,16 @@ interface Props {
   currentUserAvatar?: string | null;
   currentUserId?: string;
   depth: number;
-  // 1. Add optional callback to notify parent when this item is deleted
-  onDelete?: (commentId: string) => void; 
+  onDelete?: (commentId: string) => void;
 }
 
-const CommentItem = ({ 
-  comment, 
-  currentUserAvatar, 
-  currentUserId, 
-  depth = 0,
-  onDelete 
-}: Props) => {
+const CommentItem = ({ comment, currentUserAvatar, currentUserId, depth = 0, onDelete }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(comment.isBookmarked || false);
   const [deleting, setDeleting] = useState(false);
-  
+
   // 2. Local state to hide this component immediately
   const [isDeleted, setIsDeleted] = useState(false);
 
@@ -83,7 +76,7 @@ const CommentItem = ({
       const type = debouncedVote || "remove";
       try {
         await fetch(`/api/comments/${comment.id}/${type}`, {
-          method: "PUT",
+          method: "PATCH",
           body: JSON.stringify({ commentId: comment.id, type }),
         });
         previousVoteRef.current = debouncedVote;
@@ -132,7 +125,7 @@ const CommentItem = ({
 
     try {
       const res = await fetch(`/api/comments/${comment.id}/bookmark`, {
-        method: "PUT",
+        method: "PATCH",
       });
 
       if (!res.ok) {
@@ -148,33 +141,31 @@ const CommentItem = ({
   const handleDeleteComment = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     // Optimistic UI: Hide immediately
     setDeleting(true);
-    setIsDeleted(true); 
+    setIsDeleted(true);
 
     try {
-      const res = await fetch("/api/comments/delete", {
+      const res = await fetch(`/api/comments/delete?commentId=${comment.id}`, {
         method: "DELETE",
-        body: JSON.stringify({ commentId: comment.id }),
       });
       if (!res.ok) {
         throw new Error("Failed");
       }
       toast.success("Comment deleted!");
-      
+
       // Notify parent to clean up data structure
       if (onDelete) {
         onDelete(comment.id);
       }
-
     } catch (error: any) {
       // Revert Optimistic UI on error
-      setIsDeleted(false); 
+      setIsDeleted(false);
       setDeleting(false);
       toast.error("Couldn't delete the comment!");
       console.error(error);
-    } 
+    }
     // Note: We don't setDeleting(false) on success because the component is hidden/gone
   };
 

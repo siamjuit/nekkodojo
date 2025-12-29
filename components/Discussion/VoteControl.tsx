@@ -57,7 +57,7 @@ export default function VoteControl({
         if (!type) return;
 
         const res = await fetch(`/api/discussions/${discussionId}/${type}`, {
-          method: "PUT",
+          method: "PATCH",
           body: JSON.stringify({ discussionId, type }),
         });
 

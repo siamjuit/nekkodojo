@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-export async function PUT(
+export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ commentId: string }> }
 ) {

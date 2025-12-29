@@ -7,7 +7,9 @@ export async function DELETE(request: Request) {
   try {
     const user = await currentUser();
     if (!user) return NextResponse.json("Unauthorized!", { status: 401 });
-    const { discussionId } = await request.json();
+    const { searchParams } = new URL(request.url);
+    const discussionId = searchParams.get("discussionId");
+    
     if (!discussionId) return NextResponse.json("No discussion selected", { status: 400 });
 
     const discussion = await prisma.discussion.findUnique({
