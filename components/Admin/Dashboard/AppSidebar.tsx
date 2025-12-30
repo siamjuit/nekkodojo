@@ -11,6 +11,11 @@ import {
   MessageSquareWarning,
   Feather,
   MessageSquareText,
+  Layers,
+  Tag,
+  Building2,
+  Plus,
+  List,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,6 +33,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -36,27 +44,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ChevronRight } from "lucide-react";
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
 
-  // 1. DETERMINE BASE PATH
-  // If the user is on a /moderator page, use "/moderator" base. Otherwise "/admin".
   const isModeratorPath = pathname.startsWith("/moderator");
   const basePath = isModeratorPath ? "/moderator" : "/admin";
-
-  // Helper to safely get the user's role
   const userRole = (user?.publicMetadata.role as string) || "user";
 
-  // 2. DYNAMIC ITEMS CONFIGURATION
-  // We recreate this array on every render so 'basePath' is always correct.
+  // --- CONFIGURATION ---
   const items = [
     {
       title: "Dashboard",
-      url: `${basePath}/dashboard`, // e.g. /moderator/dashboard
+      url: `${basePath}/dashboard`,
       icon: LayoutDashboard,
       allowedRoles: ["admin", "moderator"],
     },
@@ -64,16 +73,16 @@ export function AppSidebar() {
       title: "Disciples",
       url: `${basePath}/users`,
       icon: Users,
-      allowedRoles: ["admin"], // Admin Only
+      allowedRoles: ["admin"],
     },
     {
       title: "Scrolls",
       url: `${basePath}/content`,
       icon: ScrollText,
-      allowedRoles: ["admin", "moderator"], // Both
+      allowedRoles: ["admin", "moderator"],
     },
     {
-      title: "Inscriptions", // Thematic name for Comments
+      title: "Inscriptions",
       url: `${basePath}/comments`,
       icon: MessageSquareText,
       allowedRoles: ["admin", "moderator"],
@@ -82,13 +91,41 @@ export function AppSidebar() {
       title: "Reports",
       url: `${basePath}/reports`,
       icon: MessageSquareWarning,
-      allowedRoles: ["admin", "moderator"], // Both
+      allowedRoles: ["admin", "moderator"],
     },
     {
-      title: "Add Katas",
-      url: `${basePath}/questions`,
+      title: "Katas",
+      url: `${basePath}/questions`, // Parent URL (optional if using sub-items)
       icon: Feather,
       allowedRoles: ["admin"],
+      // 1. NESTED SUB-ITEMS
+      subItems: [
+        {
+          title: "All Questions",
+          url: `${basePath}/questions`,
+          icon: List,
+        },
+        {
+          title: "Create New",
+          url: `${basePath}/questions/create`,
+          icon: Plus,
+        },
+        {
+          title: "Categories",
+          url: `${basePath}/questions/category`,
+          icon: Layers,
+        },
+        {
+          title: "Discussion Tags",
+          url: `${basePath}/questions/tag`,
+          icon: Tag,
+        },
+        {
+          title: "Companies",
+          url: `${basePath}/questions/company`,
+          icon: Building2,
+        },
+      ],
     },
   ];
 
@@ -103,7 +140,6 @@ export function AppSidebar() {
           <div className="flex flex-col">
             <span className="font-black tracking-tight text-[#eaddcf]">NEKODOJO</span>
             <span className="text-[10px] font-mono uppercase tracking-widest text-[#d4af37]">
-              {/* Dynamic Label based on Path */}
               {isModeratorPath ? "Moderator Panel" : "Admin Panel"}
             </span>
           </div>
@@ -119,15 +155,78 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => {
-                // 3. ACTIVE STATE CHECK
-                // Since item.url now includes the correct base path, exact matching works
-                const isActive = pathname === item.url || pathname.startsWith(item.url + "/");
+                // Permission Check
+                if (!item.allowedRoles.includes(userRole)) return null;
 
-                // 4. PERMISSION CHECK
-                if (!item.allowedRoles.includes(userRole)) {
-                  return null;
+                // 2. CHECK IF PARENT IS ACTIVE
+                // Used to keep the collapsible open if we are visiting a sub-route
+                const isParentActive = pathname.startsWith(item.url);
+
+                // --- RENDER NESTED ITEM (KATAS) ---
+                if (item.subItems) {
+                  return (
+                    <Collapsible
+                      key={item.title}
+                      asChild
+                      defaultOpen={isParentActive} // Auto-open if we are in this section
+                      className="group/collapsible"
+                    >
+                      <SidebarMenuItem>
+                        <CollapsibleTrigger asChild>
+                          <SidebarMenuButton
+                            tooltip={item.title}
+                            isActive={isParentActive}
+                            className={`
+                              transition-all duration-200 h-10
+                              ${
+                                isParentActive
+                                  ? "bg-[#3e2723]/30 text-[#d4af37]"
+                                  : "text-[#a1887f] hover:bg-[#3e2723]/20 hover:text-[#eaddcf]"
+                              }
+                            `}
+                          >
+                            <item.icon className={isParentActive ? "text-[#d4af37]" : "opacity-70"} />
+                            <span className="font-medium">{item.title}</span>
+                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+                        
+                        <CollapsibleContent>
+                          <SidebarMenuSub className="border-l-[#3e2723]">
+                            {item.subItems.map((subItem) => {
+                              const isSubActive = pathname === subItem.url;
+                              return (
+                                <SidebarMenuSubItem key={subItem.title}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={isSubActive}
+                                    className={`
+                                      h-9 text-xs transition-colors
+                                      ${
+                                        isSubActive
+                                          ? "text-[#d4af37] bg-[#d4af37]/10"
+                                          : "text-[#a1887f] hover:text-[#eaddcf] hover:bg-transparent"
+                                      }
+                                    `}
+                                  >
+                                    <Link href={subItem.url} className="flex items-center gap-2">
+                                      {/* Optional: Show small icons for sub-items too */}
+                                      {subItem.icon && <subItem.icon className="w-3 h-3 opacity-70" />}
+                                      <span>{subItem.title}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              );
+                            })}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+                      </SidebarMenuItem>
+                    </Collapsible>
+                  );
                 }
 
+                // --- RENDER STANDARD ITEM ---
+                const isActive = pathname === item.url || pathname.startsWith(item.url + "/");
                 return (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton

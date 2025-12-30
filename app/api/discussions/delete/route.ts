@@ -27,7 +27,7 @@ export async function DELETE(request: Request) {
         return NextResponse.json("You are not the author of this discussion!", { status: 403 });
       } else {
         const fileIds = discussion.attachments.map((att) => att.id);
-        imagekit.bulkDeleteFiles(fileIds);
+        await imagekit.bulkDeleteFiles(fileIds);
         await prisma.discussion.delete({
           where: {
             id: discussionId,

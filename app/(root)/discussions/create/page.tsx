@@ -11,7 +11,7 @@ import RichTextEditor from "@/components/Discussion/Create/TextEditor";
 import ImageKitUploader, { UploadFile } from "@/components/Discussion/Create/PostUploader";
 import { useUser } from "@clerk/nextjs";
 import { TagSelector } from "@/components/Discussion/Create/Tags";
-import { TagType } from "@/generated/prisma/enums";
+import attFromKit from "@/lib/actions/removeAtt";
 
 export default function CreateDiscussionPage() {
   const router = useRouter();
@@ -38,6 +38,7 @@ export default function CreateDiscussionPage() {
 
   const removeAttachment = (indexToRemove: number) => {
     setAttachments((prev) => prev.filter((_, idx) => idx !== indexToRemove));
+    attFromKit(attachments[indexToRemove].id);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

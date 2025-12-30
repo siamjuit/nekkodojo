@@ -215,6 +215,7 @@ model Company {
   name       String  @unique
   slug       String  @unique
   logo       String? @unique
+  logoId     String? @unique
   websiteUrl String?
 
   questions Question[]

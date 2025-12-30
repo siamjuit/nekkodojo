@@ -24,7 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { deleteDiscussion } from "../../app/(admin)/_actions"; // Check path matches your structure
+import { deleteDiscussion } from "@/app/(admin)/_actions"; 
 import { toast } from "sonner";
 
 interface DiscussionProps {

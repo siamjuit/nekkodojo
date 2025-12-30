@@ -4,8 +4,8 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { checkRole } from "@/utils/roles"; // Ensure you have this utility
 import { AdminContentItem } from "../../../../components/Admin/AdminContentItem"; 
-import PaginationControls from "../../../../components/Admin/PaginationControls"; 
-import { SearchUsers } from "../../../../components/Admin/SearchUsers"; 
+import PaginationControls from "../../../../components/Admin/RouteSide/PaginationControls"; 
+import { SearchUsers } from "../../../../components/Admin/Dashboard/SearchUsers"; 
 
 export default async function AdminContentPage(props: {
   searchParams: Promise<{ page?: string; search?: string }>;

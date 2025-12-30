@@ -30,7 +30,7 @@ export async function DELETE(request: Request) {
     if (res.authorId !== user.id && res.discussion.authorId !== user.id) {
       return NextResponse.json("You are not the author of this comment!", { status: 403 });
     } else {
-      if (res.attachments) imagekit.deleteFile(res.attachments.id);
+      if (res.attachments) await imagekit.deleteFile(res.attachments.id);
 
       await prisma.comment.delete({
         where: { id, authorId: res.authorId },

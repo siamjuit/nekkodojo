@@ -2,7 +2,7 @@
 
 import React from "react";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
-import { AppSidebar } from "../../components/Admin/AppSidebar";
+import { AppSidebar } from "../../components/Admin/Dashboard/AppSidebar";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 

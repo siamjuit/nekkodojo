@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { checkRole } from "@/utils/roles"; // Ensure you have this utility
-import { AdminContentItem } from "../../../../components/Admin/AdminContentItem"; 
-import PaginationControls from "../../../../components/Admin/PaginationControls"; 
-import { SearchUsers } from "../../../../components/Admin/SearchUsers"; 
+import { AdminContentItem } from "@/components/Admin/RouteSide/AdminContentItem"; 
+import PaginationControls from "../../../../components/Admin/RouteSide/PaginationControls"; 
+import { SearchUsers } from "../../../../components/Admin/Dashboard/SearchUsers"; 
 
 export default async function AdminContentPage(props: {
   searchParams: Promise<{ page?: string; search?: string }>;
@@ -25,7 +25,7 @@ export default async function AdminContentPage(props: {
 
   // Fetch Discussions with Filter & Pagination
   const [discussions, totalCount] = await prisma.$transaction([
-    prisma.discussions.findMany({
+    prisma.discussion.findMany({
       where: search ? {
         OR: [
           { title: { contains: search, mode: "insensitive" } },
@@ -51,7 +51,7 @@ export default async function AdminContentPage(props: {
         }
       }
     }),
-    prisma.discussions.count({
+    prisma.discussion.count({
       where: search ? {
         OR: [
           { title: { contains: search, mode: "insensitive" } },

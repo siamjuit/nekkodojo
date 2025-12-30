@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { checkRole } from "@/utils/roles";
-import { ReportCard } from "@/components/Admin/ReportCard";
+import { ReportCard } from "@/components/Admin/RouteSide/ReportCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function AdminReportsPage() {

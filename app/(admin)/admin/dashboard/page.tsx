@@ -21,9 +21,9 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 
 // Components
-import { SearchUsers } from "@/components/Admin/SearchUsers"; 
-import { UserRoleCard } from "@/components/Admin/UserRoleCard"; 
-import { ActivityChart } from "@/components/Admin/ActivityCharts"; 
+import { SearchUsers } from "@/components/Admin/Dashboard/SearchUsers"; 
+import { UserRoleCard } from "@/components/Admin/Dashboard/UserRoleCard"; 
+import { ActivityChart } from "@/components/Admin/Dashboard/ActivityCharts"; 
 import { getWeeklyStats } from "@/lib/activity";
 
 // --- WIDGETS ---

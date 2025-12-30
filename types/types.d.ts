@@ -97,3 +97,38 @@ declare interface ReportProps {
   discussion?: { id: string; title: string };
   comment?: { id: string; content: string; discussionId: string };
 }
+
+declare interface CategoryWithRelations {
+  id: string;
+  name: string;
+  slug: string;
+  categoryOrder: number;
+  prerequisiteArray: { name: string; slug: string }[];
+  _count: {
+    questions: number;
+  };
+  updatedAt: Date;
+}
+
+declare interface TagData {
+  id: string;
+  name: string;
+  slug: string;
+  color: string | null;
+  updatedAt: Date;
+  _count: {
+    discussions: number;
+  };
+}
+
+declare interface CompanyData {
+  id: string;
+  name: string;
+  slug: string;
+  websiteUrl: string | null;
+  logo: string | null;
+  logoId: string | null;
+    _count: {
+    questions: number;
+  };
+}

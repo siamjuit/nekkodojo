@@ -17,7 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { deleteComment } from "../../app/(admin)/_actions"; // Check path
+import { deleteComment } from "@/app/(admin)/_actions"; 
 import { toast } from "sonner";
 
 // Define the interface here if not imported
