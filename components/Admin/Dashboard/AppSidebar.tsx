@@ -138,7 +138,7 @@ export function AppSidebar() {
             <ShieldAlert size={18} />
           </div>
           <div className="flex flex-col">
-            <span className="font-black tracking-tight text-[#eaddcf]">NEKODOJO</span>
+            <span className="font-black tracking-tight text-[#eaddcf]">NEKKODOJO</span>
             <span className="text-[10px] font-mono uppercase tracking-widest text-[#d4af37]">
               {isModeratorPath ? "Moderator Panel" : "Admin Panel"}
             </span>

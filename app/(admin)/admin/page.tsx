@@ -6,10 +6,10 @@ import {
   Users,
   ScrollText,
   MessageSquareWarning,
-  Settings,
   ShieldAlert,
   ArrowRight,
   Feather,
+  MessageSquareText,
 } from "lucide-react";
 import { checkRole } from "@/utils/roles";
 
@@ -50,6 +50,15 @@ export default async function AdminWelcomePage() {
       border: "hover:border-emerald-400/50",
     },
     {
+      title: "Inscriptions",
+      description: "Monitor disciple chatter and erase dishonorable words.",
+      href: "/moderator/comments",
+      icon: MessageSquareText,
+      color: "text-[#a1887f]",
+      bg: "bg-[#a1887f]/10",
+      border: "hover:border-[#a1887f]/50",
+    },
+    {
       title: "The Tribunal",
       description: "Review reports and judge rule-breakers.",
       href: "/admin/reports",
@@ -67,15 +76,6 @@ export default async function AdminWelcomePage() {
       bg: "bg-purple-400/10",
       border: "hover:border-purple-400/50",
     },
-    {
-      title: "Dojo Settings",
-      description: "Configure system preferences and global alerts.",
-      href: "/admin/settings",
-      icon: Settings,
-      color: "text-[#a1887f]",
-      bg: "bg-[#a1887f]/10",
-      border: "hover:border-[#a1887f]/50",
-    },
   ];
 
   return (
@@ -89,7 +89,7 @@ export default async function AdminWelcomePage() {
           Welcome, <span className="text-[#d4af37]">Sensei</span>
         </h1>
         <p className="text-xl text-[#a1887f] max-w-2xl mx-auto">
-          You have entered the inner sanctum of the Nekodojo. Where would you like to direct your
+          You have entered the inner sanctum of the Nekkodojo. Where would you like to direct your
           attention today?
         </p>
       </div>

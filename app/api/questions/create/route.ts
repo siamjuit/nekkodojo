@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import slugify from "slugify";
 import { nanoid } from "nanoid";
+import { generateSlug } from "@/lib/actions/makeSlug";
+import { Prisma } from "@/generated/prisma/client";
 
 export async function POST(request: Request) {
   try {
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
     }
 
     if (
-      [title, description, externalPlatformUrl, solutionUrl].some(
+      [title, description, externalPlatformUrl, solutionUrl, difficulty].some(
         (t) => typeof t !== "string" || !t.trim()
       )
     ) {
@@ -39,8 +40,9 @@ export async function POST(request: Request) {
       return NextResponse.json("Categories must be a list!", { status: 400 });
     }
 
-    const rawSlug = slugify(title, { lower: true });
+    const rawSlug = generateSlug(title);
     const uniqueId = `${rawSlug}-${nanoid(5)}`;
+
     const question = await prisma.question.create({
       data: {
         slug: uniqueId,
@@ -64,6 +66,16 @@ export async function POST(request: Request) {
     return NextResponse.json(question, { status: 201 });
   } catch (error) {
     console.error(error);
+    console.error("CREATE QUESTION ERROR:", error);
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        return NextResponse.json(
+          "Invalid Category or Company tag provided (does not exist in DB).",
+          { status: 400 }
+        );
+      }
+    }
     return NextResponse.json("Failed to add this question.", { status: 500 });
   }
 }

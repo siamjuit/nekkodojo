@@ -175,7 +175,7 @@ model Question {
   slug        String     @unique
   title       String
   description String
-  difficulty  Difficulty @default(medium)
+  difficulty  Difficulty @default(Medium)
 
   categories Category[]
   companyTag Company[]
@@ -322,7 +322,7 @@ enum ReportStatusType {
 }
 
 enum Difficulty {
-  easy
-  hard
-  medium
+  Easy
+  Hard
+  Medium
 }
