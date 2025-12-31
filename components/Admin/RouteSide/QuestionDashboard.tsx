@@ -24,8 +24,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
+import { EditQuestionDialog } from "../Questions/EditDialog";
+import { DeleteQuestionDialog } from "../Questions/DeleteDialog";
 
-// Define Types based on your Prisma Schema
 interface Category {
   id: string;
   name: string;
@@ -38,38 +39,30 @@ interface Company {
   logo: string;
 }
 
-interface Question {
-  id: string;
-  title: string;
-  slug: string;
-  difficulty: "Easy" | "Medium" | "Hard";
-  categories: Category[];
-  companyTag: Company[];
-  externalPlatformUrl: string;
-}
-
-// Props: Receive initial categories from Server Page to populate the header
 interface Props {
   initialCategories: Category[];
+  allCompanies: { name: string; slug: string }[];
 }
 
-export default function QuestionsDashboard({ initialCategories }: Props) {
+export default function QuestionsDashboard({ initialCategories, allCompanies }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // State for Filters
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // State for Data
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Debounce logic for search could be added, but useEffect dependency works for simple apps
+  const [questionToEdit, setQuestionToEdit] = useState<Question | null>(null);
+  const [questionToDelete, setQuestionToDelete] = useState<Question | null>(null);
+
+  const categoryOptions = initialCategories.map((c) => ({ label: c.name, value: c.slug }));
+  const companyOptions = allCompanies.map((c) => ({ label: c.name, value: c.slug }));
+
   useEffect(() => {
     const fetchQuestions = async () => {
       setIsLoading(true);
       try {
-        // Build Query String
         const params = new URLSearchParams();
         if (selectedCategory !== "all") params.set("category", selectedCategory);
         if (searchQuery) params.set("query", searchQuery);
@@ -339,10 +332,16 @@ export default function QuestionsDashboard({ initialCategories }: Props) {
                             align="end"
                             className="bg-[#1a110d] border-[#3e2723] text-[#eaddcf]"
                           >
-                            <DropdownMenuItem className="hover:bg-[#3e2723] cursor-pointer">
+                            <DropdownMenuItem
+                              onClick={() => setQuestionToEdit(q)}
+                              className="hover:bg-[#3e2723] cursor-pointer"
+                            >
                               Edit Question
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="hover:bg-[#3e2723] cursor-pointer text-red-400 focus:text-red-400">
+                            <DropdownMenuItem
+                              onClick={() => setQuestionToDelete(q)}
+                              className="hover:bg-[#3e2723] cursor-pointer text-red-400 focus:text-red-400"
+                            >
                               Delete
                             </DropdownMenuItem>
                           </DropdownMenuContent>
@@ -356,6 +355,27 @@ export default function QuestionsDashboard({ initialCategories }: Props) {
           </div>
         </div>
       </div>
+      <EditQuestionDialog
+        open={!!questionToEdit}
+        onOpenChange={(open) => !open && setQuestionToEdit(null)}
+        question={questionToEdit}
+        categoryOptions={categoryOptions}
+        companyOptions={companyOptions}
+        onSuccess={() => {
+          setQuestionToEdit(null);
+          setSelectedCategory("");
+        }} // Re-fetch logic happens via router.refresh inside dialog
+      />
+
+      <DeleteQuestionDialog
+        open={!!questionToDelete}
+        onOpenChange={(open) => !open && setQuestionToDelete(null)}
+        question={questionToDelete}
+        onSuccess={() => {
+          setQuestionToDelete(null);
+          setSelectedCategory("");
+        }}
+      />
     </div>
   );
 }

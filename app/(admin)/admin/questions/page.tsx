@@ -15,6 +15,11 @@ export default async function QuestionsAdminPage() {
     select: { id: true, name: true, slug: true },
   });
 
+  const companies = await prisma.company.findMany({
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, slug: true },
+  });
+
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 max-w-7xl">
       <div className="mb-8">
@@ -24,7 +29,7 @@ export default async function QuestionsAdminPage() {
         </p>
       </div>
 
-      <QuestionsDashboard initialCategories={categories} />
+      <QuestionsDashboard initialCategories={categories} allCompanies={companies} />
     </div>
   );
 }

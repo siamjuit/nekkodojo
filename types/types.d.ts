@@ -132,3 +132,14 @@ declare interface CompanyData {
     questions: number;
   };
 }
+
+declare interface Question {
+  id: string;
+  title: string;
+  description: string; // Ensure your fetch includes this
+  difficulty: "Easy" | "Medium" | "Hard";
+  externalPlatformUrl: string;
+  solutionUrl?: string | null;
+  categories: Category[];
+  companyTag: Company[];
+}
