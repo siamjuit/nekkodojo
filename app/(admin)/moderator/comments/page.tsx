@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { checkRole } from "@/utils/roles";
 
-import { AdminCommentItem } from "../../../../components/Admin/AdminCommentItem"; 
+import { AdminCommentItem } from "@/components/Admin/RouteSide/AdminCommentItem"; 
 import PaginationControls from "../../../../components/Admin/RouteSide/PaginationControls"; 
 
 export default async function AdminCommentsPage(props: {
