@@ -43,6 +43,7 @@ export async function updateUser(formData: FormData) {
         isOnboarded: true,
       },
     });
+    user.publicMetadata.bio = data.bio;
     revalidatePath("/");
 
     return { success: true };
