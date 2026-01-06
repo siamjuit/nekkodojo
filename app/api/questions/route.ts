@@ -1,4 +1,4 @@
-import { CategoryWhereInput, QuestionWhereInput } from "@/generated/prisma/models";
+import { QuestionWhereInput } from "@/generated/prisma/models";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
