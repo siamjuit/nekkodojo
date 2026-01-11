@@ -81,7 +81,7 @@ const CommentSection = ({ discussionId }: { discussionId: string }) => {
     setComments((prev) => [newComment, ...prev]);
     setTotalCount((prev) => prev + 1);
   };
-
+  if (!user) return null;
   return (
     <div className="w-full space-y-8">
       {/* 1. HEADER */}
