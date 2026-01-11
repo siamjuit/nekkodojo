@@ -47,6 +47,11 @@ export async function GET(request: Request) {
             profileUrl: true,
           },
         },
+        discussion: {
+          select: {
+            authorId: true,
+          },
+        },
         attachments: true,
         _count: {
           select: {
