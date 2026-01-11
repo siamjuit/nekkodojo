@@ -314,8 +314,7 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId, depth = 0, onD
                     )}
                     {isBookmarked ? "Remove Bookmark" : "Bookmark"}
                   </DropdownMenuItem>
-                  {(currentUserId === comment.authorId ||
-                    currentUserId === comment.discussion.authorId) && (
+                  {(currentUserId === comment.authorId ) && (
                     <DropdownMenuItem
                       onClick={handleDeleteComment}
                       className="group flex items-center gap-2 cursor-pointer text-red-400 focus:bg-red-900/10 focus:text-red-300"
