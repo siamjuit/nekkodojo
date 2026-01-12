@@ -10,7 +10,7 @@ export default async function OnboardingLayout({
   const currUser = await currentUser();
   const isOnboarded = await getIsOnboarded();
   if (isOnboarded && currUser) {
-    redirect("/");
+    redirect("/problems");
   }
   return (
     <div data-theme="luxury" className="min-h-screen min-w-full">

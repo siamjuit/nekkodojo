@@ -18,7 +18,7 @@ export default function Page() {
       <SignUpPage />
       <div className="absolute bottom-6 w-full text-center">
         <p className="text-[#3e2723] text-xs tracking-[0.4em] font-mono opacity-50">
-          NEKODOJO // REGISTRATION
+          NEKKODOJO // REGISTRATION
         </p>
       </div>
     </div>

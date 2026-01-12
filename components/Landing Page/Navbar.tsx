@@ -23,12 +23,12 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { NavLinks } from "@/constants/nav-links";
+import Image from "next/image";
 
 const Navbar = () => {
   const { user } = useUser();
   // 2. Get current path
   const pathname = usePathname();
-
   return (
     <header className="fixed top-6 left-0 right-0 mx-auto w-[95%] max-w-7xl h-20 z-40 rounded-2xl border border-[#d4af37]/10 bg-[#1a110d]/40 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05), 0_8px_32px_0_rgba(0,0,0,0.36)] transition-all duration-300">
       <div className="w-full h-full px-6 md:px-8 flex items-center justify-between">
@@ -48,21 +48,18 @@ const Navbar = () => {
 
         {/* --- DESKTOP NAV --- */}
         <nav className="hidden md:flex flex-1 justify-center items-center">
-          {user && (
-            <div className="flex gap-2 text-sm font-medium text-[#a1887f]">
-              {" "}
-              {/* Changed gap-8 to gap-2 to fit background styling */}
-              {NavLinks.map((navLink) => {
-                // 3. Logic to determine if link is active
-                const isActive =
-                  pathname === navLink.url ||
-                  (pathname.startsWith(navLink.url) && navLink.url !== "/");
+          <div className="flex gap-2 text-sm font-medium text-[#a1887f]">
+            {" "}
+            {NavLinks.map((navLink) => {
+              const isActive =
+                pathname === navLink.url ||
+                (pathname.startsWith(navLink.url) && navLink.url !== "/");
 
-                return (
-                  <Link
-                    key={navLink.name}
-                    href={navLink.url}
-                    className={`
+              return (
+                <Link
+                  key={navLink.name}
+                  href={navLink.url}
+                  className={`
                       px-4 py-2 rounded-lg transition-all duration-300
                       ${
                         isActive
@@ -70,19 +67,17 @@ const Navbar = () => {
                           : "text-[#a1887f] hover:text-[#d4af37] hover:bg-[#d4af37]/5"
                       }
                     `}
-                  >
-                    {navLink.name}
-                  </Link>
-                );
-              })}
-              {user.publicMetadata.role === "admin" || user?.publicMetadata.role === "moderator" ? (
-                <Link
-                  href={
-                    user.publicMetadata.role === "admin"
-                      ? "/admin/dashboard"
-                      : "/moderator/dashboard"
-                  }
-                  className={`
+                >
+                  {navLink.name}
+                </Link>
+              );
+            })}
+            {user?.publicMetadata.role === "admin" || user?.publicMetadata.role === "moderator" ? (
+              <Link
+                href={
+                  user.publicMetadata.role === "admin" ? "/admin/dashboard" : "/moderator/dashboard"
+                }
+                className={`
                     px-4 py-2 rounded-lg transition-all duration-300
                     ${
                       pathname.includes("/dashboard")
@@ -90,14 +85,13 @@ const Navbar = () => {
                         : "text-[#a1887f] hover:text-[#d4af37] hover:bg-[#d4af37]/5"
                     }
                   `}
-                >
-                  Dashboard
-                </Link>
-              ) : (
-                ""
-              )}
-            </div>
-          )}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              ""
+            )}
+          </div>
           <div className="w-px h-0"></div>
         </nav>
 
@@ -119,16 +113,21 @@ const Navbar = () => {
           <SignedIn>
             <div className="flex items-center gap-4" suppressHydrationWarning={true}>
               <div className="min-w-8 min-h-8">
-                <UserButton
-                  appearance={{
-                    elements: {
-                      avatarBox:
-                        "w-8 h-8 border border-[#d4af37]/50 ring-2 ring-transparent hover:ring-[#d4af37]/20 transition-all",
-                      userButtonPopoverCard: "border border-[#5d4037] bg-[#1a110d] text-[#eaddcf]",
-                      userButtonPopoverFooter: "hidden",
-                    },
-                  }}
-                />
+                {user ? (
+                  <>
+                    <Link href={"/profile"}>
+                      <Image
+                        src={user.imageUrl}
+                        alt={user.username || "profile_image"}
+                        className="w-8 h-8 rounded-full border border-[#d4af37]/50 ring-2 ring-transparent hover:ring-[#d4af37]/20 transition-all"
+                        width={32}
+                        height={32}
+                      />
+                    </Link>
+                  </>
+                ) : (
+                  ""
+                )}
               </div>
               <div className="w-px h-5 bg-[#3e2723]"></div>
               <SignOut />

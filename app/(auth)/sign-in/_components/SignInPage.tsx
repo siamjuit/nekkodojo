@@ -41,7 +41,7 @@ const SignInPage = () => {
       await signIn.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/",
+        redirectUrlComplete: "/problems",
       });
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));
@@ -58,7 +58,7 @@ const SignInPage = () => {
       await signIn.authenticateWithRedirect({
         strategy: "oauth_github",
         redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/",
+        redirectUrlComplete: "/problems",
       });
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));
@@ -67,7 +67,7 @@ const SignInPage = () => {
   }
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    
+
     const identifier = activeTab === "email" ? email : username;
 
     if (!isLoaded || !identifier || !password) {
@@ -84,7 +84,7 @@ const SignInPage = () => {
 
       if (session.status === "complete") {
         await setActive({ session: session.createdSessionId });
-        router.push("/");
+        router.push("/problems");
       }
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));

@@ -5,6 +5,7 @@ import { motion, Variants } from "framer-motion";
 import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { catPaths } from "@/constants/animation-constants";
+import { useUser } from "@clerk/nextjs";
 
 const contentVariants: Variants = {
   hidden: { opacity: 0, scale: 0.95 },
@@ -68,7 +69,7 @@ export default function LandingPage() {
     ];
     setBackgroundElements(elements);
   }, []);
-
+  const { user } = useUser();
   return (
     <main className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden">
       <div className="absolute inset-0 bg-[#120c0a]">
@@ -150,12 +151,25 @@ export default function LandingPage() {
           in the sanctuary of code.
         </p>
         <div className="mt-12 flex flex-col md:flex-row gap-8 justify-center items-center">
-          <Link
-            href="/sign-in"
-            className="relative px-12 py-4 bg-[#2c1810] border border-[#5d4037] text-[#d4af37] tracking-[0.2em] font-bold uppercase hover:bg-[#3e2723] hover:border-[#d4af37] hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-all duration-500 clip-path-slant"
-          >
-            Enter Dojo
-          </Link>
+          {user ? (
+            <>
+              <Link
+                href="/problems"
+                className="relative px-12 py-4 bg-[#2c1810] border border-[#5d4037] text-[#d4af37] tracking-[0.2em] font-bold uppercase hover:bg-[#3e2723] hover:border-[#d4af37] hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-all duration-500 clip-path-slant"
+              >
+                Start Practice
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="relative px-12 py-4 bg-[#2c1810] border border-[#5d4037] text-[#d4af37] tracking-[0.2em] font-bold uppercase hover:bg-[#3e2723] hover:border-[#d4af37] hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-all duration-500 clip-path-slant"
+              >
+                Enter Dojo
+              </Link>
+            </>
+          )}
         </div>
       </motion.div>
       <div className="absolute left-6 bottom-0 hidden lg:block pb-12 z-10">
