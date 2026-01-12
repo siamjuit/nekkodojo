@@ -7,7 +7,7 @@ import { Loader2, ArrowUpDown, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { NoComments } from "./NoComments";
-import CommentItem from "./Comment";
+import Comment from "./Comment";
 import WriteComment from "./Create/WriteComment";
 
 const CommentSection = ({ discussionId, authorId }: { discussionId: string; authorId: string }) => {
@@ -132,7 +132,7 @@ const CommentSection = ({ discussionId, authorId }: { discussionId: string; auth
         ) : comments.length > 0 ? (
           <>
             {comments.map((comment) => (
-              <CommentItem
+              <Comment
                 key={comment.id}
                 comment={comment}
                 currentUserAvatar={user?.imageUrl}
