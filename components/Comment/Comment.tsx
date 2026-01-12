@@ -33,7 +33,7 @@ interface Props {
   comment: CommentProps;
   currentUserAvatar?: string | null;
   currentUserId?: string;
-  authorId: string;
+  authorId?: string;
   depth: number;
   onDelete?: (commentId: string) => void;
 }
