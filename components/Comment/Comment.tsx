@@ -296,7 +296,7 @@ const CommentItem = ({
               Reply
             </Button>
 
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity ml-auto">
+            <div className="opacity-100 xl:opacity-0 xl:group-hover:opacity-100 transition-opacity ml-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button

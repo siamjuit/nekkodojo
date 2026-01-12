@@ -26,6 +26,11 @@ export async function GET(request: Request) {
                 beltRank: true,
               },
             },
+            tag: {
+              select: {
+                slug: true,
+              },
+            },
             _count: {
               select: { comments: true },
             },

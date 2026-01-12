@@ -29,7 +29,7 @@ export default function DiscussionPage() {
   const [totalPage, setTotalPage] = useState(1);
 
   const currentPage = Number(searchParams.get("page")) || 1;
-  const currentSort = searchParams.get("sort") || "latest";
+  const currentSort = searchParams.get("sort") || "top";
 
   const [inputValue, setInputValue] = useState("");
 
@@ -89,8 +89,8 @@ export default function DiscussionPage() {
                 className="h-12 px-4 gap-2 border-[#3e2723] bg-[#1a110d]/50 text-[#a1887f] hover:bg-[#1a110d] hover:text-[#d4af37] hover:border-[#d4af37] rounded-xl transition-all min-w-[140px] justify-between shrink-0"
               >
                 <span className="text-xs uppercase tracking-wider font-bold">
-                  {currentSort === "latest" && "Latest"}
                   {currentSort === "top" && "Top Rated"}
+                  {currentSort === "latest" && "Latest"}
                   {currentSort === "oldest" && "Oldest"}
                   {currentSort === "controversial" && "Controversial"}
                 </span>
@@ -107,16 +107,16 @@ export default function DiscussionPage() {
               <DropdownMenuSeparator className="bg-[#3e2723]" />
 
               <DropdownMenuItem
-                onClick={() => handleSortChange("latest")}
-                className="cursor-pointer focus:bg-[#d4af37]/10 focus:text-[#d4af37]"
-              >
-                Latest
-              </DropdownMenuItem>
-              <DropdownMenuItem
                 onClick={() => handleSortChange("top")}
                 className="cursor-pointer focus:bg-[#d4af37]/10 focus:text-[#d4af37]"
               >
                 Top Rated
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSortChange("latest")}
+                className="cursor-pointer focus:bg-[#d4af37]/10 focus:text-[#d4af37]"
+              >
+                Latest
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleSortChange("oldest")}
