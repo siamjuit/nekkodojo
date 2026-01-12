@@ -84,7 +84,7 @@ export default function DiscussionPage() {
           </Link>
         </div>
         <DiscussionViewer discussion={discussion} />
-        <div className="mt-8 border-t border-[#3e2723] pt-8 opacity-50 text-center">
+        <div className="mt-8 border-t border-[#3e2723] pt-8 text-center">
           <p className="text-start text-xl font-bold pb-8">
             Comments ({discussion._count.comments})
           </p>
