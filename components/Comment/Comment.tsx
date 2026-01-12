@@ -33,11 +33,19 @@ interface Props {
   comment: CommentProps;
   currentUserAvatar?: string | null;
   currentUserId?: string;
+  authorId: string;
   depth: number;
   onDelete?: (commentId: string) => void;
 }
 
-const CommentItem = ({ comment, currentUserAvatar, currentUserId, depth = 0, onDelete }: Props) => {
+const CommentItem = ({
+  comment,
+  currentUserAvatar,
+  currentUserId,
+  authorId,
+  depth = 0,
+  onDelete,
+}: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReplies, setShowReplies] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
@@ -314,8 +322,7 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId, depth = 0, onD
                     )}
                     {isBookmarked ? "Remove Bookmark" : "Bookmark"}
                   </DropdownMenuItem>
-                  {(currentUserId === comment.authorId ||
-                    currentUserId === comment.discussion.authorId) && (
+                  {(currentUserId === comment.authorId || currentUserId === authorId) && (
                     <DropdownMenuItem
                       onClick={handleDeleteComment}
                       className="group flex items-center gap-2 cursor-pointer text-red-400 focus:bg-red-900/10 focus:text-red-300"
@@ -394,6 +401,7 @@ const CommentItem = ({ comment, currentUserAvatar, currentUserId, depth = 0, onD
                       comment={reply}
                       currentUserAvatar={currentUserAvatar}
                       currentUserId={currentUserId}
+                      authorId={authorId}
                       depth={depth + 1}
                       // 5. Pass handler to children so they can delete themselves from local state
                       onDelete={handleChildDelete}

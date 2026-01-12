@@ -88,7 +88,7 @@ export default function DiscussionPage() {
           <p className="text-start text-xl font-bold pb-8">
             Comments ({discussion._count.comments})
           </p>
-          <CommentSection discussionId={discussionId} />
+          <CommentSection discussionId={discussionId} authorId={discussion.authorId} />
         </div>
       </div>
     </div>

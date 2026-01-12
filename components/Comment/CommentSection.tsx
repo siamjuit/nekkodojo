@@ -7,10 +7,10 @@ import { Loader2, ArrowUpDown, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 import { NoComments } from "./NoComments";
-import Comment from "./Comment";
+import CommentItem from "./Comment";
 import WriteComment from "./Create/WriteComment";
 
-const CommentSection = ({ discussionId }: { discussionId: string }) => {
+const CommentSection = ({ discussionId, authorId }: { discussionId: string; authorId: string }) => {
   const { user } = useUser();
 
   const [sort, setSort] = useState<"top" | "newest">("newest");
@@ -132,11 +132,12 @@ const CommentSection = ({ discussionId }: { discussionId: string }) => {
         ) : comments.length > 0 ? (
           <>
             {comments.map((comment) => (
-              <Comment
+              <CommentItem
                 key={comment.id}
                 comment={comment}
                 currentUserAvatar={user?.imageUrl}
                 currentUserId={user?.id}
+                authorId={authorId}
                 depth={0}
               />
             ))}
