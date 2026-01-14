@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏯 NekkoDojo
 
-## Getting Started
+> **Train your code. Earn your belt. Become a master.**
 
-First, run the development server:
+NekkoDojo is a gamified coding platform designed to make algorithm practice engaging and community-driven. Users (Disciples) solve coding problems to earn reputation, unlock new martial arts belts, and climb the ranks from White Belt to Black Belt.
+
+![NekkoDojo Banner](https://via.placeholder.com/1200x400?text=NekkoDojo+Preview+Image)
+*(Replace this link with a screenshot of your actual dashboard later)*
+
+## 🎯 Motivation
+Learning data structures and algorithms can be dry and isolating. **NekkoDojo** aims to fix this by wrapping the "grind" in a fun, martial-arts-themed progression system. We focus not just on solving problems, but on **community interaction**, rewarding users for helping others through discussions and quality comments.
+
+## ✨ Key Features
+* **🥋 Belt Progression System:** Automatically rank up from *White Belt* to *Black Belt* based on the number of problems solved.
+* **📊 Activity Heatmap:** GitHub-style activity tracking to visualize your daily training consistency.
+* **💬 Community Discussions:** Rich text discussions with a reputation system that rewards high-quality contributions.
+* **🛡️ Role-Based Access Control:**
+    * **Senseis (Admins):** Full system control and user management.
+    * **Guardians (Moderators):** Content moderation capabilities.
+    * **Disciples (Users):** Standard access to solve and discuss.
+* **📈 Analytics Dashboard:** Detailed breakdowns of solved problems by category, company, and difficulty.
+
+## 🛠️ Tech Stack
+* **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
+* **Language:** TypeScript
+* **Database:** PostgreSQL
+* **ORM:** [Prisma](https://www.prisma.io/)
+* **Authentication:** [Clerk](https://clerk.com/)
+* **Styling:** Tailwind CSS & Shadcn UI
+* **Charts:** Recharts
+* **Icons:** Lucide React
+
+---
+
+## 🚀 Getting Started
+
+Follow these instructions to set up the Dojo locally.
+
+### Prerequisites
+* Node.js (v18 or higher)
+* npm or yarn
+* A PostgreSQL database (local or hosted like Neon/Supabase)
+* A Clerk account for authentication
+
+### Installation
+
+1.  **Clone the repository**
+    ```bash
+    git clone [https://github.com/yourusername/nekko-dojo.git](https://github.com/yourusername/nekko-dojo.git)
+    cd nekko-dojo
+    ```
+
+2.  **Install dependencies**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
+
+3.  **Set up Environment Variables**
+    Create a `.env` file in the root directory and add the following keys:
+    ```env
+    # Database
+    DATABASE_URL="postgresql://user:password@localhost:5432/nekkodojo"
+
+    # Clerk Auth
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+    CLERK_SECRET_KEY=sk_test_...
+
+    # URLs
+    NEXT_PUBLIC_APP_URL="http://localhost:3000"
+    ```
+
+4.  **Setup Database (Prisma)**
+    ```bash
+    # Generate Prisma Client
+    npx prisma generate
+
+    # Push schema to DB
+    npx prisma db push
+    ```
+
+5.  **Run the development server**
+    ```bash
+    npm run dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000) with your browser to enter the Dojo.
+
+---
+
+## 📂 Project Structure
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+nekko-dojo/
+├── app/
+│   ├── (auth)/          # Sign-in/Sign-up pages (Clerk)
+│   ├── (root)/          # Main application layout
+│   │   ├── profile/     # User profile & stats logic
+│   │   ├── problems/    # Coding questions list
+│   │   └── discussions/ # Community forum
+│   ├── api/             # Backend API routes (webhooks, data fetching)
+│   └── layout.tsx       # Root layout
+├── components/
+│   ├── User/            # Profile components (Heatmap, Belts, Details)
+│   ├── Admin/           # Admin dashboard cards & tables
+│   └── ui/              # Shadcn UI reusable components
+├── lib/
+│   ├── prisma.ts        # DB client instance
+│   └── utils.ts         # Helper functions
+├── prisma/
+│   └── schema.prisma    # Database schema definition
+└── public/              # Static assets
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🤝 How to Contribute
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+We welcome all ninjas who wish to improve the Dojo!
+Please read our `CONTRIBUTING.md` (if available) for details on our code of conduct and the process for submitting pull requests.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  **Fork the repo** on GitHub.
+2.  **Create your feature branch** (`git checkout -b feature/amazing-feature`).
+3.  **Commit your changes** (`git commit -m 'Add some amazing feature'`).
+4.  **Push to the branch** (`git push origin feature/amazing-feature`).
+5.  **Open a Pull Request**.
 
-## Learn More
+## 📄 License
 
-To learn more about Next.js, take a look at the following resources:
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*System Online. Dojo is Open.* ⛩️
