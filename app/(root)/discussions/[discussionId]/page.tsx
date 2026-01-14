@@ -46,7 +46,7 @@ export default function DiscussionPage() {
   if (!user) return null;
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0f0b0a] flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <Loader2 className="size-10 text-[#d4af37] animate-spin" />
         <p className="text-[#a1887f] text-sm animate-pulse">Summoning scroll...</p>
       </div>

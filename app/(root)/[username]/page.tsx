@@ -1,19 +1,37 @@
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ProfileCharts } from "@/components/User/ProfileCharts";
 import { BeltProgress } from "@/components/User/BeltCollection";
 import { UserDetails } from "@/components/User/UserDetails";
 import { QuestionStatusType } from "@/generated/prisma/client";
 import { ProfileActivityTabs } from "@/components/User/ProfileActivityTabs";
+import DeleteProgress from "@/components/User/DeleteProgress";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProfilePage() {
-  const user = await currentUser();
-  if (!user) return redirect("/sign-in");
+export default async function ProfilePage(params: { params: Promise<{ username: string }> }) {
+  const { username } = await params.params;
+  const curr = await currentUser();
+  if (!curr) return null;
+  const user = await prisma.user.findFirst({
+    where: { name: username },
+    select: {
+      id: true,
+      name: true,
+      firstName: true,
+      lastName: true,
+      bio: true,
+      profileUrl: true,
+      email: true,
+      createdAt: true,
+    },
+  });
 
-  // 1. FETCH DATA
+  if (!user) {
+    return notFound();
+  }
+  const isOwn = curr.id === user.id;
   const [
     userProgress,
     solvedQuestions,
@@ -24,7 +42,6 @@ export default async function ProfilePage() {
     categories,
     companies,
   ] = await Promise.all([
-    // A. Solved Questions
     prisma.userProgress.findMany({
       where: { userId: user.id, status: QuestionStatusType.completed },
       select: { questionId: true, updatedAt: true },
@@ -46,10 +63,12 @@ export default async function ProfilePage() {
     prisma.discussion.findMany({
       where: { authorId: user.id },
       orderBy: { createdAt: "desc" },
-      include: { _count: { select: { comments: true } } },
+      include: {
+        _count: { select: { comments: true } },
+        // IMPORTANT: Include likeCount/dislikeCount if your updated tabs component relies on them
+      },
     }),
 
-    // D. Comments List
     prisma.comment.findMany({
       where: { authorId: user.id },
       orderBy: { createdAt: "desc" },
@@ -57,26 +76,21 @@ export default async function ProfilePage() {
         discussion: { select: { id: true, title: true } },
       },
     }),
-    // B. Discussion Count
     prisma.discussion.count({
       where: { authorId: user.id },
     }),
 
-    // C. Comment Count
     prisma.comment.count({
       where: { authorId: user.id },
     }),
 
-    // D. Metadata
     prisma.category.findMany({ include: { questions: { select: { id: true } } } }),
     prisma.company.findMany({ include: { questions: { select: { id: true } } } }),
   ]);
 
-  // 2. PREPARE DATA
   const solvedSet = new Set(userProgress.map((p) => p.questionId));
   const totalSolved = solvedSet.size;
 
-  // Prepare Chart Data (Same logic as before)
   const activityMap = new Map<string, number>();
   for (let i = 29; i >= 0; i--) {
     const d = new Date();
@@ -134,10 +148,12 @@ export default async function ProfilePage() {
     },
   });
   if (!currUser) return null;
+
   return (
-    <div className="min-h-screen bg-[#0f0b0a] text-[#eaddcf] py-12">
-      <div className="container mx-auto px-4 max-w-6xl space-y-16">
-        {/* --- SECTION 0: USER DETAILS (NEW) --- */}
+    // UPDATED: Adjusted vertical padding (py) for responsiveness
+    <div className="min-h-screen bg-[#0f0b0a] text-[#eaddcf] py-8 md:py-12">
+      {/* UPDATED: Adjusted vertical spacing (space-y) for responsiveness */}
+      <div className="container mx-auto px-4 max-w-6xl space-y-8 md:space-y-16">
         <UserDetails
           user={currUser}
           stats={{
@@ -145,22 +161,23 @@ export default async function ProfilePage() {
             discussions: discussionsCount,
             comments: commentsCount,
           }}
+          isOwnProfile={isOwn}
         />
 
-        {/* --- SECTION 1: BELT PROGRESS --- */}
         <BeltProgress totalSolved={totalSolved} />
 
-        {/* --- SECTION 2: CHARTS --- */}
         <ProfileCharts
           activityData={activityData}
           categoryStats={categoryStats}
           companyStats={companyStats}
         />
+
         <ProfileActivityTabs
           solvedQuestions={solvedQuestions}
           discussions={discussions}
           comments={comments}
         />
+        {isOwn && <DeleteProgress />}
       </div>
     </div>
   );

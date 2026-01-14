@@ -28,6 +28,7 @@ import WriteComment from "./Create/WriteComment";
 import BeltBadge from "../User/BeltBadge";
 import CommentAttachment from "../Attachment/AttLightbox";
 import { ReportDialog } from "../Report/ReportDialog";
+import Link from "next/link";
 
 interface Props {
   comment: CommentProps;
@@ -185,7 +186,7 @@ const CommentItem = ({
   const isLongText = comment.description.length > 300;
   const displayText = isExpanded ? comment.description : comment.description.slice(0, 300);
   const fullName = `${comment.author.firstName || "User"} ${comment.author.lastName || ""}`.trim();
-  const handle = `@${fullName.replace(/\s+/g, "").toLowerCase()}`;
+  const handle = comment.author.name;
 
   const handleReplyClick = () => {
     setIsReplying(true);
@@ -205,29 +206,37 @@ const CommentItem = ({
     <div className="flex flex-col w-full animate-in fade-in duration-500">
       <div className="group flex gap-3 w-full py-3 relative">
         {/* AVATAR */}
-        <div className="shrink-0 relative w-10 h-10 rounded-full overflow-hidden border border-[#3e2723] mt-1 bg-[#1a110d]">
+        <Link
+          href={`/${handle}`}
+          className="shrink-0 relative w-10 h-10 rounded-full overflow-hidden border border-[#3e2723] mt-1 bg-[#1a110d]"
+        >
           <Image
             src={comment.author.profileUrl || "/default-avatar.png"}
             alt="Author"
             fill
             className="object-cover"
           />
-        </div>
+        </Link>
 
         {/* MAIN CONTENT */}
         <div className="flex-1 min-w-0">
           <div className="flex flex-col mb-1">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-[#eaddcf] text-sm cursor-pointer hover:text-[#d4af37] transition-colors">
+              <Link
+                href={`/${handle}`}
+                className="font-bold text-[#eaddcf] text-sm cursor-pointer hover:text-[#d4af37] transition-colors"
+              >
                 {fullName}
-              </span>
+              </Link>
               <span className="text-[#5d4037] text-xs">•</span>
               <span className="text-[#5d4037] text-xs hover:text-[#a1887f] cursor-pointer transition-colors">
                 {formatDistanceToNow(new Date(comment.createdAt))} ago
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-[#a1887f] font-mono">{handle}</span>
+              <Link href={`/${handle}`} className="text-[11px] text-[#a1887f] font-mono">
+                @{handle}
+              </Link>
               <BeltBadge belt={comment.author.beltRank} />
             </div>
           </div>

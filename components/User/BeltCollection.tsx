@@ -58,27 +58,38 @@ export function BeltProgress({ totalSolved }: { totalSolved: number }) {
 
   return (
     <div className="space-y-6">
-      {/* Header Info */}
-      <div className="flex items-end justify-between border-b border-[#3e2723] pb-4">
+      {/* Header Info - Responsive Stack */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#3e2723] pb-4 gap-4 sm:gap-0">
         <div>
-          <h2 className="text-2xl font-bold text-[#eaddcf]">Dojo Ranks</h2>
-          <p className="text-[#a1887f] text-sm mt-1">
+          <h2 className="text-xl md:text-2xl font-bold text-[#eaddcf]">Dojo Ranks</h2>
+          <p className="text-[#a1887f] text-xs md:text-sm mt-1">
             Current Rank:{" "}
             <span className="text-[#d4af37] font-bold">{BELTS[currentBeltIndex].name}</span>
           </p>
         </div>
         {nextBelt && (
-          <div className="text-right">
-            <span className="text-xs text-[#5d4037] uppercase font-mono">Next Milestone</span>
-            <p className="text-[#eaddcf] text-sm">
-              {totalSolved} / {nextBelt.minSolved} ({progressToNext}%)
-            </p>
+          <div className="text-left sm:text-right">
+            <span className="text-[10px] md:text-xs text-[#5d4037] uppercase font-mono block mb-1">
+              Next Milestone
+            </span>
+            <div className="flex items-center gap-2 sm:justify-end">
+              {/* Mobile Progress Bar (Optional Visual Cue) */}
+              <div className="h-1.5 w-16 bg-[#1a110d] rounded-full overflow-hidden sm:hidden border border-[#3e2723]">
+                <div 
+                  className="h-full bg-[#d4af37]" 
+                  style={{ width: `${progressToNext}%` }}
+                />
+              </div>
+              <p className="text-[#eaddcf] text-xs md:text-sm font-medium">
+                {totalSolved} / {nextBelt.minSolved} <span className="text-[#a1887f] ml-1">({progressToNext}%)</span>
+              </p>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Belts Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {/* Belts Grid - Responsive Columns */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
         {BELTS.map((belt, idx) => {
           const isUnlocked = totalSolved >= belt.minSolved;
           const isCurrent = idx === currentBeltIndex;
@@ -87,36 +98,36 @@ export function BeltProgress({ totalSolved }: { totalSolved: number }) {
             <div
               key={belt.name}
               className={cn(
-                "relative flex flex-col items-center p-4 rounded-xl border transition-all duration-500",
+                "relative flex flex-col items-center p-3 md:p-4 rounded-xl border transition-all duration-500",
                 // Unlocked Style
                 isUnlocked
                   ? "bg-[#1a110d] border-[#3e2723]"
                   : "bg-[#0f0b0a] border-[#271b16] opacity-60 grayscale", // Locked "Shadow" Look
                 // Current Belt Highlight
                 isCurrent &&
-                  "ring-1 ring-[#d4af37] bg-[#1a110d] shadow-[0_0_20px_rgba(212,175,55,0.1)]"
+                  "ring-1 ring-[#d4af37] bg-[#1a110d] shadow-[0_0_20px_rgba(212,175,55,0.1)] scale-[1.02]"
               )}
             >
               {/* Belt Visual Representation */}
               <div
                 className={cn(
-                  "h-8 w-full rounded mb-3 flex items-center justify-center relative shadow-lg transition-transform hover:scale-105",
+                  "h-6 md:h-8 w-full rounded mb-2 md:mb-3 flex items-center justify-center relative shadow-lg transition-transform hover:scale-105",
                   isUnlocked ? belt.color : "bg-[#2a201d] border-[#3e2723]", // Dull gray if locked
                   isUnlocked && "shadow-[0_0_15px_currentColor]" // Glow if unlocked
                 )}
               >
                 {/* The "Knot" of the belt */}
-                <div className="w-1.5 h-full bg-black/20 absolute left-8" />
+                <div className="w-1 md:w-1.5 h-full bg-black/20 absolute left-6 md:left-8" />
 
                 {/* Lock Icon for locked belts */}
-                {!isUnlocked && <Lock className="w-4 h-4 text-[#5d4037]" />}
+                {!isUnlocked && <Lock className="w-3 h-3 md:w-4 md:h-4 text-[#5d4037]" />}
               </div>
 
               {/* Text Info */}
-              <div className="text-center space-y-1">
+              <div className="text-center space-y-0.5 md:space-y-1">
                 <span
                   className={cn(
-                    "block font-bold text-sm",
+                    "block font-bold text-xs md:text-sm truncate px-1",
                     isUnlocked ? "text-[#eaddcf]" : "text-[#5d4037]"
                   )}
                 >

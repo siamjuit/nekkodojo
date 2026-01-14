@@ -10,11 +10,12 @@ import { Badge } from "../ui/badge";
 import { AttachmentCarousel } from "../Attachment/AttCarousal";
 import BeltBadge from "../User/BeltBadge";
 import { useEffect, useState } from "react";
-import { getTags } from "@/lib/getTags"; 
+import { getTags } from "@/lib/getTags";
+import Link from "next/link";
 
 export default function DiscussionViewer({ discussion }: { discussion: DiscussionProps }) {
   const [tags, setTags] = useState<TagProps[]>([]);
-  console.log(discussion)
+  console.log(discussion);
   useEffect(() => {
     const getAllTags = async () => {
       try {
@@ -37,7 +38,7 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
             <h1 className="text-2xl sm:text-3xl font-bold text-[#eaddcf] leading-tight">
               {discussion.title}
             </h1>
-            
+
             {postTag && (
               <div className="mt-2">
                 <Badge
@@ -62,9 +63,12 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm font-bold text-[#d4af37]">
+                  <Link
+                    href={`/${discussion.author.name}`}
+                    className="text-sm font-bold text-[#d4af37]"
+                  >
                     {discussion.author.firstName} {discussion.author.lastName}
-                  </span>
+                  </Link>
                   <BeltBadge belt={discussion.author.beltRank!} />
                 </div>
                 <p className="text-xs text-[#a1887f]">

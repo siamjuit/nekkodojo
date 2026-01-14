@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const user = await currentUser();
-    
+
     if (!user) return NextResponse.json("Unauthorized", { status: 401 });
 
     const query = searchParams.get("query") || "";
@@ -78,6 +78,7 @@ export async function GET(request: Request) {
           tag: true,
           author: {
             select: {
+              name: true,
               firstName: true,
               lastName: true,
               profileUrl: true,

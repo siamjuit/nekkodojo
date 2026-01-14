@@ -11,11 +11,12 @@ import { getTags } from "@/lib/getTags";
 
 export default function DiscussionPreviewCard({ data }: { data: DiscussionProps }) {
   const [tags, setTags] = useState<TagProps[]>([]);
+  console.log(data)
 
   useEffect(() => {
     const getAllTags = async () => {
       try {
-        const t: TagProps[] = await getTags();
+        const t: TagProps[] = await getTags();  
         if (t) setTags(t);
       } catch (error) {
         console.error(error);
@@ -47,9 +48,9 @@ export default function DiscussionPreviewCard({ data }: { data: DiscussionProps 
                 className="object-cover"
               />
             </div>
-            <span className="font-bold text-[#d4af37]">
+            <Link href={`/${data.author.name}`} className="font-bold text-[#d4af37]">
               {data.author.firstName} {data.author.lastName}
-            </span>
+            </Link>
             <BeltBadge belt={data.author.beltRank!} />
             <span className="w-1 h-1 rounded-full bg-[#3e2723]" />
             <span>{formatDistanceToNow(new Date(data.createdAt))} ago</span>

@@ -55,7 +55,7 @@ export async function POST(req: Request) {
         data: {
           id: evt.data.id,
           email: primaryEmail.email_address,
-          name: username,
+          name: username?.toLowerCase(),
           profileUrl: image_url,
           firstName: first_name,
           lastName: last_name,

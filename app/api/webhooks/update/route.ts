@@ -56,7 +56,7 @@ export async function POST(req: Request) {
         },
         data: {
           email: primaryEmail.email_address,
-          name: username,
+          name: username?.toLowerCase(),
           firstName: first_name,
           lastName: last_name,
           profileUrl: image_url,

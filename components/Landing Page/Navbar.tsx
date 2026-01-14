@@ -49,16 +49,19 @@ const Navbar = () => {
         {/* --- DESKTOP NAV --- */}
         <nav className="hidden md:flex flex-1 justify-center items-center">
           <div className="flex gap-2 text-sm font-medium text-[#a1887f]">
-            {" "}
             {NavLinks.map((navLink) => {
-              const isActive =
-                pathname === navLink.url ||
-                (pathname.startsWith(navLink.url) && navLink.url !== "/");
+              let href = navLink.url;
+              if (user) {
+                if (navLink.name === "Profile" && user.username) {
+                  href = `/${user.username}`;
+                }
+              }
+              const isActive = pathname === href;
 
               return (
                 <Link
                   key={navLink.name}
-                  href={navLink.url}
+                  href={href}
                   className={`
                       px-4 py-2 rounded-lg transition-all duration-300
                       ${
@@ -115,7 +118,7 @@ const Navbar = () => {
               <div className="min-w-8 min-h-8">
                 {user ? (
                   <>
-                    <Link href={"/profile"}>
+                    <Link href={`/${user.username}`}>
                       <Image
                         src={user.imageUrl}
                         alt={user.username || "profile_image"}

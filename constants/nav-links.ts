@@ -1,9 +1,9 @@
-import {User, Bookmark, MessageSquare, BookOpen, LayoutDashboard} from "lucide-react";
+import {User, Bookmark, MessageSquare, BookOpen} from "lucide-react";
 
 export const NavLinks: NavLinkProps[] = [
   {
     name: "Profile",
-    url: "/profile",
+    url: "/",
     icon: User,
   },
   {

@@ -11,6 +11,7 @@ declare interface DiscussionProps {
   createdAt: string;
   authorId: string;
   author: {
+    name?: string;
     firstName: string | null;
     lastName: string | null;
     profileUrl: string | null;
@@ -128,7 +129,7 @@ declare interface CompanyData {
   websiteUrl: string | null;
   logo: string | null;
   logoId: string | null;
-    _count: {
+  _count: {
     questions: number;
   };
 }
