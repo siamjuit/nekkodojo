@@ -44,6 +44,7 @@ export async function GET(request: Request) {
           include: {
             author: {
               select: {
+                name: true,
                 firstName: true,
                 lastName: true,
                 profileUrl: true,
