@@ -111,6 +111,8 @@ nekko-dojo/
 ├── prisma/
 │   └── schema.prisma    # Database schema definition
 └── public/              # Static assets
+```
+---
 
 ## 🤝 How to Contribute
 
