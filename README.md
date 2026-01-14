@@ -127,7 +127,7 @@ nekko-dojo/
 ### 🤝 How to Contribute
 
 We welcome all ninjas who wish to improve the Dojo!
-Please read our `CONTRIBUTING.md` (if available) for details on our code of conduct and the process for submitting pull requests.
+Please read our [`CONTRIBUTING.md`](https://github.com/siamjuit/nekkodojo/blob/main/CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 1.  **Fork the repo** on GitHub.
 2.  **Create your feature branch** (`git checkout -b feature/amazing-feature`).
