@@ -5,30 +5,33 @@
 NekkoDojo is a gamified coding platform designed to make algorithm practice engaging and community-driven. Users (Disciples) solve coding problems to earn reputation, unlock new martial arts belts, and climb the ranks from White Belt to Black Belt.
 
 ![NekkoDojo Banner](https://via.placeholder.com/1200x400?text=NekkoDojo+Preview+Image)
-*(Replace this link with a screenshot of your actual dashboard later)*
+_(Replace this link with a screenshot of your actual dashboard later)_
 
 ## 🎯 Motivation
+
 Learning data structures and algorithms can be dry and isolating. **NekkoDojo** aims to fix this by wrapping the "grind" in a fun, martial-arts-themed progression system. We focus not just on solving problems, but on **community interaction**, rewarding users for helping others through discussions and quality comments.
 
 ## ✨ Key Features
-* **🥋 Belt Progression System:** Automatically rank up from *White Belt* to *Black Belt* based on the number of problems solved.
-* **📊 Activity Heatmap:** GitHub-style activity tracking to visualize your daily training consistency.
-* **💬 Community Discussions:** Rich text discussions with a reputation system that rewards high-quality contributions.
-* **🛡️ Role-Based Access Control:**
-    * **Senseis (Admins):** Full system control and user management.
-    * **Guardians (Moderators):** Content moderation capabilities.
-    * **Disciples (Users):** Standard access to solve and discuss.
-* **📈 Analytics Dashboard:** Detailed breakdowns of solved problems by category, company, and difficulty.
+
+- **🥋 Belt Progression System:** Automatically rank up from _White Belt_ to _Black Belt_ based on the number of problems solved.
+- **📊 Activity Heatmap:** GitHub-style activity tracking to visualize your daily training consistency.
+- **💬 Community Discussions:** Rich text discussions with a reputation system that rewards high-quality contributions.
+- **🛡️ Role-Based Access Control:**
+  - **Senseis (Admins):** Full system control and user management.
+  - **Guardians (Moderators):** Content moderation capabilities.
+  - **Disciples (Users):** Standard access to solve and discuss.
+- **📈 Analytics Dashboard:** Detailed breakdowns of solved problems by category, company, and difficulty.
 
 ## 🛠️ Tech Stack
-* **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
-* **Language:** TypeScript
-* **Database:** PostgreSQL
-* **ORM:** [Prisma](https://www.prisma.io/)
-* **Authentication:** [Clerk](https://clerk.com/)
-* **Styling:** Tailwind CSS & Shadcn UI
-* **Charts:** Recharts
-* **Icons:** Lucide React
+
+- **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
+- **Language:** TypeScript
+- **Database:** PostgreSQL
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Authentication:** [Clerk](https://clerk.com/)
+- **Styling:** Tailwind CSS & Shadcn UI
+- **Charts:** Recharts
+- **Icons:** Lucide React
 
 ---
 
@@ -37,20 +40,23 @@ Learning data structures and algorithms can be dry and isolating. **NekkoDojo** 
 Follow these instructions to set up the Dojo locally.
 
 ### Prerequisites
-* Node.js (v18 or higher)
-* npm or yarn
-* A PostgreSQL database (local or hosted like Neon/Supabase)
-* A Clerk account for authentication
+
+- Node.js (v18 or higher)
+- npm or yarn
+- A PostgreSQL database (local or hosted like Neon/Supabase)
+- A Clerk account for authentication
 
 ### Installation
 
 1.  **Clone the repository**
+
     ```bash
     git clone [https://github.com/yourusername/nekko-dojo.git](https://github.com/yourusername/nekko-dojo.git)
     cd nekko-dojo
     ```
 
 2.  **Install dependencies**
+
     ```bash
     npm install
     # or
@@ -59,6 +65,7 @@ Follow these instructions to set up the Dojo locally.
 
 3.  **Set up Environment Variables**
     Create a `.env` file in the root directory and add the following keys:
+
     ```env
     # Database
     DATABASE_URL="postgresql://user:password@localhost:5432/nekkodojo"
@@ -72,6 +79,7 @@ Follow these instructions to set up the Dojo locally.
     ```
 
 4.  **Setup Database (Prisma)**
+
     ```bash
     # Generate Prisma Client
     npx prisma generate
@@ -81,6 +89,7 @@ Follow these instructions to set up the Dojo locally.
     ```
 
 5.  **Run the development server**
+
     ```bash
     npm run dev
     ```
@@ -111,8 +120,11 @@ nekko-dojo/
 ├── prisma/
 │   └── schema.prisma    # Database schema definition
 └── public/              # Static assets
+```
 
-## 🤝 How to Contribute
+---
+
+### 🤝 How to Contribute
 
 We welcome all ninjas who wish to improve the Dojo!
 Please read our `CONTRIBUTING.md` (if available) for details on our code of conduct and the process for submitting pull requests.
@@ -129,4 +141,4 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for d
 
 ---
 
-*System Online. Dojo is Open.* ⛩️
+_System Online. Dojo is Open._ ⛩️
