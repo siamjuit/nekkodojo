@@ -141,4 +141,8 @@ By participating in this project, you agree to abide by our **[Code of Conduct](
 
 ---
 
+<<<<<<< HEAD
 **Thank you for contributing to NekkoDojo!** 🥋
+=======
+**Thank you for contributing to NekkoDojo!** 🥋
+>>>>>>> 3da02c100f4e0625424b3a07c85bdaada6261d46

@@ -121,6 +121,10 @@ nekko-dojo/
 │   └── schema.prisma    # Database schema definition
 └── public/              # Static assets
 ```
+<<<<<<< HEAD
+=======
+---
+>>>>>>> 3da02c100f4e0625424b3a07c85bdaada6261d46
 
 ---
 
@@ -141,4 +145,8 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for d
 
 ---
 
+<<<<<<< HEAD
 _System Online. Dojo is Open._ ⛩️
+=======
+*System Online. Dojo is Open.* ⛩️
+>>>>>>> 3da02c100f4e0625424b3a07c85bdaada6261d46
