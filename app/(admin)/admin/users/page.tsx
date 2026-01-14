@@ -9,6 +9,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
+import Link from "next/link";
 
 export default async function AdminUsersPage(props: {
   searchParams: Promise<{ page?: string; search?: string }>;
@@ -69,7 +70,7 @@ export default async function AdminUsersPage(props: {
 
   // Reusable Row Component for consistency
   const UserRow = ({ u, borderAccent }: { u: any, borderAccent: string }) => (
-    <div 
+    <Link href={`/${u.name}`} 
       className={`
         group relative grid grid-cols-1 md:grid-cols-12 gap-4 items-center 
         p-4 rounded-xl border border-[#3e2723] bg-[#1a110d] 
@@ -117,7 +118,7 @@ export default async function AdminUsersPage(props: {
           <AdminUserCard user={mapToUserProps(u)} /> 
         </div>
       </div>
-    </div>
+    </Link>
   );
 
   return (
