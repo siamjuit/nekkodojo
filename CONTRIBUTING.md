@@ -10,7 +10,7 @@ Please take a moment to review this document to ensure the process is smooth and
 
 ## 🐛 Reporting Bugs & Requesting Features
 
-Before you write any code, please check our [Issue Tracker](https://github.com/yourusername/nekkodojo/issues) to ensure the issue hasn't already been reported.
+Before you write any code, please check our [Issue Tracker](https://github.com/siamjuit/nekkodojo/issues) to ensure the issue hasn't already been reported.
 
 ### 🐞 Found a Bug?
 If you spot a flaw in our technique:
@@ -36,10 +36,11 @@ To start training locally, follow these steps:
 1.  **Fork and Clone**
     Fork the repository to your GitHub account, then clone it:
     ```bash
-    git clone [https://github.com/YOUR_USERNAME/nekkodojo.git](https://github.com/YOUR_USERNAME/nekkodojo.git)
+    git clone [https://github.com/siamjuit/nekkodojo.git](https://github.com/siamjuit/nekkodojo.git)
     cd nekkodojo
     ```
-
+<!-- Fixed — replaced yourusername with siamjuit as suggested.
+Thanks for the review! -->
 2.  **Install Dependencies**
     ```bash
     npm install

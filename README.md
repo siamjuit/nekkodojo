@@ -55,10 +55,11 @@ Follow these instructions to set up the Dojo locally.
 1.  **Clone the repository**
 
     ```bash
-    git clone [https://github.com/yourusername/nekkodojo.git](https://github.com/yourusername/nekkodojo.git)
+    git clone [https://github.com/siamjuit/nekkodojo.git](https://github.com/siamjuit/nekkodojo.git)
     cd nekkodojo
     ```
-
+<!-- Fixed — replaced yourusername with siamjuit as suggested.
+Thanks for the review! -->
 2.  **Install dependencies**
 
     ```bash
