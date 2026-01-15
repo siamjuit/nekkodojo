@@ -4,8 +4,9 @@
 
 NekkoDojo is a gamified coding platform designed to make algorithm practice engaging and community-driven. Users (Disciples) solve coding problems to earn reputation, unlock new martial arts belts, and climb the ranks from White Belt to Black Belt.
 
-![NekkoDojo Banner](https://via.placeholder.com/1200x400?text=NekkoDojo+Preview+Image)
-_(Replace this link with a screenshot of your actual dashboard later)_
+<!-- TODO: Replace with a real dashboard screenshot once available -->
+![NekkoDojo Banner](https://via.placeholder.com/1200x400?text=NekkoDojo)
+
 
 ## 🎯 Motivation
 
@@ -34,6 +35,9 @@ Learning data structures and algorithms can be dry and isolating. **NekkoDojo** 
 - **Icons:** Lucide React
 
 ---
+## 🚧 Project Status
+
+NekkoDojo is currently under active development. Features and APIs may change.
 
 ## 🚀 Getting Started
 
@@ -51,8 +55,8 @@ Follow these instructions to set up the Dojo locally.
 1.  **Clone the repository**
 
     ```bash
-    git clone [https://github.com/yourusername/nekko-dojo.git](https://github.com/yourusername/nekko-dojo.git)
-    cd nekko-dojo
+    git clone [https://github.com/yourusername/nekkodojo.git](https://github.com/yourusername/nekkodojo.git)
+    cd nekkodojo
     ```
 
 2.  **Install dependencies**
@@ -101,7 +105,7 @@ Follow these instructions to set up the Dojo locally.
 ## 📂 Project Structure
 
 ```bash
-nekko-dojo/
+nekkodojo/
 ├── app/
 │   ├── (auth)/          # Sign-in/Sign-up pages (Clerk)
 │   ├── (root)/          # Main application layout
@@ -121,17 +125,13 @@ nekko-dojo/
 │   └── schema.prisma    # Database schema definition
 └── public/              # Static assets
 ```
-<<<<<<< HEAD
-=======
----
->>>>>>> 3da02c100f4e0625424b3a07c85bdaada6261d46
 
----
 
 ### 🤝 How to Contribute
 
 We welcome all ninjas who wish to improve the Dojo!
-Please read our [`CONTRIBUTING.md`](https://github.com/siamjuit/nekkodojo/blob/main/CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+Please read our[`CONTRIBUTING.md`](./CONTRIBUTING.md)
+for details on the code of conduct and the process for submitting pull requests.
 
 1.  **Fork the repo** on GitHub.
 2.  **Create your feature branch** (`git checkout -b feature/amazing-feature`).
@@ -139,14 +139,9 @@ Please read our [`CONTRIBUTING.md`](https://github.com/siamjuit/nekkodojo/blob/m
 4.  **Push to the branch** (`git push origin feature/amazing-feature`).
 5.  **Open a Pull Request**.
 
-## 📄 License
+## 📄 License 
 
 This project is licensed under the **MIT License**. See the `LICENSE` file for details.
 
----
 
-<<<<<<< HEAD
 _System Online. Dojo is Open._ ⛩️
-=======
-*System Online. Dojo is Open.* ⛩️
->>>>>>> 3da02c100f4e0625424b3a07c85bdaada6261d46
