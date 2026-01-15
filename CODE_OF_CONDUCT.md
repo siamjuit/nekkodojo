@@ -37,7 +37,8 @@ This Code of Conduct applies within all project spaces, and it also applies when
 
 ## Reporting Guidelines
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team at **[INSERT_CONTACT_EMAIL_HERE]**. All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project maintainers via GitHub Issues or repository contact details. All complaints will be reviewed and investigated and will result in a response that is deemed necessary and appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident.
+
 
 ## Enforcement Guidelines
 
