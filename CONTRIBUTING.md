@@ -10,7 +10,7 @@ Please take a moment to review this document to ensure the process is smooth and
 
 ## 🐛 Reporting Bugs & Requesting Features
 
-Before you write any code, please check our [Issue Tracker](https://github.com/yourusername/nekko-dojo/issues) to ensure the issue hasn't already been reported.
+Before you write any code, please check our [Issue Tracker](https://github.com/siamjuit/nekkodojo/issues) to ensure the issue hasn't already been reported.
 
 ### 🐞 Found a Bug?
 If you spot a flaw in our technique:
@@ -36,10 +36,11 @@ To start training locally, follow these steps:
 1.  **Fork and Clone**
     Fork the repository to your GitHub account, then clone it:
     ```bash
-    git clone [https://github.com/YOUR_USERNAME/nekko-dojo.git](https://github.com/YOUR_USERNAME/nekko-dojo.git)
-    cd nekko-dojo
+    git clone [https://github.com/siamjuit/nekkodojo.git](https://github.com/siamjuit/nekkodojo.git)
+    cd nekkodojo
     ```
-
+<!-- Fixed — replaced yourusername with siamjuit as suggested.
+Thanks for the review! -->
 2.  **Install Dependencies**
     ```bash
     npm install
@@ -134,15 +135,12 @@ When your training is complete and you are ready to submit your code:
 
 We are a community of learners and masters. Respect is our core tenet.
 
-By participating in this project, you agree to abide by our **[Code of Conduct](CODE_OF_CONDUCT.md)**.
+By participating in this project, you agree to abide by our **[Code of Conduct](./CODE_OF_CONDUCT.md)**.
+
 * Be respectful and inclusive.
 * Accept constructive criticism gracefully.
 * Focus on what is best for the community.
 
 ---
 
-<<<<<<< HEAD
 **Thank you for contributing to NekkoDojo!** 🥋
-=======
-**Thank you for contributing to NekkoDojo!** 🥋
->>>>>>> 3da02c100f4e0625424b3a07c85bdaada6261d46
