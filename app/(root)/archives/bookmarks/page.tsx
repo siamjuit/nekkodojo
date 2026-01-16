@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Loader2, BookmarkX, MessageCircle, FileText, ArrowRight } from "lucide-react";
+import { Loader2, BookmarkX, MessageCircle, FileText, ArrowRight, ChevronLeft } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DiscussionPreviewCard from "@/components/Discussion/DiscussionPreview";
@@ -17,21 +17,13 @@ export default function BookmarksPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // --- DEBUGGING: Check your console to see exactly what URL is being called ---
-        console.log("Fetching bookmarks from: /api/users/bookmarks");
-        
         const response = await fetch("/api/users/bookmarks");
-        
+
         if (!response.ok) {
-           const errorText = await response.text();
-           console.error("Fetch Error:", response.status, errorText);
-           throw new Error(`Failed to fetch: ${response.status}`);
+          throw new Error(`Failed to fetch: ${response.status}`);
         }
 
         const data = await response.json();
-        
-        console.log("Bookmarks Data Received:", data); // Check if data is empty or populated
-        
         setMarkedDiscussions(data.discussions || []);
         setMarkedComments(data.comments || []);
       } catch (error) {
@@ -45,6 +37,10 @@ export default function BookmarksPage() {
     fetchData();
   }, []);
 
+  const handleRemove = (id: string) => {
+    setMarkedDiscussions((prev) => prev.filter((item) => item.id !== id));
+  };
+
   if (loading) {
     return (
       <div className="flex h-[50vh] w-full items-center justify-center">
@@ -53,8 +49,6 @@ export default function BookmarksPage() {
     );
   }
 
-  // --- TAB STYLING (Reddit Style) ---
-  // We use !important classes (e.g., !text-...) to override Shadcn's default button look
   const tabTriggerClass = `
     relative h-12 rounded-none border-b-2 border-transparent bg-transparent px-6 pb-3 pt-2 
     font-bold text-[#a1887f] shadow-none transition-all 
@@ -68,12 +62,17 @@ export default function BookmarksPage() {
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 md:p-6 space-y-8">
-      {/* HEADER */}
-      <div className="space-y-1">
-        <h1 className="text-3xl font-black text-[#d4af37] tracking-tight">Saved Scrolls</h1>
-        <p className="text-[#a1887f] text-sm">
-          Your collection of bookmarked techniques and discussions.
-        </p>
+      {/* HEADER WITH BACK LINK */}
+      <div className="flex items-center gap-4">
+        <Link href="/archives" className="p-2 rounded-full hover:bg-[#3e2723]/20 transition-colors">
+          <ChevronLeft className="text-[#a1887f]" />
+        </Link>
+        <div>
+          <h1 className="text-3xl font-black text-[#d4af37] tracking-tight">Saved Scrolls</h1>
+          <p className="text-[#a1887f] text-sm">
+            Your collection of bookmarked techniques and discussions.
+          </p>
+        </div>
       </div>
 
       {/* TABS */}
@@ -102,7 +101,11 @@ export default function BookmarksPage() {
         >
           {markedDiscussions.length > 0 ? (
             markedDiscussions.map((discussion) => (
-              <DiscussionPreviewCard key={discussion.id} data={discussion} />
+              <DiscussionPreviewCard
+                key={discussion.id}
+                data={discussion}
+                onRemove={handleRemove}
+              />
             ))
           ) : (
             <EmptyState label="No saved discussions found." />
@@ -134,10 +137,7 @@ export default function BookmarksPage() {
 
                 {/* The Comment Component */}
                 <div className="pl-2 border-l-2 border-[#3e2723]">
-                  <CommentItem
-                    comment={comment}
-                    depth={0}
-                  />
+                  <CommentItem comment={comment} depth={0} />
                 </div>
               </div>
             ))

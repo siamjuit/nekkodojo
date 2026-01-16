@@ -72,7 +72,7 @@ export default function DiscussionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0b0a] pb-20">
+    <div className="min-h-screen pb-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-6">
         <div className="mb-6">
           <Link

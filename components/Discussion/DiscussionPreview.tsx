@@ -3,20 +3,28 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
-import { MessageSquare, ThumbsUp, ArrowUpRight, Bookmark } from "lucide-react"; // Import Bookmark
+import { MessageSquare, ThumbsUp, ArrowUpRight, Bookmark, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import BeltBadge from "../User/BeltBadge";
 import { useEffect, useState } from "react";
 import { getTags } from "@/lib/getTags";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
-export default function DiscussionPreviewCard({ data }: { data: DiscussionProps }) {
+interface Props {
+  data: DiscussionProps;
+  onRemove?: (id: string) => void;
+}
+
+export default function DiscussionPreviewCard({ data, onRemove }: Props) {
   const [tags, setTags] = useState<TagProps[]>([]);
-  console.log(data)
+  const [loading, setLoading] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(data.isBookmarked);
 
   useEffect(() => {
     const getAllTags = async () => {
       try {
-        const t: TagProps[] = await getTags();  
+        const t: TagProps[] = await getTags();
         if (t) setTags(t);
       } catch (error) {
         console.error(error);
@@ -24,20 +32,60 @@ export default function DiscussionPreviewCard({ data }: { data: DiscussionProps 
     };
     getAllTags();
   }, []);
+
+  const toggleBookmark = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (loading) return;
+
+    setLoading(true);
+    const previousState = isBookmarked;
+    setIsBookmarked(!previousState);
+
+    try {
+      const res = await fetch(`/api/discussions/${data.id}/bookmark`, {
+        method: "PATCH",
+      });
+
+      if (!res.ok) throw new Error("Action failed");
+
+      toast.success(previousState ? "Bookmark removed." : "Discussion saved.");
+
+      if (onRemove && previousState === true) {
+        onRemove(data.id);
+      }
+    } catch (error) {
+      setIsBookmarked(previousState);
+      toast.error("Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const postTag = tags.find((t) => t.slug === data.tag.slug);
 
   return (
     <div className="group relative bg-[#1a110d]/40 border border-[#3e2723] rounded-xl p-5 hover:border-[#d4af37]/50 hover:bg-[#1a110d]/60 transition-all duration-300 overflow-hidden">
-      {data.isBookmarked && (
-        <div className="absolute top-0 right-4">
-          {/* Ribbon Shape */}
-          <div className="bg-[#d4af37] w-6 h-8 flex items-center justify-center rounded-b-sm shadow-[0_4px_10px_rgba(212,175,55,0.3)] animate-in slide-in-from-top-2">
-            <Bookmark size={14} className="fill-[#1a110d] text-[#1a110d]" />
+      
+      {/* --- ACTIVE STATE: RIBBON (Absolute) --- */}
+      {/* Only render absolute ribbon if bookmarked */}
+      {isBookmarked && (
+        <div 
+          className="absolute top-0 right-4 z-20 cursor-pointer" 
+          onClick={toggleBookmark}
+        >
+          <div className="bg-[#d4af37] w-6 h-8 flex items-center justify-center rounded-b-sm shadow-[0_4px_10px_rgba(212,175,55,0.3)] hover:bg-[#b5952f] transition-colors animate-in slide-in-from-top-2">
+            {loading ? (
+              <Loader2 size={14} className="text-[#1a110d] animate-spin" />
+            ) : (
+              <Bookmark size={14} className="fill-[#1a110d] text-[#1a110d]" />
+            )}
           </div>
         </div>
       )}
 
       <div className="flex items-start justify-between gap-4">
+        {/* --- LEFT CONTENT --- */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2 text-xs text-[#a1887f]">
             <div className="relative w-5 h-5 rounded-full overflow-hidden border border-[#3e2723]">
@@ -48,7 +96,7 @@ export default function DiscussionPreviewCard({ data }: { data: DiscussionProps 
                 className="object-cover"
               />
             </div>
-            <Link href={`/${data.author.name}`} className="font-bold text-[#d4af37]">
+            <Link href={`/member/${data.author.name}`} className="font-bold text-[#d4af37]">
               {data.author.firstName} {data.author.lastName}
             </Link>
             <BeltBadge belt={data.author.beltRank!} />
@@ -88,16 +136,35 @@ export default function DiscussionPreviewCard({ data }: { data: DiscussionProps 
           </div>
         </div>
 
-        {/* Hide default arrow if bookmarked to avoid crowding, or shift it down/left */}
-        <Link
-          href={`/discussions/${data.id}`}
-          target="_top"
-          className={`hidden sm:flex h-10 w-10 items-center justify-center rounded-full border border-[#3e2723] text-[#5d4037] group-hover:text-[#d4af37] group-hover:border-[#d4af37] transition-all
-             ${data.isBookmarked ? "mt-8" : ""} 
-          `}
-        >
-          <ArrowUpRight size={20} />
-        </Link>
+        {/* --- RIGHT ACTION COLUMN --- */}
+        <div className="flex flex-col items-center gap-3">
+            
+            {/* INACTIVE STATE: GRAY ICON (Stacked normally) */}
+            {!isBookmarked && (
+                <button
+                    onClick={toggleBookmark}
+                    className="p-2 rounded-full hover:bg-[#3e2723]/50 text-[#5d4037] hover:text-[#d4af37] transition-all"
+                >
+                    {loading ? (
+                        <Loader2 size={18} className="animate-spin" />
+                    ) : (
+                        <Bookmark size={18} />
+                    )}
+                </button>
+            )}
+
+            {/* OPEN ARROW (Pushed down if ribbon exists) */}
+            <Link
+                href={`/discussions/${data.id}`}
+                target="_top"
+                className={cn(
+                    "hidden sm:flex h-10 w-10 items-center justify-center rounded-full border border-[#3e2723] text-[#5d4037] group-hover:text-[#d4af37] group-hover:border-[#d4af37] transition-all",
+                    isBookmarked ? "mt-8" : "" // Push down only if Ribbon is present
+                )}
+            >
+                <ArrowUpRight size={20} />
+            </Link>
+        </div>
       </div>
     </div>
   );

@@ -91,7 +91,7 @@ const Onboarding = ({ initialData }: Props) => {
 
       await updateUser(dataToSend);
 
-      router.push("/profile");
+      router.push(`/member/${formData.username}`);
     } catch (err: any) {
       console.error(err);
       setError(err.errors?.[0]?.longMessage || "Failed to update profile");

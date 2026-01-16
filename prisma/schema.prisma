@@ -1,6 +1,6 @@
 generator client {
-  provider      = "prisma-client"
-  output        = "../generated/prisma"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -37,6 +37,7 @@ model User {
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   userProgresses UserProgress[]
+  shelves        Shelf[]
 }
 
 model Discussion {
@@ -189,6 +190,7 @@ model Question {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  shelves   Shelf[]
 }
 
 model Category {
@@ -256,7 +258,30 @@ model Tag {
   updatedAt DateTime @updatedAt
 }
 
+model Shelf {
+  id String @id @default(cuid())
+
+  type       ShelfType
+  questionId String
+  question   Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([questionId, userId])
+}
+
 //enums
+enum ShelfType {
+  later
+  revisit
+  stuck
+  important
+}
+
 enum QuestionStatusType {
   completed
   attempted

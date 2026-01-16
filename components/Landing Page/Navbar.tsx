@@ -53,7 +53,7 @@ const Navbar = () => {
               let href = navLink.url;
               if (user) {
                 if (navLink.name === "Profile" && user.username) {
-                  href = `/${user.username}`;
+                  href = `/member/${user.username}`;
                 }
               }
               const isActive = pathname === href;

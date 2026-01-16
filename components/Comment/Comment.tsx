@@ -207,7 +207,7 @@ const CommentItem = ({
       <div className="group flex gap-3 w-full py-3 relative">
         {/* AVATAR */}
         <Link
-          href={`/${handle}`}
+          href={`/member/${handle}`}
           className="shrink-0 relative w-10 h-10 rounded-full overflow-hidden border border-[#3e2723] mt-1 bg-[#1a110d]"
         >
           <Image
@@ -223,7 +223,7 @@ const CommentItem = ({
           <div className="flex flex-col mb-1">
             <div className="flex items-center gap-2">
               <Link
-                href={`/${handle}`}
+                href={`/member/${handle}`}
                 className="font-bold text-[#eaddcf] text-sm cursor-pointer hover:text-[#d4af37] transition-colors"
               >
                 {fullName}
@@ -234,7 +234,7 @@ const CommentItem = ({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Link href={`/${handle}`} className="text-[11px] text-[#a1887f] font-mono">
+              <Link href={`/member/${handle}`} className="text-[11px] text-[#a1887f] font-mono">
                 @{handle}
               </Link>
               <BeltBadge belt={comment.author.beltRank} />

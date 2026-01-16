@@ -191,7 +191,7 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
               </div>
 
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-xs md:text-sm text-[#a1887f] font-medium">
-                <Link href={`/${user.name}`} className="flex items-center gap-1.5 text-[#d4af37]">
+                <Link href={`/member/${user.name}`} className="flex items-center gap-1.5 text-[#d4af37]">
                   <AtSign className="w-3 h-3 md:w-4 md:h-4" /> {user.name}
                 </Link>
                 <span className="flex items-center gap-1.5 hover:text-[#eaddcf] transition-colors">

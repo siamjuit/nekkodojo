@@ -1,4 +1,4 @@
-import {User, Bookmark, MessageSquare, BookOpen} from "lucide-react";
+import { User, Bookmark, MessageSquare, BookOpen } from "lucide-react";
 
 export const NavLinks: NavLinkProps[] = [
   {
@@ -17,8 +17,8 @@ export const NavLinks: NavLinkProps[] = [
     icon: MessageSquare,
   },
   {
-    name: "Bookmark",
-    url: "/bookmarks",
+    name: "Archives",
+    url: "/archives",
     icon: Bookmark,
   },
 ];

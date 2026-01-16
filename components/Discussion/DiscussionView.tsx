@@ -64,7 +64,7 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <Link
-                    href={`/${discussion.author.name}`}
+                    href={`/member/${discussion.author.name}`}
                     className="text-sm font-bold text-[#d4af37]"
                   >
                     {discussion.author.firstName} {discussion.author.lastName}

@@ -1,9 +1,6 @@
-import { 
-  Users, UserX, ShieldAlert, ShieldCheck, 
-  Search, Calendar, Mail 
-} from "lucide-react";
+import { Users, UserX, ShieldAlert, ShieldCheck, Search, Calendar, Mail } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { AdminUserCard } from "@/components/Admin/RouteSide/AdminUserCard"; 
+import { AdminUserCard } from "@/components/Admin/RouteSide/AdminUserCard";
 import PaginationControls from "../../../../components/Admin/RouteSide/PaginationControls";
 import { currentUser } from "@clerk/nextjs/server";
 import { Badge } from "@/components/ui/badge";
@@ -69,8 +66,9 @@ export default async function AdminUsersPage(props: {
   });
 
   // Reusable Row Component for consistency
-  const UserRow = ({ u, borderAccent }: { u: any, borderAccent: string }) => (
-    <Link href={`/${u.name}`} 
+  const UserRow = ({ u, borderAccent }: { u: any; borderAccent: string }) => (
+    <Link
+      href={`/${u.name}`}
       className={`
         group relative grid grid-cols-1 md:grid-cols-12 gap-4 items-center 
         p-4 rounded-xl border border-[#3e2723] bg-[#1a110d] 
@@ -87,9 +85,9 @@ export default async function AdminUsersPage(props: {
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0">
-          <h4 className="font-bold text-[#eaddcf] truncate text-base">
+          <Link href={`/member/${u.name}`} className="font-bold text-[#eaddcf] truncate text-base">
             {u.firstName} {u.lastName}
-          </h4>
+          </Link>
           <div className="flex items-center gap-2 text-xs text-[#a1887f]">
             <Mail size={12} />
             <span className="truncate max-w-[150px] md:max-w-xs">{u.email}</span>
@@ -100,8 +98,11 @@ export default async function AdminUsersPage(props: {
       {/* 2. Rank Info */}
       <div className="col-span-1 md:col-span-3 flex items-center gap-3">
         {u.beltRank && (
-          <Badge variant="outline" className="border-[#3e2723] text-[#5d4037] font-mono text-[10px]">
-             {u.beltRank}
+          <Badge
+            variant="outline"
+            className="border-[#3e2723] text-[#5d4037] font-mono text-[10px]"
+          >
+            {u.beltRank}
           </Badge>
         )}
       </div>
@@ -115,7 +116,7 @@ export default async function AdminUsersPage(props: {
       {/* 4. Actions */}
       <div className="col-span-1 text-right flex justify-end">
         <div className="opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-          <AdminUserCard user={mapToUserProps(u)} /> 
+          <AdminUserCard user={mapToUserProps(u)} />
         </div>
       </div>
     </Link>
@@ -123,7 +124,6 @@ export default async function AdminUsersPage(props: {
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
-      
       {/* --- HEADER --- */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#3e2723] pb-6">
         <div className="flex items-center gap-4">
@@ -149,7 +149,6 @@ export default async function AdminUsersPage(props: {
         </div>
       ) : (
         <div className="space-y-10 animate-in fade-in duration-500">
-          
           {/* 1. ADMINS SECTION */}
           {admins.length > 0 && (
             <section className="space-y-4">
@@ -158,7 +157,10 @@ export default async function AdminUsersPage(props: {
                 <h2 className="text-sm font-bold uppercase tracking-widest text-[#d4af37]">
                   Senseis (Admins)
                 </h2>
-                <Badge variant="secondary" className="bg-[#d4af37]/10 text-[#d4af37] text-[10px] ml-auto">
+                <Badge
+                  variant="secondary"
+                  className="bg-[#d4af37]/10 text-[#d4af37] text-[10px] ml-auto"
+                >
                   {admins.length}
                 </Badge>
               </div>
@@ -178,7 +180,10 @@ export default async function AdminUsersPage(props: {
                 <h2 className="text-sm font-bold uppercase tracking-widest text-blue-400">
                   Guardians (Moderators)
                 </h2>
-                <Badge variant="secondary" className="bg-blue-500/10 text-blue-400 text-[10px] ml-auto">
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-500/10 text-blue-400 text-[10px] ml-auto"
+                >
                   {moderators.length}
                 </Badge>
               </div>
@@ -198,13 +203,20 @@ export default async function AdminUsersPage(props: {
                 <h2 className="text-sm font-bold uppercase tracking-widest text-[#a1887f]">
                   Disciples
                 </h2>
-                <Badge variant="secondary" className="bg-[#3e2723]/20 text-[#a1887f] text-[10px] ml-auto">
+                <Badge
+                  variant="secondary"
+                  className="bg-[#3e2723]/20 text-[#a1887f] text-[10px] ml-auto"
+                >
                   {disciples.length}
                 </Badge>
               </div>
               <div className="flex flex-col gap-3">
                 {disciples.map((u) => (
-                  <UserRow key={u.id} u={u} borderAccent="border-l-transparent hover:border-l-[#5d4037]" />
+                  <UserRow
+                    key={u.id}
+                    u={u}
+                    borderAccent="border-l-transparent hover:border-l-[#5d4037]"
+                  />
                 ))}
               </div>
             </section>

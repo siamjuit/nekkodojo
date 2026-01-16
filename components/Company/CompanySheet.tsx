@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Play, Unlock, Lock, Trophy, CheckCircle2 } from "lucide-react";
+import { Play, Unlock, Lock, Trophy, CheckCircle2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,10 +12,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { SHELF_BUTTONS } from "@/constants/shelfs"; // Import constants
 
+// Types
 type QuestionStatus = "unvisited" | "attempted" | "completed";
+type ShelfType = "later" | "revisit" | "important" | "stuck";
 
 export interface QuestionItem {
   id: string;
@@ -34,27 +38,44 @@ interface Props {
 export function CompanyQuestionsSheet({ questions, companyName }: Props) {
   const [progress, setProgress] = useState<Record<string, QuestionStatus>>({});
 
+  // --- NEW STATE FOR SHELVING ---
+  const [shelfState, setShelfState] = useState<Record<string, ShelfType | null>>({});
+  const [loadingShelf, setLoadingShelf] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
-    const fetchProgress = async () => {
+    const syncData = async () => {
       try {
-        const res = await fetch("/api/progress");
-        if (res.ok) {
-          const data = await res.json();
-          // --- FIX 1: Correctly map array to object ---
+        // 1. Fetch Progress
+        const progRes = await fetch("/api/progress");
+        if (progRes.ok) {
+          const data = await progRes.json();
           const map: Record<string, QuestionStatus> = {};
           if (Array.isArray(data)) {
             data.forEach((item: any) => {
-              // Ensure lowercase matching to UI types
               map[item.questionId] = item.status as QuestionStatus;
             });
           }
           setProgress(map);
         }
+
+        // 2. Fetch Shelf Data
+        const shelfRes = await fetch("/api/shelf");
+        if (shelfRes.ok) {
+          const shelfData = await shelfRes.json();
+          const shelfMap: Record<string, ShelfType> = {};
+          if (Array.isArray(shelfData)) {
+            shelfData.forEach((item: any) => {
+              // Normalize to lowercase
+              shelfMap[item.questionId] = item.type.toLowerCase() as ShelfType;
+            });
+          }
+          setShelfState(shelfMap);
+        }
       } catch (error) {
-        console.error("Failed to sync progress", error);
+        console.error("Failed to sync data", error);
       }
     };
-    fetchProgress();
+    syncData();
   }, []);
 
   const handleAttempt = async (q: QuestionItem) => {
@@ -88,6 +109,33 @@ export function CompanyQuestionsSheet({ questions, companyName }: Props) {
       setProgress((prev) => ({ ...prev, [qId]: prevStatus }));
     }
   };
+
+  // --- NEW SHELF TOGGLE HANDLER ---
+  const toggleShelf = async (qId: string, type: ShelfType) => {
+    const previousType = shelfState[qId];
+    setLoadingShelf((prev) => ({ ...prev, [qId]: true }));
+
+    // Optimistic Update
+    const newType = previousType === type ? null : type;
+    setShelfState((prev) => ({ ...prev, [qId]: newType }));
+
+    try {
+      const res = await fetch(`/api/shelf?questionId=${qId}&type=${type}`, {
+        method: "PATCH",
+      });
+
+      if (!res.ok) throw new Error("Failed");
+
+      const msg = newType ? `Added to ${type.toUpperCase()}` : `Removed from shelf`;
+      toast.success(msg);
+    } catch (error) {
+      toast.error("Failed to update shelf");
+      setShelfState((prev) => ({ ...prev, [qId]: previousType })); // Revert
+    } finally {
+      setLoadingShelf((prev) => ({ ...prev, [qId]: false }));
+    }
+  };
+
   const totalQuestions = questions.length;
   const solvedCount = questions.filter((q) => progress[q.id] === "completed").length;
   const isCompanyCompleted = totalQuestions > 0 && totalQuestions === solvedCount;
@@ -130,12 +178,15 @@ export function CompanyQuestionsSheet({ questions, companyName }: Props) {
         </span>
       </div>
 
-      {/* --- FIX 3: Add padding-bottom to avoid cutoff shadows --- */}
       <Accordion type="single" collapsible className="space-y-4 pb-2">
         {questions.map((q, idx) => {
           const status = progress[q.id] || "unvisited";
           const isSolved = status === "completed";
           const isAttempted = status === "attempted" || isSolved;
+
+          // Shelf Status
+          const activeShelf = shelfState[q.id];
+          const isLoadingThisShelf = loadingShelf[q.id];
 
           const borderClass = isSolved
             ? "border-l-green-600 shadow-[inset_4px_0_0_0_#16a34a]"
@@ -186,6 +237,19 @@ export function CompanyQuestionsSheet({ questions, companyName }: Props) {
                     </span>
 
                     <div className="hidden sm:flex items-center gap-3">
+                      {/* --- Small Shelf Indicator in Header (Optional) --- */}
+                      {activeShelf && (
+                        <div
+                          className={cn(
+                            "w-2 h-2 rounded-full",
+                            activeShelf === "important" && "bg-yellow-500",
+                            activeShelf === "stuck" && "bg-red-500",
+                            activeShelf === "revisit" && "bg-orange-500",
+                            activeShelf === "later" && "bg-blue-500"
+                          )}
+                        />
+                      )}
+
                       {isSolved && (
                         <span className="text-[10px] uppercase font-bold text-green-600 tracking-wider">
                           Solved
@@ -252,7 +316,6 @@ export function CompanyQuestionsSheet({ questions, companyName }: Props) {
                           )}
                         >
                           {isAttempted ? (
-                            // --- FIX 2: Added Flex container to align icon and text ---
                             <Link
                               href={q.solutionUrl}
                               target="_blank"
@@ -270,11 +333,72 @@ export function CompanyQuestionsSheet({ questions, companyName }: Props) {
                       )}
                     </div>
 
-                    {!isAttempted && (
-                      <span className="text-[10px] text-[#5d4037] font-mono border border-[#3e2723] rounded px-2 py-1">
-                        Attempt to break seal
-                      </span>
-                    )}
+                    <div className="flex items-center gap-3">
+                      {/* --- SHELF BUTTONS SECTION --- */}
+                      <div className="hidden sm:flex flex-col items-end mr-1">
+                        <span className="text-[10px] text-[#5d4037] font-bold tracking-widest uppercase">
+                          Shelf
+                        </span>
+                        {activeShelf && (
+                          <span
+                            className={cn(
+                              "text-[10px] font-mono",
+                              activeShelf === "important" && "text-yellow-500",
+                              activeShelf === "later" && "text-blue-400",
+                              activeShelf === "stuck" && "text-red-500",
+                              activeShelf === "revisit" && "text-orange-400"
+                            )}
+                          >
+                            {activeShelf.toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-1.5 p-1.5 rounded-full border border-[#3e2723] bg-[#0f0b0a] shadow-inner">
+                        {isLoadingThisShelf ? (
+                          <Loader2 className="w-4 h-4 text-[#a1887f] animate-spin mx-6" />
+                        ) : (
+                          <TooltipProvider delayDuration={100}>
+                            {SHELF_BUTTONS.map((btn) => {
+                              const isActive = activeShelf === btn.type;
+
+                              return (
+                                <Tooltip key={btn.type}>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={() => toggleShelf(q.id, btn.type)}
+                                      className={cn(
+                                        "relative w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300",
+                                        "border border-transparent",
+                                        isActive
+                                          ? `${btn.activeColor} shadow-[0_0_12px_-3px_currentColor] scale-110 z-10`
+                                          : `text-[#5d4037] hover:bg-[#3e2723]/40 ${btn.hoverColor} hover:scale-105`
+                                      )}
+                                    >
+                                      <btn.icon
+                                        className={cn(
+                                          "w-4 h-4 transition-all duration-300",
+                                          isActive && "fill-current"
+                                        )}
+                                      />
+                                      {isActive && (
+                                        <span className="absolute -bottom-1 w-1 h-1 rounded-full bg-current" />
+                                      )}
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-[#1a110d] border-[#3e2723] text-[#eaddcf] text-xs">
+                                    <p>
+                                      {isActive ? "Remove from " : "Add to "}
+                                      <span className="font-bold">{btn.label}</span>
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              );
+                            })}
+                          </TooltipProvider>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </AccordionContent>
