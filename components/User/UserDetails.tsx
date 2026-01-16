@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { BELTS } from "@/constants/belts";
 import Link from "next/link";
+import Share from "../Discussion/Share";
 
 interface Props {
   user: {
@@ -86,70 +87,73 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
   return (
     <div className="w-full bg-[#1a110d] border border-[#3e2723] rounded-3xl overflow-hidden shadow-2xl mb-8 md:mb-10 group/card">
       {/* 1. EXPANDED BANNER */}
-      {/* Responsive Height: h-32 on mobile, h-48 on desktop */}
       <div className="h-32 md:h-48 w-full bg-linear-to-r from-[#0f0b0a] via-[#3e2723]/40 to-[#0f0b0a] border-b border-[#3e2723] relative">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-yellow-500 via-transparent to-transparent"></div>
-
-        {/* --- EDIT PROFILE BUTTON (SHEET TRIGGER) --- */}
-        {isOwnProfile && (
-          <>
-            <div className="absolute top-3 right-3 md:top-4 md:right-4">
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="bg-[#0f0b0a]/50 border-[#3e2723] text-[#a1887f] hover:text-[#d4af37] hover:border-[#d4af37] backdrop-blur-md transition-all text-xs md:text-sm px-2 md:px-4"
-                  >
-                    <Settings className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                    <span className="hidden sm:inline">Edit Profile</span>
-                    <span className="sm:hidden">Edit</span>
-                  </Button>
-                </SheetTrigger>
-
-                {/* SHEET CONFIG */}
-                <SheetContent
-                  side="right"
-                  className="w-full sm:max-w-4xl border-l border-[#3e2723] bg-[#0f0b0a] p-0 z-9999"
+        
+        {/* --- TOP RIGHT ACTIONS CONTAINER --- */}
+        <div className="absolute top-3 right-3 md:top-4 md:right-4 flex items-center gap-2 md:gap-3">
+          
+          {/* Edit Button (Only for Owner) */}
+          {isOwnProfile && (
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="bg-[#0f0b0a]/50 border-[#3e2723] text-[#a1887f] hover:text-[#d4af37] hover:border-[#d4af37] backdrop-blur-md transition-all text-xs md:text-sm px-2 md:px-4 h-9 md:h-10"
                 >
-                  <SheetTitle className="sr-only">Edit Profile</SheetTitle>
+                  <Settings className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                  <span className="hidden sm:inline">Edit Profile</span>
+                  <span className="sm:hidden">Edit</span>
+                </Button>
+              </SheetTrigger>
 
-                  <div className="h-full w-full">
-                    <UserProfile
-                      routing="hash"
-                      appearance={{
-                        elements: {
-                          rootBox: "w-full h-full",
-                          card: "w-full h-full shadow-none rounded-none border-none",
-                          scrollBox: "bg-[#0f0b0a] text-[#eaddcf]",
-                          navbar: "hidden md:flex bg-[#0f0b0a] border-r border-[#3e2723]", // Hide sidebar on mobile
-                          navbarButton: "text-[#a1887f] hover:text-[#eaddcf] hover:bg-[#1a110d]",
-                          activeNavbarButton: "text-[#d4af37] bg-[#1a110d] font-bold",
-                          headerTitle: "text-[#eaddcf]",
-                          headerSubtitle: "text-[#a1887f]",
-                          profileSectionTitleText: "text-[#d4af37]",
-                          userPreviewMainIdentifier: "text-[#eaddcf]",
-                          userPreviewSecondaryIdentifier: "text-[#a1887f]",
-                          input: "bg-[#1a110d] border-[#3e2723] text-[#eaddcf]",
-                          formButtonPrimary: "bg-[#d4af37] text-black hover:bg-[#b5952f]",
-                          formButtonReset: "text-[#a1887f] hover:text-[#eaddcf] hover:bg-[#1a110d]",
-                        },
-                        variables: {
-                          colorPrimary: "#d4af37",
-                          colorBackground: "#0f0b0a",
-                          colorText: "#eaddcf",
-                          colorInputBackground: "#1a110d",
-                          colorInputText: "#eaddcf",
-                          colorTextSecondary: "#a1887f",
-                        },
-                      }}
-                    />
-                  </div>
-                </SheetContent>
-              </Sheet>
-            </div>
-          </>
-        )}
+              <SheetContent
+                side="right"
+                className="w-full sm:max-w-4xl border-l border-[#3e2723] bg-[#0f0b0a] p-0 z-9999"
+              >
+                <SheetTitle className="sr-only">Edit Profile</SheetTitle>
+                <div className="h-full w-full">
+                  <UserProfile
+                    routing="hash"
+                    appearance={{
+                      elements: {
+                        rootBox: "w-full h-full",
+                        card: "w-full h-full shadow-none rounded-none border-none",
+                        scrollBox: "bg-[#0f0b0a] text-[#eaddcf]",
+                        navbar: "hidden md:flex bg-[#0f0b0a] border-r border-[#3e2723]",
+                        navbarButton: "text-[#a1887f] hover:text-[#eaddcf] hover:bg-[#1a110d]",
+                        activeNavbarButton: "text-[#d4af37] bg-[#1a110d] font-bold",
+                        headerTitle: "text-[#eaddcf]",
+                        headerSubtitle: "text-[#a1887f]",
+                        profileSectionTitleText: "text-[#d4af37]",
+                        userPreviewMainIdentifier: "text-[#eaddcf]",
+                        userPreviewSecondaryIdentifier: "text-[#a1887f]",
+                        input: "bg-[#1a110d] border-[#3e2723] text-[#eaddcf]",
+                        formButtonPrimary: "bg-[#d4af37] text-black hover:bg-[#b5952f]",
+                        formButtonReset: "text-[#a1887f] hover:text-[#eaddcf] hover:bg-[#1a110d]",
+                      },
+                      variables: {
+                        colorPrimary: "#d4af37",
+                        colorBackground: "#0f0b0a",
+                        colorText: "#eaddcf",
+                        colorInputBackground: "#1a110d",
+                        colorInputText: "#eaddcf",
+                        colorTextSecondary: "#a1887f",
+                      },
+                    }}
+                  />
+                </div>
+              </SheetContent>
+            </Sheet>
+          )}
+
+          {/* Share Button (Placed Flex-End) */}
+          {/* Use a div wrapper if Share component doesn't accept className for height matching */}
+          <div className="h-9 md:h-10 flex items-center">
+             <Share />
+          </div>
+        </div>
       </div>
 
       <div className="px-4 md:px-10 pb-6 md:pb-10">
