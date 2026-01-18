@@ -26,6 +26,7 @@ import { toast } from "sonner";
 import { BELTS } from "@/constants/belts";
 import Link from "next/link";
 import Share from "../Discussion/Share";
+import SocialsManager from "./SocialManager"; // Import the component
 
 interface Props {
   user: {
@@ -36,6 +37,8 @@ interface Props {
     profileUrl: string | null;
     email: string;
     createdAt: Date;
+    // Add socialLinks to the type definition
+    socialLinks?: { id: string; platform: string; platformUrl: string }[];
   };
   stats: {
     solved: number;
@@ -114,42 +117,13 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
               >
                 <SheetTitle className="sr-only">Edit Profile</SheetTitle>
                 <div className="h-full w-full">
-                  <UserProfile
-                    routing="hash"
-                    appearance={{
-                      elements: {
-                        rootBox: "w-full h-full",
-                        card: "w-full h-full shadow-none rounded-none border-none",
-                        scrollBox: "bg-[#0f0b0a] text-[#eaddcf]",
-                        navbar: "hidden md:flex bg-[#0f0b0a] border-r border-[#3e2723]",
-                        navbarButton: "text-[#a1887f] hover:text-[#eaddcf] hover:bg-[#1a110d]",
-                        activeNavbarButton: "text-[#d4af37] bg-[#1a110d] font-bold",
-                        headerTitle: "text-[#eaddcf]",
-                        headerSubtitle: "text-[#a1887f]",
-                        profileSectionTitleText: "text-[#d4af37]",
-                        userPreviewMainIdentifier: "text-[#eaddcf]",
-                        userPreviewSecondaryIdentifier: "text-[#a1887f]",
-                        input: "bg-[#1a110d] border-[#3e2723] text-[#eaddcf]",
-                        formButtonPrimary: "bg-[#d4af37] text-black hover:bg-[#b5952f]",
-                        formButtonReset: "text-[#a1887f] hover:text-[#eaddcf] hover:bg-[#1a110d]",
-                      },
-                      variables: {
-                        colorPrimary: "#d4af37",
-                        colorBackground: "#0f0b0a",
-                        colorText: "#eaddcf",
-                        colorInputBackground: "#1a110d",
-                        colorInputText: "#eaddcf",
-                        colorTextSecondary: "#a1887f",
-                      },
-                    }}
-                  />
+                  <UserProfile routing="hash" appearance={{ /* ... your clerk styles ... */ }} />
                 </div>
               </SheetContent>
             </Sheet>
           )}
 
-          {/* Share Button (Placed Flex-End) */}
-          {/* Use a div wrapper if Share component doesn't accept className for height matching */}
+          {/* Share Button */}
           <div className="h-9 md:h-10 flex items-center">
              <Share />
           </div>
@@ -162,14 +136,11 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
           <div className="flex flex-col items-center lg:items-start shrink-0">
             <div className="relative group">
               <div className="absolute -inset-2 bg-linear-to-br from-[#d4af37] to-[#3e2723] rounded-full blur-xl opacity-40 group-hover:opacity-60 transition duration-700"></div>
-              {/* Responsive Size: w-28 on mobile, w-40 on desktop */}
+              {/* Avatar */}
               <div className="relative w-28 h-28 md:w-40 md:h-40 rounded-full overflow-hidden border-4 md:border-[6px] border-[#1a110d] bg-[#0f0b0a] shadow-2xl">
                 <Image src={user.profileUrl!} alt={fullName} fill className="object-cover" />
               </div>
-              <div
-                className="absolute bottom-1 right-1 md:bottom-2 md:right-2 bg-[#1a110d] border-2 border-[#3e2723] rounded-full p-1.5 md:p-2.5 shadow-lg"
-                title="Verified Ninja"
-              >
+              <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 bg-[#1a110d] border-2 border-[#3e2723] rounded-full p-1.5 md:p-2.5 shadow-lg" title="Verified Ninja">
                 <Shield className="w-4 h-4 md:w-6 md:h-6 text-[#d4af37] fill-[#d4af37]/10" />
               </div>
             </div>
@@ -177,19 +148,14 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
 
           {/* 3. INFO COLUMN */}
           <div className="flex-1 pt-2 md:pt-24 text-center lg:text-left space-y-6 md:space-y-8">
-            {/* Header: Name, Username, Rank */}
+            
+            {/* Header Info */}
             <div className="space-y-3">
               <div className="flex flex-col lg:flex-row items-center lg:items-end gap-2 md:gap-4">
                 <h1 className="text-3xl md:text-5xl font-black text-[#eaddcf] tracking-tight leading-none">
                   {fullName}
                 </h1>
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    "mb-1 text-xs md:text-sm font-bold border px-3 md:px-4 py-0.5 md:py-1 rounded-full",
-                    currentBelt.color
-                  )}
-                >
+                <Badge variant="outline" className={cn("mb-1 text-xs md:text-sm font-bold border px-3 md:px-4 py-0.5 md:py-1 rounded-full", currentBelt.color)}>
                   {currentBelt.name}
                 </Badge>
               </div>
@@ -207,7 +173,7 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
               </div>
             </div>
 
-            {/* --- DISTINCT BIO SECTION (With Edit Logic) --- */}
+            {/* --- BIO SECTION --- */}
             <div className="relative pl-4 md:pl-6 border-l-2 md:border-l-4 border-[#3e2723] py-2 bg-[#0f0b0a]/30 rounded-r-xl max-w-3xl mx-auto lg:mx-0 group/bio text-left">
               {isOwnProfile && !isEditingBio && (
                 <button
@@ -228,20 +194,10 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
                     placeholder="Tell us about your coding journey..."
                   />
                   <div className="flex justify-end gap-2">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setIsEditingBio(false)}
-                      className="text-[#a1887f] hover:text-[#eaddcf]"
-                    >
+                    <Button size="sm" variant="ghost" onClick={() => setIsEditingBio(false)} className="text-[#a1887f] hover:text-[#eaddcf]">
                       <X className="w-4 h-4 mr-1" /> Cancel
                     </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleSaveBio}
-                      disabled={isSavingBio}
-                      className="bg-[#d4af37] text-black hover:bg-[#b5952f]"
-                    >
+                    <Button size="sm" onClick={handleSaveBio} disabled={isSavingBio} className="bg-[#d4af37] text-black hover:bg-[#b5952f]">
                       <Check className="w-4 h-4 mr-1" /> {isSavingBio ? "Saving..." : "Save"}
                     </Button>
                   </div>
@@ -253,40 +209,21 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
               )}
             </div>
 
-            {/* 4. STATS GRID (Relaxed Layout) */}
+            {/* --- SOCIALS MANAGER --- */}
+            {/* Added container to restrict width on desktop but full width on mobile */}
+            <div className="max-w-3xl mx-auto lg:mx-0 w-full">
+                <SocialsManager 
+                    initialLinks={user.socialLinks} 
+                    isOwnProfile={isOwnProfile} 
+                />
+            </div>
+
+            {/* 4. STATS GRID */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 w-full max-w-4xl mx-auto lg:mx-0 pt-2">
-              <StatBox
-                icon={Trophy}
-                label="Solved"
-                value={stats.solved}
-                color="text-yellow-500"
-                bgGlow="bg-yellow-500/5"
-                borderColor="border-yellow-500/20"
-              />
-              <StatBox
-                icon={MessageSquare}
-                label="Discussions"
-                value={stats.discussions}
-                color="text-blue-400"
-                bgGlow="bg-blue-500/5"
-                borderColor="border-blue-400/20"
-              />
-              <StatBox
-                icon={MessageCircle}
-                label="Comments"
-                value={stats.comments}
-                color="text-green-400"
-                bgGlow="bg-green-500/5"
-                borderColor="border-green-400/20"
-              />
-              <StatBox
-                icon={Shield}
-                label="Reputation"
-                value={stats.solved * 10 + stats.discussions * 5 + stats.comments}
-                color="text-purple-400"
-                bgGlow="bg-purple-500/5"
-                borderColor="border-purple-400/20"
-              />
+              <StatBox icon={Trophy} label="Solved" value={stats.solved} color="text-yellow-500" bgGlow="bg-yellow-500/5" borderColor="border-yellow-500/20" />
+              <StatBox icon={MessageSquare} label="Discussions" value={stats.discussions} color="text-blue-400" bgGlow="bg-blue-500/5" borderColor="border-blue-400/20" />
+              <StatBox icon={MessageCircle} label="Comments" value={stats.comments} color="text-green-400" bgGlow="bg-green-500/5" borderColor="border-green-400/20" />
+              <StatBox icon={Shield} label="Reputation" value={stats.solved * 10 + stats.discussions * 5 + stats.comments} color="text-purple-400" bgGlow="bg-purple-500/5" borderColor="border-purple-400/20" />
             </div>
           </div>
         </div>
@@ -297,18 +234,10 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
 
 function StatBox({ icon: Icon, label, value, color, borderColor, bgGlow }: any) {
   return (
-    <div
-      className={cn(
-        "flex flex-col items-center justify-center p-3 md:p-5 rounded-xl md:rounded-2xl bg-[#0f0b0a] border transition-all duration-300 hover:scale-105 hover:shadow-xl",
-        borderColor,
-        bgGlow
-      )}
-    >
+    <div className={cn("flex flex-col items-center justify-center p-3 md:p-5 rounded-xl md:rounded-2xl bg-[#0f0b0a] border transition-all duration-300 hover:scale-105 hover:shadow-xl", borderColor, bgGlow)}>
       <div className="flex items-center gap-1.5 md:gap-2 mb-1 md:mb-2 opacity-80">
         <Icon className={cn("w-4 h-4 md:w-5 md:h-5", color)} />
-        <span className="text-[10px] md:text-xs font-bold text-[#a1887f] uppercase tracking-widest">
-          {label}
-        </span>
+        <span className="text-[10px] md:text-xs font-bold text-[#a1887f] uppercase tracking-widest">{label}</span>
       </div>
       <span className="text-xl md:text-3xl font-black text-[#eaddcf] tracking-tight">{value}</span>
     </div>

@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Share2,
-  Link as LinkIcon,
-  Check,
-  Copy,
-} from "lucide-react";
+import { Share2, Link as LinkIcon, Check, Copy } from "lucide-react";
 import {
   TwitterShareButton,
   LinkedinShareButton,
@@ -85,8 +80,8 @@ export default function Share() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
           <TwitterShareButton url={url} title={title} className="w-full">
             <div className={socialBtnClass}>
-              <Image src={"/logos/twitter.svg"} alt="twitter" width={32} height={32} />
-              <span className="text-xs font-mono uppercase tracking-wider">Twitter</span>
+              <Image src={"/logos/x.svg"} alt="x" width={32} height={32} />
+              <span className="text-xs font-mono uppercase tracking-wider">X</span>
             </div>
           </TwitterShareButton>
 
@@ -98,7 +93,7 @@ export default function Share() {
             className="w-full"
           >
             <div className={socialBtnClass}>
-              <Image src={"/logos/linkedIn.svg"} alt="linkedIn" width={32} height={32} />
+              <Image src={"/logos/linkedin.svg"} alt="linkedIn" width={32} height={32} />
               <span className="text-xs font-mono uppercase tracking-wider">LinkedIn</span>
             </div>
           </LinkedinShareButton>
