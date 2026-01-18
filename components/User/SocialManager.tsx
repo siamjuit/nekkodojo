@@ -32,12 +32,12 @@ interface Props {
 }
 
 export default function SocialsManager({
-  initialLinks,
+  initialLinks, // REMOVED default value = [] to prevent infinite loop
   isOwnProfile = false,
 }: Props) {
   const router = useRouter();
   
-  // Safe fallback
+  // Safe fallback inside body
   const safeLinks = initialLinks || [];
 
   const [links, setLinks] = useState<SocialLink[]>(safeLinks);
@@ -45,7 +45,9 @@ export default function SocialsManager({
   const [isAdding, setIsAdding] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // --- 1. GET DATA FROM DB ---
+  // --- 1. SYNC & FETCH DATA ---
+  
+  // Fetch fresh data from DB (Only for Owner)
   const fetchSocials = useCallback(async () => {
     if (!isOwnProfile) return;
 
@@ -59,13 +61,19 @@ export default function SocialsManager({
     }
   }, [isOwnProfile]);
 
+  // Sync state when props change (Critical for visitors)
+  useEffect(() => {
+    if (initialLinks) {
+      setLinks(initialLinks);
+    }
+  }, [initialLinks]);
+
+  // Fetch fresh data on mount if owner (Critical for editing consistency)
   useEffect(() => {
     if (isOwnProfile) {
       fetchSocials();
-    } else if (initialLinks) {
-      setLinks(initialLinks);
     }
-  }, [initialLinks, isOwnProfile, fetchSocials]);
+  }, [isOwnProfile, fetchSocials]);
 
 
   // --- CRUD OPERATIONS ---
@@ -92,6 +100,7 @@ export default function SocialsManager({
       toast.success("Connection added");
       setIsAdding(false);
       
+      // Refresh local data & Server Components
       await fetchSocials(); 
       router.refresh(); 
 
@@ -143,6 +152,7 @@ export default function SocialsManager({
     const linkToDelete = links[index];
     const previousLinks = [...links];
 
+    // Optimistic Update
     setLinks(links.filter((_, i) => i !== index));
     setEditingIndex(null);
 
@@ -159,7 +169,7 @@ export default function SocialsManager({
       router.refresh();
 
     } catch (error) {
-      setLinks(previousLinks);
+      setLinks(previousLinks); // Revert
       toast.error("Could not delete link");
     }
   };
@@ -257,6 +267,7 @@ function SocialLinkItem({
   onEdit: () => void;
 }) {
   const info = getPlatform(url);
+  // Ensure valid URL for href
   const href = url.startsWith("http") ? url : `https://${url}`;
 
   return (
@@ -339,6 +350,7 @@ function SocialLinkEditor({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Lock click outside while loading to prevent accidental cancel
     if (isLoading) return;
 
     const handleClickOutside = (event: MouseEvent) => {
