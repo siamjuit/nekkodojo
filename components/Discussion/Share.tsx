@@ -93,7 +93,7 @@ export default function Share() {
             className="w-full"
           >
             <div className={socialBtnClass}>
-              <Image src={"/logos/linkedin.svg"} alt="linkedIn" width={32} height={32} />
+              <Image src={"/logos/linkedIn.svg"} alt="linkedIn" width={32} height={32} />
               <span className="text-xs font-mono uppercase tracking-wider">LinkedIn</span>
             </div>
           </LinkedinShareButton>

@@ -1,5 +1,5 @@
 import Github from "@/public/logos/github.svg";
-import LinkedIn from "@/public/logos/linkedin.svg";
+import LinkedIn from "@/public/logos/linkedIn.svg";
 import Leetcode from "@/public/logos/leetcode.svg";
 import X from "@/public/logos/x.svg";
 import Gitlab from "@/public/logos/gitlab.svg";
