@@ -200,7 +200,7 @@ export default function SocialsManager({
         Social Connections
       </h3>
 
-      <ScrollArea className="h-[280px] w-full rounded-xl border border-[#3e2723]/50 bg-[#0f0b0a]/20 p-2">
+      <ScrollArea className="max-h-[300px] w-full rounded-xl border border-[#3e2723]/50 bg-[#0f0b0a]/20 p-2">
         <div className="space-y-2 pr-3">
           {/* --- LINKS LIST --- */}
           {links.map((link, index) => {

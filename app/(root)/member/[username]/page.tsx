@@ -146,6 +146,7 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
       profileUrl: true,
       email: true,
       createdAt: true,
+      socialLinks: true,
     },
   });
   if (!currUser) return null;
