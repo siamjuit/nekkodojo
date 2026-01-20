@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Play,
-  Unlock,
-  Lock,
-  CheckCircle2,
-  Loader2,
-} from "lucide-react";
+import { Play, Unlock, Lock, CheckCircle2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,12 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { DojoProgress } from "../ui/dojo-progress";
@@ -180,7 +169,7 @@ export default function QuestionExplorer({ data }: Props) {
                     <div className="flex items-center gap-3">
                       <span
                         className={cn(
-                          "text-lg font-bold transition-colors",
+                          "text-xs sm:text-lg font-bold transition-colors",
                           isCategoryCompleted
                             ? "text-green-500"
                             : "text-[#eaddcf] group-hover:text-[#d4af37]"
@@ -193,11 +182,11 @@ export default function QuestionExplorer({ data }: Props) {
                           variant="outline"
                           className="border-green-600 bg-green-900/20 text-green-400 gap-1 px-2"
                         >
-                          <CheckCircle2 className="w-3 h-3" /> Completed
+                          <CheckCircle2 className="w-3 h-3" /> <span className="hidden sm:inline" >Completed</span>
                         </Badge>
                       )}
                     </div>
-                    <span className="text-xs font-mono text-[#a1887f]">
+                    <span className="px-1 text-xs font-mono text-[#a1887f]">
                       {solvedCount} / {totalQuestions} ({percentComplete}%)
                     </span>
                   </div>
@@ -276,8 +265,8 @@ export default function QuestionExplorer({ data }: Props) {
                                         q.difficulty === "Easy"
                                           ? "text-green-400"
                                           : q.difficulty === "Medium"
-                                          ? "text-yellow-400"
-                                          : "text-red-400"
+                                            ? "text-yellow-400"
+                                            : "text-red-400"
                                       )}
                                     >
                                       {q.difficulty}
@@ -313,7 +302,7 @@ export default function QuestionExplorer({ data }: Props) {
                                         className="flex items-center gap-2"
                                       >
                                         <Play className="w-3.5 h-3.5 fill-current" />
-                                        Solve Problem
+                                        Solve <span className="hidden sm:inline">Problem</span>
                                       </Link>
                                     </Button>
 
@@ -343,7 +332,8 @@ export default function QuestionExplorer({ data }: Props) {
                                         ) : (
                                           <span className="flex items-center gap-2">
                                             <Lock className="w-3.5 h-3.5" />
-                                            <span>Solution Locked</span>
+                                            <span>Solution </span>
+                                            <span className="hidden sm:inline">Locked</span>
                                           </span>
                                         )}
                                       </Button>
