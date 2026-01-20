@@ -28,7 +28,7 @@ import Link from "next/link";
 import Share from "../Discussion/Share";
 import SocialsManager from "./SocialManager"; // Import the component
 
-interface Props {
+declare interface Props {
   user: {
     name: string | null;
     firstName: string | null;
@@ -44,6 +44,7 @@ interface Props {
     solved: number;
     discussions: number;
     comments: number;
+    reputation: number;
   };
   isOwnProfile?: boolean;
 }
@@ -92,10 +93,9 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
       {/* 1. EXPANDED BANNER */}
       <div className="h-32 md:h-48 w-full bg-linear-to-r from-[#0f0b0a] via-[#3e2723]/40 to-[#0f0b0a] border-b border-[#3e2723] relative">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-yellow-500 via-transparent to-transparent"></div>
-        
+
         {/* --- TOP RIGHT ACTIONS CONTAINER --- */}
         <div className="absolute top-3 right-3 md:top-4 md:right-4 flex items-center gap-2 md:gap-3">
-          
           {/* Edit Button (Only for Owner) */}
           {isOwnProfile && (
             <Sheet>
@@ -117,7 +117,14 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
               >
                 <SheetTitle className="sr-only">Edit Profile</SheetTitle>
                 <div className="h-full w-full">
-                  <UserProfile routing="hash" appearance={{ /* ... your clerk styles ... */ }} />
+                  <UserProfile
+                    routing="hash"
+                    appearance={
+                      {
+                        /* ... your clerk styles ... */
+                      }
+                    }
+                  />
                 </div>
               </SheetContent>
             </Sheet>
@@ -125,7 +132,7 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
 
           {/* Share Button */}
           <div className="h-9 md:h-10 flex items-center">
-             <Share />
+            <Share />
           </div>
         </div>
       </div>
@@ -140,7 +147,10 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
               <div className="relative w-28 h-28 md:w-40 md:h-40 rounded-full overflow-hidden border-4 md:border-[6px] border-[#1a110d] bg-[#0f0b0a] shadow-2xl">
                 <Image src={user.profileUrl!} alt={fullName} fill className="object-cover" />
               </div>
-              <div className="absolute bottom-1 right-1 md:bottom-2 md:right-2 bg-[#1a110d] border-2 border-[#3e2723] rounded-full p-1.5 md:p-2.5 shadow-lg" title="Verified Ninja">
+              <div
+                className="absolute bottom-1 right-1 md:bottom-2 md:right-2 bg-[#1a110d] border-2 border-[#3e2723] rounded-full p-1.5 md:p-2.5 shadow-lg"
+                title="Verified Ninja"
+              >
                 <Shield className="w-4 h-4 md:w-6 md:h-6 text-[#d4af37] fill-[#d4af37]/10" />
               </div>
             </div>
@@ -148,20 +158,28 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
 
           {/* 3. INFO COLUMN */}
           <div className="flex-1 pt-2 md:pt-24 text-center lg:text-left space-y-6 md:space-y-8">
-            
             {/* Header Info */}
             <div className="space-y-3">
               <div className="flex flex-col lg:flex-row items-center lg:items-end gap-2 md:gap-4">
                 <h1 className="text-3xl md:text-5xl font-black text-[#eaddcf] tracking-tight leading-none">
                   {fullName}
                 </h1>
-                <Badge variant="outline" className={cn("mb-1 text-xs md:text-sm font-bold border px-3 md:px-4 py-0.5 md:py-1 rounded-full", currentBelt.color)}>
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "mb-1 text-xs md:text-sm font-bold border px-3 md:px-4 py-0.5 md:py-1 rounded-full",
+                    currentBelt.color
+                  )}
+                >
                   {currentBelt.name}
                 </Badge>
               </div>
 
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-xs md:text-sm text-[#a1887f] font-medium">
-                <Link href={`/member/${user.name}`} className="flex items-center gap-1.5 text-[#d4af37]">
+                <Link
+                  href={`/member/${user.name}`}
+                  className="flex items-center gap-1.5 text-[#d4af37]"
+                >
                   <AtSign className="w-3 h-3 md:w-4 md:h-4" /> {user.name}
                 </Link>
                 <span className="flex items-center gap-1.5 hover:text-[#eaddcf] transition-colors">
@@ -194,10 +212,20 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
                     placeholder="Tell us about your coding journey..."
                   />
                   <div className="flex justify-end gap-2">
-                    <Button size="sm" variant="ghost" onClick={() => setIsEditingBio(false)} className="text-[#a1887f] hover:text-[#eaddcf]">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setIsEditingBio(false)}
+                      className="text-[#a1887f] hover:text-[#eaddcf]"
+                    >
                       <X className="w-4 h-4 mr-1" /> Cancel
                     </Button>
-                    <Button size="sm" onClick={handleSaveBio} disabled={isSavingBio} className="bg-[#d4af37] text-black hover:bg-[#b5952f]">
+                    <Button
+                      size="sm"
+                      onClick={handleSaveBio}
+                      disabled={isSavingBio}
+                      className="bg-[#d4af37] text-black hover:bg-[#b5952f]"
+                    >
                       <Check className="w-4 h-4 mr-1" /> {isSavingBio ? "Saving..." : "Save"}
                     </Button>
                   </div>
@@ -212,18 +240,43 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
             {/* --- SOCIALS MANAGER --- */}
             {/* Added container to restrict width on desktop but full width on mobile */}
             <div className="max-w-3xl mx-auto lg:mx-0 w-full">
-                <SocialsManager 
-                    initialLinks={user.socialLinks} 
-                    isOwnProfile={isOwnProfile} 
-                />
+              <SocialsManager initialLinks={user.socialLinks} isOwnProfile={isOwnProfile} />
             </div>
 
             {/* 4. STATS GRID */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 w-full max-w-4xl mx-auto lg:mx-0 pt-2">
-              <StatBox icon={Trophy} label="Solved" value={stats.solved} color="text-yellow-500" bgGlow="bg-yellow-500/5" borderColor="border-yellow-500/20" />
-              <StatBox icon={MessageSquare} label="Discussions" value={stats.discussions} color="text-blue-400" bgGlow="bg-blue-500/5" borderColor="border-blue-400/20" />
-              <StatBox icon={MessageCircle} label="Comments" value={stats.comments} color="text-green-400" bgGlow="bg-green-500/5" borderColor="border-green-400/20" />
-              <StatBox icon={Shield} label="Reputation" value={stats.solved * 10 + stats.discussions * 5 + stats.comments} color="text-purple-400" bgGlow="bg-purple-500/5" borderColor="border-purple-400/20" />
+              <StatBox
+                icon={Trophy}
+                label="Solved"
+                value={stats.solved}
+                color="text-yellow-500"
+                bgGlow="bg-yellow-500/5"
+                borderColor="border-yellow-500/20"
+              />
+              <StatBox
+                icon={MessageSquare}
+                label="Discussions"
+                value={stats.discussions}
+                color="text-blue-400"
+                bgGlow="bg-blue-500/5"
+                borderColor="border-blue-400/20"
+              />
+              <StatBox
+                icon={MessageCircle}
+                label="Comments"
+                value={stats.comments}
+                color="text-green-400"
+                bgGlow="bg-green-500/5"
+                borderColor="border-green-400/20"
+              />
+              <StatBox
+                icon={Shield}
+                label="Reputation"
+                value={stats.reputation}
+                color="text-purple-400"
+                bgGlow="bg-purple-500/5"
+                borderColor="border-purple-400/20"
+              />
             </div>
           </div>
         </div>
@@ -234,10 +287,18 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
 
 function StatBox({ icon: Icon, label, value, color, borderColor, bgGlow }: any) {
   return (
-    <div className={cn("flex flex-col items-center justify-center p-3 md:p-5 rounded-xl md:rounded-2xl bg-[#0f0b0a] border transition-all duration-300 hover:scale-105 hover:shadow-xl", borderColor, bgGlow)}>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center p-3 md:p-5 rounded-xl md:rounded-2xl bg-[#0f0b0a] border transition-all duration-300 hover:scale-105 hover:shadow-xl",
+        borderColor,
+        bgGlow
+      )}
+    >
       <div className="flex items-center gap-1.5 md:gap-2 mb-1 md:mb-2 opacity-80">
         <Icon className={cn("w-4 h-4 md:w-5 md:h-5", color)} />
-        <span className="text-[10px] md:text-xs font-bold text-[#a1887f] uppercase tracking-widest">{label}</span>
+        <span className="text-[10px] md:text-xs font-bold text-[#a1887f] uppercase tracking-widest">
+          {label}
+        </span>
       </div>
       <span className="text-xl md:text-3xl font-black text-[#eaddcf] tracking-tight">{value}</span>
     </div>

@@ -53,7 +53,7 @@ const Navbar = () => {
               let href = navLink.url;
               if (user) {
                 if (navLink.name === "Profile" && user.username) {
-                  href = `/member/${user.username}`;
+                  href = navLink.url + `/${user.username}`;
                 }
               }
               const isActive = pathname === href;
@@ -118,7 +118,7 @@ const Navbar = () => {
               <div className="min-w-8 min-h-8">
                 {user ? (
                   <>
-                    <Link href={`/${user.username}`}>
+                    <Link href={`/member/${user.username}`}>
                       <Image
                         src={user.imageUrl}
                         alt={user.username || "profile_image"}
@@ -158,9 +158,13 @@ const Navbar = () => {
                     NavLinks.map((navLink) => {
                       const Icon = navLink.icon;
                       // Mobile Active Logic
-                      const isActive =
-                        pathname === navLink.url ||
-                        (pathname.startsWith(navLink.url) && navLink.url !== "/");
+                      let href = navLink.url;
+                      if (user) {
+                        if (navLink.name === "Profile" && user.username) {
+                          href = navLink.url + `/${user.username}`;
+                        }
+                      }
+                      const isActive = pathname === href;
 
                       return (
                         <div key={navLink.name}>
@@ -177,7 +181,7 @@ const Navbar = () => {
                             `}
                           >
                             <Link
-                              href={navLink.url}
+                              href={href}
                               className="flex items-center gap-3 font-mono text-sm tracking-wide"
                             >
                               <Icon size={16} className={isActive ? "opacity-100" : "opacity-70"} />

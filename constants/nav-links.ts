@@ -3,7 +3,7 @@ import { User, Bookmark, MessageSquare, BookOpen } from "lucide-react";
 export const NavLinks: NavLinkProps[] = [
   {
     name: "Profile",
-    url: "/",
+    url: "/member",
     icon: User,
   },
   {
