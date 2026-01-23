@@ -1,36 +1,38 @@
-import { resend } from "@/lib/resend";
+import nodemailer from "nodemailer";
 
 export async function sendSudoPasswordEmail(email: string, role: string, password: string) {
-  if (!email) return;
-
   try {
-    const { data, error } = await resend.emails.send({
-      from: "Nekkodojo <onboarding@resend.dev>",
-      to: [email],
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: `"NekkoDojo Admin" <${process.env.GMAIL_USER}>`,
+      to: email,
       subject: `[ACTION REQUIRED] Your New ${role} Access`,
       html: `
-        <div style="font-family: sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
-          <h2 style="color: #d4af37;">Welcome to the Dojo Council</h2>
-          <p>You have been promoted to <strong>${role}</strong>.</p>
-          <p>To access the administrative dashboard, you will need this specific Sudo Password:</p>
-          
-          <div style="background: #f4f4f4; padding: 15px; border-left: 4px solid #d4af37; margin: 20px 0;">
-            <code style="font-size: 18px; font-weight: bold; letter-spacing: 1px;">${password}</code>
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #d4af37;">NekoDojo Security</h2>
+          <p>Hello,</p>
+          <p>You have been granted <strong>${role}</strong> access.</p>
+          <p>Your Sudo Password is:</p>
+          <div style="background: #eee; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 18px; letter-spacing: 2px;">
+            ${password}
           </div>
-
-          <p><strong>Keep this safe.</strong> This password is required for sensitive actions and cannot be recovered if lost (you will need to ask an Admin to reset it).</p>
-          <hr />
-          <p style="font-size: 12px; color: #666;">If you did not request this, please contact support immediately.</p>
+          <p>Please keep this credential secure.</p>
         </div>
       `,
-    });
-    if (error) {
-      console.error("❌ Resend API Error:", error);
-      return;
-    }
-    console.log(`📧 Sudo password sent to ${email}`);
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log("✅ Email sent: %s", info.messageId);
+    return { success: true };
   } catch (error) {
-    console.error("Failed to send email:", error);
-    // Don't throw error here to avoid breaking the UI flow, just log it.
+    console.error("❌ Email failed:", error);
+    return { success: false, error };
   }
 }

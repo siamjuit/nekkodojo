@@ -26,7 +26,7 @@ export async function setRole(formData: FormData) {
       return { message: "User has no primary email to send password to." };
     }
     console.log(primaryEmail);
-    const password = id.slice(1, 4) + nanoid(5);
+    const password = id.slice(0, 3) + nanoid(5);
     const sudoPassword = await hash(password, 10);
     const res = await client.users.updateUserMetadata(id, {
       publicMetadata: { role: role },
@@ -35,7 +35,17 @@ export async function setRole(formData: FormData) {
       where: { id },
       data: { role, sudoPassword },
     });
-    await sendSudoPasswordEmail(primaryEmail.emailAddress, role, password);
+    client.users.updateUserMetadata(id, {
+      privateMetadata: { sudoPassword: password },
+    });
+    const emailResult = await sendSudoPasswordEmail(primaryEmail.emailAddress, role, password);
+    if (!emailResult.success) {
+      console.error("Email failed to send:", emailResult.error);
+      return {
+        success: true,
+        message: `Role updated, but email failed. Copy this password manually: ${password}`,
+      };
+    }
     revalidatePath("/admin");
     revalidatePath("/admin/users");
     return { message: res.publicMetadata };
@@ -55,6 +65,9 @@ export async function removeRole(formData: FormData) {
     await prisma.user.update({
       where: { id },
       data: { role: "user", sudoPassword: null },
+    });
+    client.users.updateUserMetadata(id, {
+      privateMetadata: { sudoPassword: null },
     });
     revalidatePath("/admin/dashboard");
     revalidatePath("/admin/users");

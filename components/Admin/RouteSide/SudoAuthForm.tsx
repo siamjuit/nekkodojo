@@ -7,7 +7,7 @@ import { toast } from "sonner"; // Assuming you use Sonner or standard toast
 
 export default function SudoAuthForm() {
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("admin"); // Default to admin
+  const [role, setRole] = useState("user"); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -30,15 +30,10 @@ export default function SudoAuthForm() {
         throw new Error(data || "Authentication failed");
       }
 
-      toast.success("Identity Verified", {
-        description: `Welcome back, ${role}.`,
-      });
-
-      // Refresh to trigger the Server Component (Layout) to re-check the cookie
+      toast.success(`Identity Verified, Welcome back ${role}`);
       router.refresh();
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
-      // Clear password on error for security
       setPassword("");
     } finally {
       setLoading(false);
@@ -46,7 +41,7 @@ export default function SudoAuthForm() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f0b0a] p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       {/* Visual Decoration */}
       <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-[#3e2723] via-[#d4af37] to-[#3e2723] opacity-50" />
 
