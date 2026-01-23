@@ -1,7 +1,7 @@
 import { Users, UserX, ShieldAlert, ShieldCheck, Search, Calendar, Mail } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { AdminUserCard } from "@/components/Admin/RouteSide/AdminUserCard";
-import PaginationControls from "../../../../components/Admin/RouteSide/PaginationControls";
+import PaginationControls from "@/components/Admin/RouteSide/PaginationControls"; 
 import { currentUser } from "@clerk/nextjs/server";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -67,8 +67,7 @@ export default async function AdminUsersPage(props: {
 
   // Reusable Row Component for consistency
   const UserRow = ({ u, borderAccent }: { u: any; borderAccent: string }) => (
-    <Link
-      href={`/${u.name}`}
+    <div
       className={`
         group relative grid grid-cols-1 md:grid-cols-12 gap-4 items-center 
         p-4 rounded-xl border border-[#3e2723] bg-[#1a110d] 
@@ -119,7 +118,7 @@ export default async function AdminUsersPage(props: {
           <AdminUserCard user={mapToUserProps(u)} />
         </div>
       </div>
-    </Link>
+    </div>
   );
 
   return (

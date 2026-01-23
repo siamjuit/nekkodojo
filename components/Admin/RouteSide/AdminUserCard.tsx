@@ -18,7 +18,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { removeRole, setRole } from "@/app/(admin)/_actions";
+import { removeRole, setRole } from "@/app/(admin)/(protected)/_actions";
 import { toast } from "sonner";
 
 // We only need the Logic and the Dropdown. 

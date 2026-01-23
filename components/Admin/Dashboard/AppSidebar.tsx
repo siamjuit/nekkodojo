@@ -16,6 +16,7 @@ import {
   Building2,
   Plus,
   List,
+  Key,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -294,6 +295,17 @@ export function AppSidebar() {
                     >
                       <Home className="size-4 opacity-70" />
                       Return to Dojo
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator className="bg-[#3e2723]" />
+                  <DropdownMenuItem asChild className="focus:bg-[#3e2723]/30 focus:text-[#d4af37]">
+                    <Link
+                      href="/auth/update"
+                      className="cursor-pointer flex items-center gap-2"
+                    >
+                      <Key className="size-4 opacity-70" />
+                      Change Sudo Password
                     </Link>
                   </DropdownMenuItem>
 

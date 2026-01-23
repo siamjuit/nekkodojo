@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { dismissReport, deleteDiscussion, deleteComment } from "@/app/(admin)/_actions"; 
+import { dismissReport, deleteDiscussion, deleteComment } from "@/app/(admin)/(protected)/_actions"; 
 import { toast } from "sonner";
 import Link from "next/link";
 

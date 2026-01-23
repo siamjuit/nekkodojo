@@ -3,7 +3,10 @@
 import { prisma } from "@/lib/prisma";
 import { checkRole } from "@/utils/roles";
 import { clerkClient } from "@clerk/nextjs/server";
+import { nanoid } from "nanoid";
 import { revalidatePath } from "next/cache";
+import { hash } from "bcryptjs";
+import { sendSudoPasswordEmail } from "@/utils/roleEmail";
 
 export async function setRole(formData: FormData) {
   const client = await clerkClient();
@@ -16,13 +19,23 @@ export async function setRole(formData: FormData) {
   try {
     const role = formData.get("role") as string;
     const id = formData.get("id") as string;
+    const user = await client.users.getUser(id);
+    const primaryEmailId = user.primaryEmailAddressId;
+    const primaryEmail = user.emailAddresses.find((e) => e.id === primaryEmailId);
+    if (!primaryEmail) {
+      return { message: "User has no primary email to send password to." };
+    }
+    console.log(primaryEmail);
+    const password = id.slice(1, 4) + nanoid(5);
+    const sudoPassword = await hash(password, 10);
     const res = await client.users.updateUserMetadata(id, {
       publicMetadata: { role: role },
     });
     await prisma.user.update({
       where: { id },
-      data: { role },
+      data: { role, sudoPassword },
     });
+    await sendSudoPasswordEmail(primaryEmail.emailAddress, role, password);
     revalidatePath("/admin");
     revalidatePath("/admin/users");
     return { message: res.publicMetadata };
@@ -41,7 +54,7 @@ export async function removeRole(formData: FormData) {
     });
     await prisma.user.update({
       where: { id },
-      data: { role: "user" },
+      data: { role: "user", sudoPassword: null },
     });
     revalidatePath("/admin/dashboard");
     revalidatePath("/admin/users");

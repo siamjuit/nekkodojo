@@ -27,16 +27,30 @@ export async function PATCH(request: Request) {
 
     const currentStatus = existingProgress.status;
     const newStatus = currentStatus === "completed" ? "attempted" : "completed";
+    let countUpdate = undefined;
 
-    const updatedProgress = await prisma.userProgress.update({
-      where: {
-        userId_questionId: { userId: user.id, questionId: qId },
-      },
-      data: {
-        status: newStatus,
-      },
-    });
+    if (newStatus === "completed" && currentStatus !== "completed") {
+      countUpdate = { increment: 1 };
+    } else if (currentStatus === "completed" && newStatus !== "completed") {
+      countUpdate = { decrement: 1 };
+    }
+    const [updatedProgress, updatedSolved] = await prisma.$transaction([
+      prisma.userProgress.update({
+        where: {
+          userId_questionId: { userId: user.id, questionId: qId },
+        },
+        data: {
+          status: newStatus,
+        },
+      }),
 
+      prisma.user.update({
+        where: { id: user.id },
+        data: {
+          noOfQuestionsSolved: countUpdate,
+        },
+      }),
+    ]);
     return NextResponse.json(updatedProgress, { status: 200 });
   } catch (error) {
     console.error("[PROGRESS_PATCH]", error);

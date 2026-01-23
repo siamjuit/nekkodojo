@@ -18,6 +18,7 @@ import {
 import { DiscussionSkeleton } from "@/components/Discussion/DiscussionSkeleton";
 import { AnimatePresence, motion } from "framer-motion";
 import DiscussionPreviewCard from "@/components/Discussion/DiscussionPreview";
+import { fetchItems } from "@/lib/actions/caching";
 
 export default function DiscussionPage() {
   const router = useRouter();
@@ -38,6 +39,7 @@ export default function DiscussionPage() {
       setIsFetching(true);
       try {
         const response = await fetch(`/api/discussions?${searchParams.toString()}`);
+        console.log(Date.now());
         if (!response.ok) throw new Error("Failed to fetch");
 
         const result = await response.json();
@@ -50,7 +52,7 @@ export default function DiscussionPage() {
         setIsInitialLoading(false);
       }
     };
-    fetchDiscussions();
+    fetchItems({key: "discussions", fetcher: fetchDiscussions, expires: 60 * 60});
   }, [searchParams]);
 
   const handleSortChange = (newSort: string) => {

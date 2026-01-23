@@ -1,13 +1,11 @@
 import jwt from "jsonwebtoken";
 
-interface Payload {
+declare interface Payload {
   userId: string;
-  username: string;
-  admin: boolean;
-  moderator: boolean;
+  role: string;
 }
 
-const secret = process.env.ACCESS_TOKEN_SECRET!;
+const secret = process.env.JWT_SECRET!;
 
 export const createJWTToken = (payload: Payload) => {
   return jwt.sign(payload, secret, { expiresIn: "1d" });

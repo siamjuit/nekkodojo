@@ -31,14 +31,15 @@ model User {
   role           String  @default("user")
   isShadowBanned Boolean @default(false)
   isBanned       Boolean @default(false)
+  sudoPassword   String?
 
-  reports Report[]
-
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  userProgresses UserProgress[]
-  shelves        Shelf[]
-  socialLinks    SocialLink[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  userProgresses  UserProgress[]
+  shelves         Shelf[]
+  socialLinks     SocialLink[]
+  reportsCreated  Report[]       @relation("ReportsGiven")
+  reportsReceived Report[]       @relation("ReportsReceived")
 }
 
 model SocialLink {
@@ -47,8 +48,8 @@ model SocialLink {
   platform    String
   platformUrl String
 
-  userId   String
-  user     User   @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -172,13 +173,16 @@ model Report {
   reason String
 
   reporterId String
-  reporter   User   @relation(fields: [reporterId], references: [id])
+  reporter   User   @relation("ReportsGiven", fields: [reporterId], references: [id])
 
   discussionId String?
   discussion   Discussion? @relation(fields: [discussionId], references: [id], onDelete: SetNull)
 
   commentId String?
   comment   Comment? @relation(fields: [commentId], references: [id], onDelete: SetNull)
+
+  reportedId String?
+  reported   User?   @relation("ReportsReceived", fields: [reportedId], references: [id])
 
   status    ReportStatusType @default(PENDING)
   createdAt DateTime         @default(now())

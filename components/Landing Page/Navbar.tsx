@@ -11,7 +11,6 @@ import {
 } from "@clerk/nextjs";
 import { LayoutDashboard, MenuIcon, UserCircleIcon } from "lucide-react";
 import Link from "next/link";
-// 1. Import usePathname
 import { usePathname } from "next/navigation";
 import {
   Menubar,

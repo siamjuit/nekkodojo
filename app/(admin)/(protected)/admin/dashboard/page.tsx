@@ -11,7 +11,8 @@ import {
   Settings,
   Activity,
   User,
-  MessageSquareText // Added Icon
+  MessageSquareText, // Added Icon
+  FeatherIcon
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { clerkClient } from "@clerk/nextjs/server";
@@ -259,10 +260,10 @@ export default async function AdminDashboard(params: {
                        <span className="text-sm text-[#eaddcf]">The Tribunal</span>
                     </div>
                   </Link>
-                  <Link href="/admin/settings" className="block w-full">
+                  <Link href="/admin/questions" className="block w-full">
                     <div className="flex items-center gap-3 rounded-lg border border-[#3e2723] bg-[#0f0b0a] p-3 hover:bg-[#3e2723]/40 hover:border-[#d4af37]/50 transition-all group">
-                       <Settings size={18} className="text-[#a1887f] group-hover:text-[#d4af37]" />
-                       <span className="text-sm text-[#eaddcf]">System Settings</span>
+                       <FeatherIcon size={18} className="text-[#a1887f] group-hover:text-[#d4af37]" />
+                       <span className="text-sm text-[#eaddcf]">Manage Katas</span>
                     </div>
                   </Link>
                 </div>
