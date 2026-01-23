@@ -2,6 +2,7 @@
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw"; // Import this
 import { ExternalLink } from "lucide-react";
 
 interface Props {
@@ -13,7 +14,16 @@ export default function MarkdownViewer({ content }: Props) {
     <article className="prose prose-invert max-w-none leading-relaxed">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]} // Required to render <u> tags
         components={{
+          // Underline Component
+          u: ({ children }) => (
+            <u className="decoration-[#d4af37] decoration-2 underline-offset-4 text-[#eaddcf]">
+              {children}
+            </u>
+          ),
+
+          // Existing Components...
           a: ({ node, children, href, ...props }) => {
             return (
               <a
@@ -28,12 +38,20 @@ export default function MarkdownViewer({ content }: Props) {
               </a>
             );
           },
-          h1: ({ children }) => <h1 className="text-2xl font-bold text-[#eaddcf] mt-6 mb-4 border-b border-[#3e2723] pb-2">{children}</h1>,
-          h2: ({ children }) => <h2 className="text-xl font-bold text-[#eaddcf] mt-5 mb-3">{children}</h2>,
-          h3: ({ children }) => <h3 className="text-lg font-bold text-[#d4af37] mt-4 mb-2">{children}</h3>,
-          
+          h1: ({ children }) => (
+            <h1 className="text-2xl font-bold text-[#eaddcf] mt-6 mb-4 border-b border-[#3e2723] pb-2">
+              {children}
+            </h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="text-xl font-bold text-[#eaddcf] mt-5 mb-3">{children}</h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="text-lg font-bold text-[#d4af37] mt-4 mb-2">{children}</h3>
+          ),
           p: ({ children }) => <p className="mb-4 text-[#eaddcf]/90">{children}</p>,
 
+          // ... (Rest of your existing components: code, blockquote, ul, ol, table, etc.)
           code: ({ node, className, children, ...props }) => {
             const match = /language-(\w+)/.exec(className || "");
             const isInline = !match && !String(children).includes("\n");
@@ -48,9 +66,9 @@ export default function MarkdownViewer({ content }: Props) {
             ) : (
               <div className="relative my-4 rounded-lg overflow-hidden border border-[#3e2723] bg-[#0f0b0a]">
                 <div className="flex items-center justify-between px-4 py-2 bg-[#1a110d] border-b border-[#3e2723]">
-                   <span className="text-xs text-[#a1887f] font-mono lowercase">
-                     {match?.[1] || "code"}
-                   </span>
+                  <span className="text-xs text-[#a1887f] font-mono lowercase">
+                    {match?.[1] || "code"}
+                  </span>
                 </div>
                 <pre className="p-4 overflow-x-auto bg-[#0f0b0a] text-sm text-[#eaddcf] font-mono scrollbar-thin scrollbar-thumb-[#3e2723] scrollbar-track-transparent">
                   <code className={className} {...props}>
@@ -65,17 +83,31 @@ export default function MarkdownViewer({ content }: Props) {
               {children}
             </blockquote>
           ),
-
-          ul: ({ children }) => <ul className="list-disc list-inside space-y-1 text-[#eaddcf] mb-4 ml-2 marker:text-[#d4af37]">{children}</ul>,
-          ol: ({ children }) => <ol className="list-decimal list-inside space-y-1 text-[#eaddcf] mb-4 ml-2 marker:text-[#d4af37]">{children}</ol>,
-
+          ul: ({ children }) => (
+            <ul className="list-disc list-inside space-y-1 text-[#eaddcf] mb-4 ml-2 marker:text-[#d4af37]">
+              {children}
+            </ul>
+          ),
+          ol: ({ children }) => (
+            <ol className="list-decimal list-inside space-y-1 text-[#eaddcf] mb-4 ml-2 marker:text-[#d4af37]">
+              {children}
+            </ol>
+          ),
           table: ({ children }) => (
             <div className="overflow-x-auto my-6 border border-[#3e2723] rounded-lg">
-               <table className="w-full text-left text-sm text-[#eaddcf]">{children}</table>
+              <table className="w-full text-left text-sm text-[#eaddcf]">{children}</table>
             </div>
           ),
-          thead: ({ children }) => <thead className="bg-[#1a110d] text-[#d4af37] font-bold uppercase tracking-wider">{children}</thead>,
-          tr: ({ children }) => <tr className="border-b border-[#3e2723] last:border-0 hover:bg-[#1a110d]/50 transition-colors">{children}</tr>,
+          thead: ({ children }) => (
+            <thead className="bg-[#1a110d] text-[#d4af37] font-bold uppercase tracking-wider">
+              {children}
+            </thead>
+          ),
+          tr: ({ children }) => (
+            <tr className="border-b border-[#3e2723] last:border-0 hover:bg-[#1a110d]/50 transition-colors">
+              {children}
+            </tr>
+          ),
           th: ({ children }) => <th className="px-6 py-3">{children}</th>,
           td: ({ children }) => <td className="px-6 py-4">{children}</td>,
         }}

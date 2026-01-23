@@ -11,9 +11,14 @@ import {
   Quote,
   Eye,
   Edit3,
+  Heading1, // New
+  Heading2, // New
+  Heading3, // New
+  Underline, // New
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw"; // Import this to preview underlines in the "Preview" tab
 
 interface Props {
   value: string;
@@ -86,7 +91,26 @@ export default function RichTextEditor({ value, onChange, placeholder, label }: 
       </div>
       <div className="border border-[#3e2723] rounded-xl overflow-hidden bg-[#0f0b0a]/50 focus-within:border-[#d4af37] focus-within:ring-1 focus-within:ring-[#d4af37]/50 transition-all">
         {activeTab === "write" && (
-          <div className="flex items-center gap-1 p-2 border-b border-[#3e2723] bg-[#1a110d]/50 overflow-x-auto">
+          <div className="flex items-center gap-1 p-2 border-b border-[#3e2723] bg-[#1a110d]/50 overflow-x-auto custom-scrollbar">
+            {/* Headers Group */}
+            <ToolbarButton
+              icon={<Heading1 size={16} />}
+              onClick={() => insertFormat("# ")}
+              tooltip="Heading 1"
+            />
+            <ToolbarButton
+              icon={<Heading2 size={16} />}
+              onClick={() => insertFormat("## ")}
+              tooltip="Heading 2"
+            />
+            <ToolbarButton
+              icon={<Heading3 size={16} />}
+              onClick={() => insertFormat("### ")}
+              tooltip="Heading 3"
+            />
+            <div className="w-px h-5 bg-[#3e2723] mx-1" />
+
+            {/* Formatting Group */}
             <ToolbarButton
               icon={<Bold size={16} />}
               onClick={() => insertFormat("**", "**")}
@@ -97,7 +121,14 @@ export default function RichTextEditor({ value, onChange, placeholder, label }: 
               onClick={() => insertFormat("*", "*")}
               tooltip="Italic"
             />
+            <ToolbarButton
+              icon={<Underline size={16} />}
+              onClick={() => insertFormat("<u>", "</u>")}
+              tooltip="Underline"
+            />
+
             <div className="w-px h-5 bg-[#3e2723] mx-1" />
+
             <ToolbarButton
               icon={<LinkIcon size={16} />}
               onClick={() => insertFormat("[", "](url)")}
@@ -113,7 +144,9 @@ export default function RichTextEditor({ value, onChange, placeholder, label }: 
               onClick={() => insertFormat("`", "`")}
               tooltip="Code"
             />
+
             <div className="w-px h-5 bg-[#3e2723] mx-1" />
+
             <ToolbarButton
               icon={<List size={16} />}
               onClick={() => insertFormat("- ")}
@@ -136,43 +169,20 @@ export default function RichTextEditor({ value, onChange, placeholder, label }: 
               className="w-full h-full min-h-[250px] p-4 bg-transparent text-[#eaddcf] placeholder:text-[#5d4037] resize-y focus:outline-none font-mono text-sm"
             />
           ) : (
+            // Updated Internal Preview to handle HTML (for underline)
             <div className="p-4 prose prose-invert prose-p:text-[#eaddcf] prose-headings:text-[#d4af37] prose-a:text-[#d4af37] prose-code:text-[#d4af37] max-w-none min-h-[250px] overflow-y-auto">
               {value ? (
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
+                  rehypePlugins={[rehypeRaw]} // Enable HTML parsing for <u>
                   components={{
-                    ul: ({ children }) => (
-                      <ul className="list-disc list-inside ml-4 space-y-1 text-[#eaddcf] mb-4 marker:text-[#d4af37]">
+                    // Pass specific styling for 'u' tag in preview
+                    u: ({ children }) => (
+                      <u className="decoration-[#d4af37] decoration-2 underline-offset-4">
                         {children}
-                      </ul>
+                      </u>
                     ),
-                    ol: ({ children }) => (
-                      <ol className="list-decimal list-inside ml-4 space-y-1 text-[#eaddcf] mb-4 marker:text-[#d4af37]">
-                        {children}
-                      </ol>
-                    ),
-                    a: ({ node, ...props }) => (
-                      <a
-                        {...props}
-                        className="text-[#d4af37] hover:underline cursor-pointer"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      />
-                    ),
-                    code: ({ node, className, children, ...props }) => (
-                      <code
-                        className="bg-[#1a110d] border border-[#3e2723] px-1 py-0.5 rounded text-xs font-mono text-[#d4af37]"
-                        {...props}
-                      >
-                        {children}
-                      </code>
-                    ),
-                    blockquote: ({ node, ...props }) => (
-                      <blockquote
-                        className="border-l-4 border-[#d4af37] pl-4 italic text-[#a1887f]"
-                        {...props}
-                      />
-                    ),
+                    // ... (Keep existing ul, ol, a, etc. from your code if you wish, or rely on prose defaults for preview)
                   }}
                 >
                   {value}
