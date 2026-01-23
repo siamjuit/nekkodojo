@@ -18,7 +18,6 @@ import {
 import { DiscussionSkeleton } from "@/components/Discussion/DiscussionSkeleton";
 import { AnimatePresence, motion } from "framer-motion";
 import DiscussionPreviewCard from "@/components/Discussion/DiscussionPreview";
-import { fetchItems } from "@/lib/actions/caching";
 
 export default function DiscussionPage() {
   const router = useRouter();
@@ -52,7 +51,7 @@ export default function DiscussionPage() {
         setIsInitialLoading(false);
       }
     };
-    fetchItems({key: "discussions", fetcher: fetchDiscussions, expires: 60 * 60});
+    fetchDiscussions();
   }, [searchParams]);
 
   const handleSortChange = (newSort: string) => {
