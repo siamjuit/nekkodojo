@@ -215,7 +215,7 @@ export default function CreateQuestionForm({ categoryOptions, companyOptions }: 
         <Button
           type="submit"
           disabled={isLoading}
-          className="bg-[#d4af37] text-black hover:bg-[#b5952f] w-full md:w-auto"
+          className="bg-[#d4af37] text-black hover:bg-[#b5952f] w-full mb-4"
         >
           {isLoading ? (
             <>
