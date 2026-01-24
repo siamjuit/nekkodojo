@@ -15,7 +15,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { SHELF_BUTTONS } from "@/constants/shelfs"; // Import constants
+import { SHELF_BUTTONS } from "@/constants/shelfs";
 
 // Types
 type QuestionStatus = "unvisited" | "attempted" | "completed";
@@ -33,49 +33,39 @@ export interface QuestionItem {
 interface Props {
   questions: QuestionItem[];
   companyName: string;
+  // ✅ NEW PROP: Receive the progress map directly
+  userProgress: Record<string, string>;
 }
 
-export function CompanyQuestionsSheet({ questions, companyName }: Props) {
-  const [progress, setProgress] = useState<Record<string, QuestionStatus>>({});
+export function CompanyQuestionsSheet({ questions, companyName, userProgress }: Props) {
+  // ✅ Initialize state immediately from props (No loading flicker!)
+  const [progress, setProgress] = useState<Record<string, QuestionStatus>>(
+    userProgress as Record<string, QuestionStatus>
+  );
 
-  // --- NEW STATE FOR SHELVING ---
   const [shelfState, setShelfState] = useState<Record<string, ShelfType | null>>({});
   const [loadingShelf, setLoadingShelf] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    const syncData = async () => {
+    const syncShelfData = async () => {
       try {
-        // 1. Fetch Progress
-        const progRes = await fetch("/api/progress");
-        if (progRes.ok) {
-          const data = await progRes.json();
-          const map: Record<string, QuestionStatus> = {};
-          if (Array.isArray(data)) {
-            data.forEach((item: any) => {
-              map[item.questionId] = item.status as QuestionStatus;
-            });
-          }
-          setProgress(map);
-        }
-
-        // 2. Fetch Shelf Data
+        // We ONLY fetch shelf data now, since progress is already here.
         const shelfRes = await fetch("/api/shelf");
         if (shelfRes.ok) {
           const shelfData = await shelfRes.json();
           const shelfMap: Record<string, ShelfType> = {};
           if (Array.isArray(shelfData)) {
             shelfData.forEach((item: any) => {
-              // Normalize to lowercase
               shelfMap[item.questionId] = item.type.toLowerCase() as ShelfType;
             });
           }
           setShelfState(shelfMap);
         }
       } catch (error) {
-        console.error("Failed to sync data", error);
+        console.error("Failed to sync shelf data", error);
       }
     };
-    syncData();
+    syncShelfData();
   }, []);
 
   const handleAttempt = async (q: QuestionItem) => {
@@ -110,12 +100,10 @@ export function CompanyQuestionsSheet({ questions, companyName }: Props) {
     }
   };
 
-  // --- NEW SHELF TOGGLE HANDLER ---
   const toggleShelf = async (qId: string, type: ShelfType) => {
     const previousType = shelfState[qId];
     setLoadingShelf((prev) => ({ ...prev, [qId]: true }));
 
-    // Optimistic Update
     const newType = previousType === type ? null : type;
     setShelfState((prev) => ({ ...prev, [qId]: newType }));
 
@@ -130,7 +118,7 @@ export function CompanyQuestionsSheet({ questions, companyName }: Props) {
       toast.success(msg);
     } catch (error) {
       toast.error("Failed to update shelf");
-      setShelfState((prev) => ({ ...prev, [qId]: previousType })); // Revert
+      setShelfState((prev) => ({ ...prev, [qId]: previousType }));
     } finally {
       setLoadingShelf((prev) => ({ ...prev, [qId]: false }));
     }
@@ -184,7 +172,6 @@ export function CompanyQuestionsSheet({ questions, companyName }: Props) {
           const isSolved = status === "completed";
           const isAttempted = status === "attempted" || isSolved;
 
-          // Shelf Status
           const activeShelf = shelfState[q.id];
           const isLoadingThisShelf = loadingShelf[q.id];
 
@@ -237,7 +224,6 @@ export function CompanyQuestionsSheet({ questions, companyName }: Props) {
                     </span>
 
                     <div className="hidden sm:flex items-center gap-3">
-                      {/* --- Small Shelf Indicator in Header (Optional) --- */}
                       {activeShelf && (
                         <div
                           className={cn(

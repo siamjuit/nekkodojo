@@ -1,60 +1,74 @@
 import { prisma } from "@/lib/prisma";
 import { CompanySection } from "@/components/Company/CompanySection";
-import QuestionExplorer from "@/components/Problems/ProblemSheet"; // Check path
+import QuestionExplorer from "@/components/Problems/ProblemSheet";
 import { currentUser } from "@clerk/nextjs/server";
+import { fetchItems } from "@/lib/actions/caching";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProblemsPage() {
   const user = await currentUser();
 
-  const userProgressData = user
-    ? await prisma.userProgress.findMany({
+  const userProgressPromise = user
+    ? prisma.userProgress.findMany({
         where: { userId: user.id },
         select: { questionId: true, status: true },
       })
-    : [];
+    : Promise.resolve([]);
+
+  const companiesPromise = fetchItems({
+    key: "problems:companies",
+    expires: 300,
+    fetcher: async () => {
+      return prisma.company.findMany({
+        take: 20,
+        orderBy: { questions: { _count: "desc" } },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          logo: true,
+          websiteUrl: true,
+          _count: { select: { questions: true } },
+          questions: { select: { id: true } },
+        },
+      });
+    },
+  });
+
+  const categoriesPromise = fetchItems({
+    key: "problems:categories",
+    expires: 300, // 5 minutes
+    fetcher: async () => {
+      return prisma.category.findMany({
+        orderBy: { categoryOrder: "asc" },
+        include: {
+          questions: {
+            orderBy: { title: "asc" },
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              difficulty: true,
+              externalPlatformUrl: true,
+              solutionUrl: true,
+            },
+          },
+        },
+      });
+    },
+  });
+
+  const [userProgressData, companies, categories] = await Promise.all([
+    userProgressPromise,
+    companiesPromise,
+    categoriesPromise,
+  ]);
 
   const progressMap: Record<string, string> = {};
   userProgressData.forEach((p) => {
     progressMap[p.questionId] = p.status.toLowerCase();
   });
-
-  const companiesPromise = prisma.company.findMany({
-    take: 20,
-    orderBy: { questions: { _count: "desc" } },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      logo: true,
-      websiteUrl: true,
-      _count: { select: { questions: true } },
-      // CRITICAL: Need IDs to calculate percentage in the Carousel
-      questions: {
-        select: { id: true },
-      },
-    },
-  });
-
-  const categoriesPromise = prisma.category.findMany({
-    orderBy: { categoryOrder: "asc" },
-    include: {
-      questions: {
-        orderBy: { title: "asc" },
-        select: {
-          id: true,
-          title: true,
-          description: true,
-          difficulty: true,
-          externalPlatformUrl: true,
-          solutionUrl: true,
-        },
-      },
-    },
-  });
-
-  const [companies, categories] = await Promise.all([companiesPromise, categoriesPromise]);
 
   return (
     <div className="min-h-screen text-[#eaddcf] py-10">
@@ -70,12 +84,9 @@ export default async function ProblemsPage() {
           </p>
         </div>
 
-        {/* Company Section (With Progress) */}
+        {/* Company Section */}
         <section className="space-y-6">
-          <CompanySection
-            initialData={companies}
-            userProgress={progressMap} // <--- Pass the map here
-          />
+          <CompanySection initialData={companies} userProgress={progressMap} />
         </section>
 
         <div className="h-px w-full bg-linear-to-r from-transparent via-[#3e2723] to-transparent opacity-50" />
@@ -85,7 +96,7 @@ export default async function ProblemsPage() {
           <div className="flex items-center gap-2 mb-6">
             <h2 className="text-2xl font-bold text-[#eaddcf]">All Katas</h2>
             <span className="text-sm text-[#5d4037] font-mono mt-1">
-              ({categories.reduce((acc, cat) => acc + cat.questions.length, 0)} Total)
+              ({(categories as any[]).reduce((acc, cat) => acc + cat.questions.length, 0)} Total)
             </span>
           </div>
 

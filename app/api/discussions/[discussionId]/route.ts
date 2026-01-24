@@ -1,3 +1,4 @@
+import { fetchItems } from "@/lib/actions/caching";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
@@ -12,30 +13,15 @@ export async function GET(
     const user = await currentUser();
     if (!user) return NextResponse.json("Unauthorized", { status: 401 });
 
-    const flatdiscussion = await prisma.discussion.findUnique({
-      where: {
-        id: id,
-      },
-      include: {
-        author: {
-          select: {
-            name: true,
-            firstName: true,
-            lastName: true,
-            profileUrl: true,
-            beltRank: true,
-            isBanned: true,
-            isShadowBanned: true,
+    const cacheKey = `discussion:${id}:u:${user.id}`;
+    const discussion = await fetchItems({
+      key: cacheKey,
+      expires: 60 * 5,
+      fetcher: async () => {
+        const flatdiscussion = await prisma.discussion.findUnique({
+          where: {
+            id: id,
           },
-        },
-        attachments: true,
-        _count: {
-          select: {
-            comments: true,
-          },
-        },
-        comments: {
-          orderBy: { createdAt: "desc" },
           include: {
             author: {
               select: {
@@ -44,43 +30,50 @@ export async function GET(
                 lastName: true,
                 profileUrl: true,
                 beltRank: true,
+                isBanned: true,
+                isShadowBanned: true,
               },
             },
             attachments: true,
+            _count: {
+              select: {
+                comments: true,
+              },
+            },
+            likes: {
+              where: {
+                userId: user.id,
+              },
+              select: {
+                type: true,
+              },
+            },
+            bookmarks: {
+              where: { userId: user.id },
+              select: {
+                id: true,
+              },
+            },
+            tag: true,
           },
-        },
-        likes: {
-          where: {
-            userId: user.id,
-          },
-          select: {
-            type: true,
-          },
-        },
-        bookmarks: {
-          where: { userId: user.id },
-          select: {
-            id: true,
-          },
-        },
-        tag: true,
+        });
+        if (!flatdiscussion) return null;
+        if (flatdiscussion.author.isBanned) {
+          return null;
+        }
+        return {
+          ...flatdiscussion,
+          isLiked: flatdiscussion.likes.length > 0 && flatdiscussion.likes[0].type === "like",
+          isDisliked: flatdiscussion.likes.length > 0 && flatdiscussion.likes[0].type === "dislike",
+          isBookmarked: flatdiscussion.bookmarks.length > 0,
+          likes: undefined,
+          bookmarks: undefined,
+        };
       },
     });
-    if (!flatdiscussion) return NextResponse.json("No such discussion!", { status: 404 });
-    if (flatdiscussion.author.isBanned) {
-      return NextResponse.json("This discussion couldn't be found at this moment!", {
-        status: 400,
-      });
+    if (!discussion) {
+      return NextResponse.json("Discussion not found", { status: 404 });
     }
-    const discussion = {
-      ...flatdiscussion,
-      isLiked: flatdiscussion.likes.length > 0 && flatdiscussion.likes[0].type === "like",
-      isDisliked: flatdiscussion.likes.length > 0 && flatdiscussion.likes[0].type === "dislike",
-      isBookmarked: flatdiscussion.bookmarks.length > 0,
-      likes: undefined,
-      bookmarks: undefined,
-    };
-
     return NextResponse.json(discussion);
   } catch (error) {
     return NextResponse.json("Failed to fetch this discussion!", { status: 500 });

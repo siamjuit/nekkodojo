@@ -1,4 +1,5 @@
 import { Prisma } from "@/generated/prisma/client";
+import { fetchItems } from "@/lib/actions/caching";
 import { buildCommentTree } from "@/lib/comment-tree";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
@@ -9,7 +10,6 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const discussionId = searchParams.get("discussionId");
     const sort = searchParams.get("sort") || "top";
-
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const skip = (page - 1) * limit;
@@ -18,133 +18,140 @@ export async function GET(request: Request) {
     if (!user) return NextResponse.json("Unauthorized", { status: 401 });
     if (!discussionId) return NextResponse.json("No discussion found!", { status: 404 });
 
-    const visibilityFilter: Prisma.CommentWhereInput = {
-      discussionId: discussionId,
-      author: {
-        isBanned: false,
-        OR: [{ isShadowBanned: false }, { id: user.id }],
-      },
-    };
+    const cacheKey = `comments:d=${discussionId}:p=${page}:s=${sort}:l=${limit}:u=${user.id}`;
+    const responseData = await fetchItems({
+      key: cacheKey,
+      expires: 60 * 2,
+      fetcher: async () => {
+        const visibilityFilter: Prisma.CommentWhereInput = {
+          discussionId: discussionId,
+          author: {
+            isBanned: false,
+            OR: [{ isShadowBanned: false }, { id: user.id }],
+          },
+        };
 
-    const totalRoots = await prisma.comment.count({
-      where: {
-        ...visibilityFilter,
-        parentId: null,
-      },
-    });
-    const orderBy =
-      sort === "top"
-        ? [{ likeCount: "desc" }, { replies: { _count: "desc" } }]
-        : { createdAt: "desc" };
-
-    const rootComments = await prisma.comment.findMany({
-      where: {
-        ...visibilityFilter,
-        parentId: null,
-      },
-      take: limit,
-      skip: skip,
-      orderBy: orderBy as any,
-      include: {
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            name: true,
-            beltRank: true,
-            profileUrl: true,
-            isShadowBanned: true,
-          },
-        },
-        discussion: {
-          select: {
-            authorId: true,
-          },
-        },
-        attachments: true,
-        _count: {
-          select: {
-            replies: true,
-          },
-        },
-        likes: {
+        const totalRoots = await prisma.comment.count({
           where: {
-            userId: user.id,
+            ...visibilityFilter,
+            parentId: null,
           },
-          select: {
-            type: true,
-          },
-        },
-        bookmarks: {
+        });
+        const orderBy =
+          sort === "top"
+            ? [{ likeCount: "desc" }, { replies: { _count: "desc" } }]
+            : { createdAt: "desc" };
+
+        const rootComments = await prisma.comment.findMany({
           where: {
-            userId: user.id,
+            ...visibilityFilter,
+            parentId: null,
           },
-          select: {
-            id: true,
+          take: limit,
+          skip: skip,
+          orderBy: orderBy as any,
+          include: {
+            author: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                name: true,
+                beltRank: true,
+                profileUrl: true,
+                isShadowBanned: true,
+              },
+            },
+            discussion: {
+              select: {
+                authorId: true,
+              },
+            },
+            attachments: true,
+            _count: {
+              select: {
+                replies: true,
+              },
+            },
+            likes: {
+              where: {
+                userId: user.id,
+              },
+              select: {
+                type: true,
+              },
+            },
+            bookmarks: {
+              where: {
+                userId: user.id,
+              },
+              select: {
+                id: true,
+              },
+            },
           },
-        },
+        });
+
+        const allReplies = await prisma.comment.findMany({
+          where: {
+            ...visibilityFilter,
+            parentId: { not: null },
+          },
+          include: {
+            author: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                name: true,
+                profileUrl: true,
+                beltRank: true,
+                isShadowBanned: true,
+              },
+            },
+            _count: {
+              select: { replies: true },
+            },
+            likes: { where: { userId: user.id }, select: { type: true } },
+            bookmarks: { where: { userId: user.id }, select: { id: true } },
+            attachments: true,
+          },
+          orderBy: { createdAt: "asc" },
+        });
+
+        const combinedComments = [...rootComments, ...allReplies];
+
+        const processedComments = combinedComments.map((comment) => ({
+          ...comment,
+          isLiked: comment.likes[0]?.type === "like",
+          isDisliked: comment.likes[0]?.type === "dislike",
+          isBookmarked: comment.bookmarks.length > 0,
+          likes: undefined,
+          bookmarks: undefined,
+        }));
+
+        const totalComments = await prisma.comment.count({
+          where: {
+            discussionId,
+          },
+        });
+
+        const hasMore = skip + rootComments.length < totalRoots;
+        const data = buildCommentTree(processedComments);
+
+        return {
+          data,
+          meta: {
+            total: totalComments,
+            totalRoots,
+            hasMore,
+            page,
+          },
+        };
       },
     });
 
-    const allReplies = await prisma.comment.findMany({
-      where: {
-        ...visibilityFilter,
-        parentId: { not: null },
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            name: true,
-            profileUrl: true,
-            beltRank: true,
-            isShadowBanned: true,
-          },
-        },
-        _count: {
-          select: { replies: true },
-        },
-        likes: { where: { userId: user.id }, select: { type: true } },
-        bookmarks: { where: { userId: user.id }, select: { id: true } },
-        attachments: true,
-      },
-      orderBy: { createdAt: "asc" },
-    });
-
-    const combinedComments = [...rootComments, ...allReplies];
-
-    const processedComments = combinedComments.map((comment) => ({
-      ...comment,
-      isLiked: comment.likes[0]?.type === "like",
-      isDisliked: comment.likes[0]?.type === "dislike",
-      isBookmarked: comment.bookmarks.length > 0,
-      likes: undefined,
-      bookmarks: undefined,
-    }));
-
-    const totalComments = await prisma.comment.count({
-      where: {
-        discussionId,
-      },
-    });
-
-    const hasMore = skip + rootComments.length < totalRoots;
-    const data = buildCommentTree(processedComments);
-    return NextResponse.json(
-      {
-        data,
-        meta: {
-          total: totalComments,
-          totalRoots,
-          hasMore,
-          page,
-        },
-      },
-      { status: 200 }
-    );
+    return NextResponse.json(responseData, { status: 200 });
   } catch (error) {
     console.error("FETCH COMMENTS ERROR:", error);
     return NextResponse.json("Internal Error", { status: 500 });
