@@ -15,11 +15,11 @@ export const fetchItems = async ({ key, fetcher, expires }: iProps) => {
 export const get = async (key: string) => {
   const value = await redis.get(key);
   if (!value) return null;
-  return JSON.parse(value);
+  return value;
 };
 
 export const set = async ({ key, fetcher, expires }: iProps) => {
   const value = await fetcher();
-  await redis.set(key, JSON.stringify(value), "EX", expires);
+  await redis.set(key, value, { ex: expires });
   return value;
 };
