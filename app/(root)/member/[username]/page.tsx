@@ -1,13 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
-import { ProfileCharts } from "@/components/User/ProfileCharts";
 import { BeltProgress } from "@/components/User/BeltCollection";
 import { UserDetails } from "@/components/User/UserDetails";
 import { QuestionStatusType } from "@/generated/prisma/client";
 import { ProfileActivityTabs } from "@/components/User/ProfileActivityTabs";
 import DeleteProgress from "@/components/User/DeleteProgress";
 import { calculateReputation } from "@/utils/repCalc";
+import ProfileCharts from "@/components/User/ProfileCharts";
 
 export const dynamic = "force-dynamic";
 
@@ -15,19 +15,15 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
   const { username } = await params.params;
   const curr = await currentUser();
 
-  // 1. Quick check for user existence
   const user = await prisma.user.findFirst({
     where: { name: username },
-    select: { id: true }, // Minimal select
+    select: { id: true },
   });
 
-  if (!user) {
-    return notFound();
-  }
+  if (!user) return notFound();
 
   const isOwn = curr?.id === user.id;
 
-  // 2. Fetch ALL data in parallel for performance
   const [
     userProgress,
     solvedQuestions,
@@ -35,22 +31,19 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
     comments,
     discussionsCount,
     commentsCount,
-    categories,
+    categories, // ✅ Added categories back
     companies,
-    currUser, // Fetch full profile details here
+    currUser,
   ] = await Promise.all([
-    // A. Progress for Activity Graph
+    // A. Progress
     prisma.userProgress.findMany({
       where: { userId: user.id, status: QuestionStatusType.completed },
       select: { questionId: true, updatedAt: true },
     }),
 
-    // B. Solved Questions (for Difficulty Stats)
+    // B. Solved Questions
     prisma.userProgress.findMany({
-      where: {
-        userId: user.id,
-        status: QuestionStatusType.completed,
-      },
+      where: { userId: user.id, status: QuestionStatusType.completed },
       orderBy: { updatedAt: "desc" },
       include: {
         question: {
@@ -59,33 +52,29 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
       },
     }),
 
-    // C. Discussions (for Reputation: Likes & Dislikes)
+    // C. Discussions
     prisma.discussion.findMany({
       where: { authorId: user.id },
       orderBy: { createdAt: "desc" },
-      include: {
-        _count: { select: { comments: true } },
-      },
+      include: { _count: { select: { comments: true } } },
     }),
 
-    // D. Comments (for Reputation: Likes & Dislikes)
+    // D. Comments
     prisma.comment.findMany({
       where: { authorId: user.id },
       orderBy: { createdAt: "desc" },
-      include: {
-        discussion: { select: { id: true, title: true } },
-      },
+      include: { discussion: { select: { id: true, title: true } } },
     }),
 
-    // E. Counts
     prisma.discussion.count({ where: { authorId: user.id } }),
     prisma.comment.count({ where: { authorId: user.id } }),
 
-    // F. Global Data
+    // ✅ Categories
     prisma.category.findMany({ include: { questions: { select: { id: true } } } }),
+
+    // Companies
     prisma.company.findMany({ include: { questions: { select: { id: true } } } }),
 
-    // G. Full User Profile (CRITICAL: Include Social Links)
     prisma.user.findUnique({
       where: { id: user.id },
       select: {
@@ -97,19 +86,20 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
         profileUrl: true,
         email: true,
         createdAt: true,
-        socialLinks: true, // This enables SocialsManager for visitors
+        socialLinks: true,
       },
     }),
   ]);
 
   if (!currUser) return notFound();
 
-  // --- 3. DATA PROCESSING ---
+  // --- DATA PROCESSING ---
 
-  // A. Activity Heatmap Data
+  // 1. Total Solved Count
   const solvedSet = new Set(userProgress.map((p) => p.questionId));
   const totalSolved = solvedSet.size;
 
+  // 2. Activity Heatmap
   const activityMap = new Map<string, number>();
   for (let i = 29; i >= 0; i--) {
     const d = new Date();
@@ -128,7 +118,18 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
     count,
   }));
 
-  // B. Category & Company Stats
+  // 3. Difficulty Stats
+  const easySolved = solvedQuestions.filter((q) => q.question.difficulty === "Easy").length;
+  const medSolved = solvedQuestions.filter((q) => q.question.difficulty === "Medium").length;
+  const hardSolved = solvedQuestions.filter((q) => q.question.difficulty === "Hard").length;
+
+  const difficultyStats = [
+    { name: "Easy", value: easySolved, color: "#22c55e" },
+    { name: "Medium", value: medSolved, color: "#eab308" },
+    { name: "Hard", value: hardSolved, color: "#ef4444" },
+  ];
+
+  // 4. ✅ Category Stats (Restored Logic)
   const categoryStats = categories
     .map((cat) => {
       const total = cat.questions.length;
@@ -137,39 +138,31 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
         name: cat.name,
         total,
         solved,
-        percent: total > 0 ? Math.round((solved / total) * 100) : 0,
       };
     })
     .filter((c) => c.total > 0);
 
+  // 5. Company Stats
   const companyStats = companies
     .map((comp) => {
       const total = comp.questions.length;
       const solved = comp.questions.filter((q) => solvedSet.has(q.id)).length;
       return {
+        id: comp.id,
         name: comp.name,
+        logo: comp.logo!,
         total,
         solved,
-        percent: total > 0 ? Math.round((solved / total) * 100) : 0,
       };
     })
-    .filter((c) => c.solved > 0);
+    .filter((c) => c.solved > 0)
+    .sort((a, b) => b.solved - a.solved);
 
-  // --- 4. REPUTATION CALCULATION ---
-  const easySolved = solvedQuestions.filter((q) => q.question.difficulty === "Easy").length;
-  const medSolved = solvedQuestions.filter((q) => q.question.difficulty === "Medium").length;
-  const hardSolved = solvedQuestions.filter((q) => q.question.difficulty === "Hard").length;
-
-  // Calculate Community Impact (Likes vs Dislikes)
-  // Ensure your Prisma schema has likeCount/dislikeCount fields on Discussion/Comment
+  // 6. Reputation
   const discussionLikes = discussions.reduce((acc, d) => acc + (d.likeCount || 0), 0);
   const discussionDislikes = discussions.reduce((acc, d) => acc + (d.dislikeCount || 0), 0);
-
   const commentLikes = comments.reduce((acc, c) => acc + (c.likeCount || 0), 0);
   const commentDislikes = comments.reduce((acc, c) => acc + (c.dislikeCount || 0), 0);
-
-  // Using total solved as proxy for accepted answers (or calculate separately if tracked)
-  const accepted = totalSolved;
 
   const reputation = calculateReputation({
     solvedEasy: easySolved,
@@ -179,7 +172,7 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
     discussionDownvotes: discussionDislikes,
     commentUpvotes: commentLikes,
     commentDownvotes: commentDislikes,
-    acceptedAnswers: accepted,
+    acceptedAnswers: totalSolved,
   });
 
   return (
@@ -191,7 +184,7 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
             solved: totalSolved,
             discussions: discussionsCount,
             comments: commentsCount,
-            reputation: reputation, // Pass calculated reputation
+            reputation: reputation,
           }}
           isOwnProfile={isOwn}
         />
@@ -199,9 +192,12 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
         <BeltProgress totalSolved={totalSolved} />
 
         <ProfileCharts
-          activityData={activityData}
-          categoryStats={categoryStats}
+          difficultyStats={difficultyStats}
+          categoryStats={categoryStats} // ✅ Passed prop
+          totalSolved={totalSolved}
           companyStats={companyStats}
+          activityData={activityData}
+          isCurrentUser={isOwn}
         />
 
         <ProfileActivityTabs
