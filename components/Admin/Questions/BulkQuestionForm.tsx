@@ -53,7 +53,7 @@ export default function BulkQuestionForm() {
       if (!Array.isArray(jsonData)) throw new Error("JSON must be an array.");
 
       // Ensure you have created the API route at /api/admin/questions/bulk
-      const response = await fetch("/api/admin/questions/bulk", {
+      const response = await fetch("/api/questions/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(jsonData),
