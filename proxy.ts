@@ -9,7 +9,8 @@ const isPublicRoute = createRouteMatcher([
   "/api/webhooks(.*)",
   "/forgot-password(.*)",
   "/guest(.*)",
-  "/member(.*)"
+  "/member(.*)",
+  "/leaderboard(.*)",
 ]);
 
 const isAdminRoute = createRouteMatcher([
