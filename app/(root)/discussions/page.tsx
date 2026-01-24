@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { PlusCircle, ArrowUpDown, Loader2, FilterIcon } from "lucide-react";
+import { PlusCircle, ArrowUpDown, Loader2, FilterIcon, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DiscussionPagination from "@/components/Discussion/Pagination";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -81,7 +81,7 @@ export default function DiscussionPage() {
           </Link>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-2 mb-8 w-full justify-center">
+        <div className="flex flex-col sm:flex-row gap-2 mb-2 w-full justify-center">
           <SearchDiscussion inputValue={inputValue} setInputValue={setInputValue} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -141,6 +141,22 @@ export default function DiscussionPage() {
             <FilterIcon size={16} />
             Remove Filters
           </Button>
+        </div>
+        <div className="flex items-start gap-3 p-3 mb-6 rounded-r-lg bg-[#1a110d]/50 border-l-2 border-[#d4af37] backdrop-blur-sm">
+          <ScrollText className="text-[#d4af37] mt-0.5 shrink-0" size={16} />
+          <p className="text-xs text-[#a1887f] leading-relaxed">
+            <span className="block font-bold text-[#eaddcf] mb-0.5 uppercase tracking-wider text-[10px]">
+              Maintain Integrity
+            </span>
+            Before you speak, Ronin, ensure your words honor the{" "}
+            <Link
+              href="/code-of-bushido"
+              className="text-[#d4af37] hover:text-[#ffd700] hover:underline transition-colors font-medium"
+            >
+              Bushido Guidelines
+            </Link>
+            .
+          </p>
         </div>
         <div className="space-y-4">
           {isInitialLoading ? (

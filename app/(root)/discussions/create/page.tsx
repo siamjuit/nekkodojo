@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { X, FileVideo, PenLine, Sparkles, Loader2 } from "lucide-react";
@@ -12,13 +12,15 @@ import ImageKitUploader, { UploadFile } from "@/components/Discussion/Create/Pos
 import { useUser } from "@clerk/nextjs";
 import { TagSelector } from "@/components/Discussion/Create/Tags";
 import attFromKit from "@/lib/actions/removeAtt";
+import Link from "next/link";
+// ✅ Import the new action
+import { ensureUserStatus } from "./_actions";
 
 export default function CreateDiscussionPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const { user } = useUser();
-  if (!user) return;
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -28,6 +30,15 @@ export default function CreateDiscussionPage() {
     slug: "discussion",
     color: "bg-[#2a110c] text-[#a1887f] border-[#3e2723]",
   });
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      await ensureUserStatus();
+    };
+    checkStatus();
+  }, []);
+
+  if (!user) return null;
 
   const MAX_FILES = 4;
   const remainingSlots = MAX_FILES - attachments.length;
@@ -77,9 +88,18 @@ export default function CreateDiscussionPage() {
       }
 
       const data = await response.json();
+
+      // ✅ SUCCESS HANDLER
+      // Whether real or shadowbanned (fake), we show success.
       toast.success("Discussion created successfully!");
 
-      router.push(`/discussions/${data}`, { scroll: true });
+      // If data contains an ID (even if hidden), go there.
+      // If shadowbanned logic returns no ID, go to list.
+      if (data && typeof data === "string") {
+        router.push(`/discussions/${data}`);
+      } else {
+        router.push("/discussions");
+      }
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong. Please try again.");
@@ -99,7 +119,10 @@ export default function CreateDiscussionPage() {
           <p className="text-[#a1887f] max-w-2xl">
             Share your knowledge, ask questions, or showcase your projects to the Dojo. Remember to
             follow the{" "}
-            <span className="text-[#d4af37] underline cursor-pointer">Code of Bushido</span>.
+            <Link href={"/code-of-bushido"} className="text-[#d4af37] underline cursor-pointer">
+              Code of Bushido
+            </Link>
+            .
           </p>
         </div>
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, Swords, Trophy } from "lucide-react";
+import { Brain, ScrollText, Swords, Trophy } from "lucide-react";
+import Link from "next/link";
 
 export default function AboutHero() {
   const features = [
@@ -98,6 +99,26 @@ export default function AboutHero() {
           <span className="h-12 w-px bg-[#d4af37]"></span>
         </div>
       </motion.div>
+      <div className="mt-6 flex justify-center">
+        <Link
+          href="/code-of-bushido"
+          className="group flex items-center gap-2 text-[10px] md:text-xs text-[#5d4037] hover:text-[#d4af37] transition-all duration-300 font-mono uppercase tracking-widest"
+        >
+          <ScrollText
+            size={12}
+            className="group-hover:-rotate-12 transition-transform duration-300"
+          />
+          <span className="relative">
+            You must honor the{" "}
+            <span className="text-[#8d6e63] group-hover:text-[#eaddcf] transition-colors">
+              Code of Bushido
+            </span>{" "}
+            first
+            {/* Animated underline effect */}
+            <span className="absolute left-0 -bottom-1 w-0 h-px bg-[#d4af37] group-hover:w-full transition-all duration-500" />
+          </span>
+        </Link>
+      </div>
     </section>
   );
 }

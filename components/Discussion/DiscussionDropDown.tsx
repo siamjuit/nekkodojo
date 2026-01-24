@@ -26,6 +26,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { ReportDialog } from "../Report/ReportDialog";
+import ReportButton from "../User/ReportButton";
 
 interface Props {
   discussion: DiscussionProps;
@@ -167,19 +168,28 @@ const DiscussionDropDown = ({ discussion, authorId }: Props) => {
           )}
 
           {!isAuthor && (
-            <ReportDialog
-              contentId={discussion.id}
-              type="discussion"
-              trigger={
-                <DropdownMenuItem
-                  onSelect={(e) => e.preventDefault()} // CRITICAL: Prevents dropdown from closing
-                  className="cursor-pointer focus:bg-[#d4af37]/10 focus:text-[#d4af37] gap-2 py-2 w-full"
-                >
-                  <Flag size={16} />
-                  <span>Report</span>
-                </DropdownMenuItem>
-              }
-            />
+            <>
+              <ReportDialog
+                contentId={discussion.id}
+                type="discussion"
+                trigger={
+                  <DropdownMenuItem
+                    onSelect={(e) => e.preventDefault()} // CRITICAL: Prevents dropdown from closing
+                    className="cursor-pointer focus:bg-[#d4af37]/10 focus:text-[#d4af37] gap-2 py-2 w-full"
+                  >
+                    <Flag size={16} />
+                    <span>Report Discussion</span>
+                  </DropdownMenuItem>
+                }
+              />
+              <DropdownMenuItem className="cursor-pointer focus:bg-[#d4af37]/10 focus:text-[#d4af37] gap-2 py-2 w-full">
+                <ReportButton
+                  targetUserId={discussion.authorId}
+                  targetUserName={discussion.author.name!}
+                  variant="dropdown"
+                />
+              </DropdownMenuItem>
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

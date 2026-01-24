@@ -16,6 +16,11 @@ export async function GET(request: Request) {
       },
       include: {
         discussion: {
+          where: {
+            author: {
+              isBanned: false,
+            },
+          },
           include: {
             author: {
               select: {
@@ -41,6 +46,11 @@ export async function GET(request: Request) {
           },
         },
         comment: {
+          where: {
+            author: {
+              isBanned: false,
+            },
+          },
           include: {
             author: {
               select: {

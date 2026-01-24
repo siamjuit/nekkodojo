@@ -27,9 +27,11 @@ import { BELTS } from "@/constants/belts";
 import Link from "next/link";
 import Share from "../Discussion/Share";
 import SocialsManager from "./SocialManager"; // Import the component
+import ReportButton from "./ReportButton";
 
 declare interface Props {
   user: {
+    id: string;
     name: string | null;
     firstName: string | null;
     lastName: string | null;
@@ -93,9 +95,13 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
       {/* 1. EXPANDED BANNER */}
       <div className="h-32 md:h-48 w-full bg-linear-to-r from-[#0f0b0a] via-[#3e2723]/40 to-[#0f0b0a] border-b border-[#3e2723] relative">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-yellow-500 via-transparent to-transparent"></div>
-
+        {!isOwnProfile && (
+          <div className="absolute top-3 md:top-4 left-3 md:left-6">
+            <ReportButton targetUserId={user.id} targetUserName={user.name!} />
+          </div>
+        )}
         {/* --- TOP RIGHT ACTIONS CONTAINER --- */}
-        <div className="absolute top-3 right-3 md:top-4 md:right-4 flex items-center gap-2 md:gap-3">
+        <div className="absolute top-3 right-3 md:top-4 md:right-6 flex items-center gap-2 md:gap-3">
           {/* Edit Button (Only for Owner) */}
           {isOwnProfile && (
             <Sheet>
@@ -117,20 +123,11 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
               >
                 <SheetTitle className="sr-only">Edit Profile</SheetTitle>
                 <div className="h-full w-full">
-                  <UserProfile
-                    routing="hash"
-                    appearance={
-                      {
-                        /* ... your clerk styles ... */
-                      }
-                    }
-                  />
+                  <UserProfile routing="hash" appearance={{}} />
                 </div>
               </SheetContent>
             </Sheet>
           )}
-
-          {/* Share Button */}
           <div className="h-9 md:h-10 flex items-center">
             <Share />
           </div>

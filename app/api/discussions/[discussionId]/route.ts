@@ -24,6 +24,8 @@ export async function GET(
             lastName: true,
             profileUrl: true,
             beltRank: true,
+            isBanned: true,
+            isShadowBanned: true,
           },
         },
         attachments: true,
@@ -65,7 +67,11 @@ export async function GET(
       },
     });
     if (!flatdiscussion) return NextResponse.json("No such discussion!", { status: 404 });
-
+    if (flatdiscussion.author.isBanned) {
+      return NextResponse.json("This discussion couldn't be found at this moment!", {
+        status: 400,
+      });
+    }
     const discussion = {
       ...flatdiscussion,
       isLiked: flatdiscussion.likes.length > 0 && flatdiscussion.likes[0].type === "like",

@@ -89,6 +89,7 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
     prisma.user.findUnique({
       where: { id: user.id },
       select: {
+        id: true,
         name: true,
         firstName: true,
         lastName: true,

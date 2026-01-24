@@ -16,6 +16,7 @@ declare interface DiscussionProps {
     lastName: string | null;
     profileUrl: string | null;
     beltRank: string | null;
+    isShadowBanned?: boolean;
   };
   attachments: Attachment[];
   tag: TagProps;
@@ -42,6 +43,7 @@ declare interface CommentProps {
     name: string;
     profileUrl: string;
     beltRank: string;
+    isShadowBanned?: boolean;
   };
   discussion: DiscussionProps;
   attachments?: Attachment;
@@ -88,15 +90,27 @@ declare interface ReportProps {
   id: string;
   reason: string;
   createdAt: Date;
+  updatedAt?: Date;
   status: string;
   reporter: {
     firstName: string | null;
     lastName: string | null;
-    imageUrl: string;
+    profileUrl: string | null;
   };
-  // Optional content fields depending on type
-  discussion?: { id: string; title: string };
-  comment?: { id: string; content: string; discussionId: string };
+  discussionId?: string | null;
+  commentId?: string | null;
+  discussion?: { id: string; title: string } | null;
+  comment?: { id: string; description: string; discussionId: string } | null;
+  reportedId?: string | null;
+  reported?: {
+    id: string;
+    firstName: string | null;
+    lastName: string | null;
+    profileUrl: string | null;
+    email: string;
+    isBanned: boolean;
+    isShadowBanned: boolean;
+  } | null;
 }
 
 declare interface CategoryWithRelations {

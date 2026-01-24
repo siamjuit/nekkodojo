@@ -1,3 +1,4 @@
+import { Prisma } from "@/generated/prisma/client";
 import { buildCommentTree } from "@/lib/comment-tree";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
@@ -17,9 +18,17 @@ export async function GET(request: Request) {
     if (!user) return NextResponse.json("Unauthorized", { status: 401 });
     if (!discussionId) return NextResponse.json("No discussion found!", { status: 404 });
 
+    const visibilityFilter: Prisma.CommentWhereInput = {
+      discussionId: discussionId,
+      author: {
+        isBanned: false,
+        OR: [{ isShadowBanned: false }, { id: user.id }],
+      },
+    };
+
     const totalRoots = await prisma.comment.count({
       where: {
-        discussionId,
+        ...visibilityFilter,
         parentId: null,
       },
     });
@@ -30,7 +39,7 @@ export async function GET(request: Request) {
 
     const rootComments = await prisma.comment.findMany({
       where: {
-        discussionId: discussionId,
+        ...visibilityFilter,
         parentId: null,
       },
       take: limit,
@@ -45,6 +54,7 @@ export async function GET(request: Request) {
             name: true,
             beltRank: true,
             profileUrl: true,
+            isShadowBanned: true,
           },
         },
         discussion: {
@@ -79,7 +89,7 @@ export async function GET(request: Request) {
 
     const allReplies = await prisma.comment.findMany({
       where: {
-        discussionId,
+        ...visibilityFilter,
         parentId: { not: null },
       },
       include: {
@@ -91,6 +101,7 @@ export async function GET(request: Request) {
             name: true,
             profileUrl: true,
             beltRank: true,
+            isShadowBanned: true,
           },
         },
         _count: {

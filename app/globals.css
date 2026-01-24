@@ -2,12 +2,12 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@plugin "@tailwindcss/typography";
 @plugin "daisyui" {
   themes:
     luxury --default,
     dark --prefersdark;
 }
-
 @theme inline {
   --animate-scroll: scroll var(--animation-duration, 40s) var(--animation-direction, forwards)
     linear infinite;

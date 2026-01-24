@@ -17,9 +17,19 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const skip = (page - 1) * limit;
-
+    const shadowbanFilter: Prisma.DiscussionWhereInput = user
+      ? {
+          OR: [{ author: { isShadowBanned: false } }, { authorId: user.id }],
+        }
+      : { author: { isShadowBanned: false } };
     const whereClause: Prisma.DiscussionWhereInput = {
       AND: [
+        {
+          author: {
+            isBanned: false,
+          },
+        },
+        shadowbanFilter,
         query
           ? {
               OR: [
@@ -83,6 +93,7 @@ export async function GET(request: Request) {
               lastName: true,
               profileUrl: true,
               beltRank: true,
+              isShadowBanned: true,
             },
           },
           _count: {

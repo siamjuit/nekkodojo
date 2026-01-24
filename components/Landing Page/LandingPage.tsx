@@ -180,7 +180,7 @@ export default function LandingPage() {
 
       <div className="absolute bottom-6 w-full text-center z-10">
         <p className="text-[#3e2723] text-xs tracking-[0.4em] font-mono opacity-50">
-          EST. 2025 // AENANSH
+          EST. 2025 // NEKKODOJO
         </p>
       </div>
       <motion.div

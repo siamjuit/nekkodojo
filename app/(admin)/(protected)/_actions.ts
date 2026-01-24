@@ -151,17 +151,15 @@ export async function deleteComment(formData: FormData) {
   }
 }
 
-export async function dismissReport(formData: FormData) {
+export async function dismissReport(reportId: string) {
   const client = await clerkClient();
   if (!checkRole("admin") && !checkRole("moderator")) {
     return { message: "Not Authorized" };
   }
 
   try {
-    const id = formData.get("id") as string;
-
     await prisma.report.update({
-      where: { id },
+      where: { id: reportId },
       data: { status: "DISMISSED" },
     });
 
@@ -170,5 +168,89 @@ export async function dismissReport(formData: FormData) {
     return { message: "Success" };
   } catch (err) {
     return { message: "Error" };
+  }
+}
+
+export async function banUser(userId: string, reportId: string) {
+  const client = await clerkClient();
+  if (!checkRole("admin") && !checkRole("moderator")) {
+    return { message: "Not Authorized" };
+  }
+  try {
+    await client.users.banUser(userId);
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: userId },
+        data: { isBanned: true },
+      }),
+      prisma.report.update({
+        where: { id: reportId },
+        data: {
+          status: "REVIEWED",
+        },
+      }),
+    ]);
+
+    revalidatePath("/admin/reports");
+    revalidatePath("/moderator/reports");
+    return { success: true, message: "User banned successfully" };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "Failed to ban user" };
+  }
+}
+
+export async function shadowbanUser(userId: string, reportId: string, durationDays: number = 7) {
+  const client = await clerkClient();
+  if (!checkRole("admin") && !checkRole("moderator")) {
+    return { message: "Not Authorized" };
+  }
+  try {
+    let metadata: any = { shadowbanned: true };
+    if (durationDays > 0) {
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + durationDays);
+      metadata.shadowbanExpires = expiryDate.getTime();
+    }
+    await client.users.updateUserMetadata(userId, {
+      publicMetadata: metadata,
+    });
+
+    if (reportId)
+      await prisma.$transaction([
+        prisma.report.update({
+          where: { id: reportId },
+          data: { status: "REVIEWED" },
+        }),
+        prisma.user.update({
+          where: { id: userId },
+          data: {
+            isShadowBanned: true,
+          },
+        }),
+      ]);
+
+    revalidatePath("/admin/reports");
+    revalidatePath("/moderator/reports");
+    const msg =
+      durationDays > 0 ? `Shadowbanned for ${durationDays} days` : "Shadowbanned permanently";
+    return { success: true, message: msg };
+  } catch (error) {
+    return { success: false, message: "Failed to shadowban" };
+  }
+}
+
+export async function unbanUser(userId: string) {
+  const client = await clerkClient();
+  if (!checkRole("admin") && !checkRole("moderator")) {
+    return { message: "Not Authorized" };
+  }
+  try {
+    await client.users.unbanUser(userId);
+    await prisma.user.update({ where: { id: userId }, data: { isBanned: false } });
+    return { success: true, message: "User unbanned successfully" };
+  } catch (error) {
+    console.error("Unban error:", error);
+    return { success: false, message: "Failed to unban user" };
   }
 }

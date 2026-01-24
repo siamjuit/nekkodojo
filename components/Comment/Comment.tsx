@@ -29,6 +29,7 @@ import BeltBadge from "../User/BeltBadge";
 import CommentAttachment from "../Attachment/AttLightbox";
 import { ReportDialog } from "../Report/ReportDialog";
 import Link from "next/link";
+import ReportButton from "../User/ReportButton";
 
 interface Props {
   comment: CommentProps;
@@ -344,19 +345,30 @@ const CommentItem = ({
                       <span>{deleting ? "Deleting" : "Delete"}</span>
                     </DropdownMenuItem>
                   )}
-                  <ReportDialog
-                    contentId={comment.id}
-                    type="comment"
-                    trigger={
-                      <DropdownMenuItem
-                        onSelect={(e) => e.preventDefault()}
-                        className="focus:bg-[#3e2723]/40 focus:text-[#d4af37] cursor-pointer"
-                      >
-                        <Flag size={14} className="mr-2" />
-                        Report
+                  {currentUserId !== comment.authorId && (
+                    <>
+                      <ReportDialog
+                        contentId={comment.id}
+                        type="comment"
+                        trigger={
+                          <DropdownMenuItem
+                            onSelect={(e) => e.preventDefault()}
+                            className="focus:bg-[#3e2723]/40 focus:text-[#d4af37] cursor-pointer"
+                          >
+                            <Flag size={14} className="mr-2" />
+                            Report
+                          </DropdownMenuItem>
+                        }
+                      />
+                      <DropdownMenuItem className="focus:bg-[#3e2723]/40 focus:text-[#d4af37] cursor-pointer">
+                        <ReportButton
+                          targetUserId={comment.authorId}
+                          targetUserName={comment.author.name}
+                          variant="dropdown"
+                        />
                       </DropdownMenuItem>
-                    }
-                  />
+                    </>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
