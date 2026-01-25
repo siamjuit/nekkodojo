@@ -32,7 +32,10 @@ const Navbar = () => {
     <header className="fixed top-6 left-0 right-0 mx-auto w-[95%] max-w-7xl h-20 z-40 rounded-2xl border border-[#d4af37]/10 bg-[#1a110d]/40 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05), 0_8px_32px_0_rgba(0,0,0,0.36)] transition-all duration-300">
       <div className="w-full h-full px-6 md:px-8 flex items-center justify-between">
         <div className="shrink-0">
-          <Link href="/" className="group flex items-center gap-2">
+          <Link
+            href={user ? `/member/${user.username}` : "/"}
+            className="group flex items-center gap-2"
+          >
             <span className="font-black text-xl tracking-tighter text-[#eaddcf] select-none">
               NEKKO
               <span className="text-[#d4af37] group-hover:text-white transition-colors duration-300">

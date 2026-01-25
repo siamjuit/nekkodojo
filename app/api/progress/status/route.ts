@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { updateBeltRank } from "@/utils/update-belt";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
@@ -51,6 +52,9 @@ export async function PATCH(request: Request) {
         },
       }),
     ]);
+    const qSolved = updatedSolved.noOfQuestionsSolved || 0;
+    const beltUpdate = await updateBeltRank(user.id, qSolved);
+    if (!beltUpdate) return NextResponse.json("Couldn't update the belt!", { status: 400 });
     return NextResponse.json(updatedProgress, { status: 200 });
   } catch (error) {
     console.error("[PROGRESS_PATCH]", error);

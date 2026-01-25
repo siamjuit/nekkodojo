@@ -19,7 +19,7 @@ model User {
 
   isOnboarded Boolean? @default(false)
 
-  noOfQuestionsSolved Int?
+  noOfQuestionsSolved Int? @default(0)
   beltRank            BeltType @default(white_belt)
 
   discussions Discussion[]

@@ -48,6 +48,7 @@ declare interface Props {
     email: string;
     createdAt: Date;
     socialLinks?: { id: string; platform: string; platformUrl: string }[];
+    beltRank: string;
   };
   stats: {
     solved: number;
@@ -101,7 +102,7 @@ export function UserDetails({ user, stats, isOwnProfile }: Props) {
 
   const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Ninja";
   const email = user.email;
-  const currentBelt = BELTS.findLast((b) => stats.solved >= b.minSolved) || BELTS[0];
+  const currentBelt = BELTS.findLast((b) => b.key === user.beltRank) || BELTS[0];
 
   const handleSaveBio = async () => {
     setIsSavingBio(true);

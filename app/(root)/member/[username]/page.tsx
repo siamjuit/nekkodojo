@@ -87,6 +87,7 @@ export default async function ProfilePage(params: { params: Promise<{ username: 
         email: true,
         createdAt: true,
         socialLinks: true,
+        beltRank: true,
       },
     }),
   ]);
