@@ -73,7 +73,7 @@ export async function GET(request: Request) {
             discussionDownvotes: discDislikes,
             commentUpvotes: commLikes,
             commentDownvotes: commDislikes,
-            acceptedAnswers: 0,
+            acceptedAnswers: u.noOfQuestionsSolved || 0,
           });
 
           return {

@@ -5,7 +5,6 @@ import { Difficulty } from "@/generated/prisma/enums";
 
 export async function POST(request: Request) {
   try {
-    // 1. Auth Check
     const user = await currentUser();
     if (!user || user.publicMetadata.role !== "admin") {
       return NextResponse.json("Unauthorized!", { status: 401 });
@@ -16,18 +15,13 @@ export async function POST(request: Request) {
       return NextResponse.json("Payload must be an array", { status: 400 });
     }
 
-    // 2. Setup Reporting
     const stats = {
       success: 0,
       failed: 0,
       errors: [] as string[],
     };
-
-    // 3. Process Sequentially (One by One)
-    // We avoid prisma.$transaction here so valid questions are saved even if one fails.
     for (const q of body) {
       try {
-        // Safe Difficulty Parsing (Handles 'easy', 'Easy', 'EASY')
         let difficulty: Difficulty = "Medium";
         if (q.difficulty) {
           const formatted =
@@ -46,7 +40,7 @@ export async function POST(request: Request) {
             externalPlatformUrl: q.externalPlatformUrl,
             solutionUrl: q.solutionUrl,
             categories: {
-              set: [], // Disconnect old to avoid duplicates logic
+              set: [],
               connect: q.categories.map((c: string) => ({ slug: c })),
             },
             companyTag: {
@@ -74,8 +68,6 @@ export async function POST(request: Request) {
       } catch (error: any) {
         console.error(`Error uploading ${q.slug}:`, error.message);
         stats.failed++;
-
-        // Prisma Error Code P2025 means "Record to connect not found"
         if (error.code === "P2025") {
           stats.errors.push(`Failed: ${q.slug} - Missing Category or Company tag in DB`);
         } else {
@@ -84,11 +76,10 @@ export async function POST(request: Request) {
       }
     }
 
-    // 4. Return Report
     return NextResponse.json(
       {
         message: `Processed. Success: ${stats.success}, Failed: ${stats.failed}`,
-        data: stats.errors, // Send error list to frontend
+        data: stats.errors,
       },
       { status: 200 }
     );
