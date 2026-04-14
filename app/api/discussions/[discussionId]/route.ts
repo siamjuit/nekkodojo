@@ -16,7 +16,7 @@ export async function GET(
     const cacheKey = `discussion:${id}:u:${user.id}`;
     const discussion = await fetchItems({
       key: cacheKey,
-      expires: 60 * 5,
+      expires: 30,
       fetcher: async () => {
         const flatdiscussion = await prisma.discussion.findUnique({
           where: {
