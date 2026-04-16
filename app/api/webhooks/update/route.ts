@@ -49,14 +49,16 @@ export async function POST(req: Request) {
 
       const primaryEmail = email_addresses.find((email) => email.id === primary_email_address_id);
       if (!primaryEmail) return new Response("No primary email found", { status: 404 });
-
+      if (!username) return new Response("No username provided!", { status: 400 });
+      const name = username.toLowerCase();
+      
       await prisma.user.update({
         where: {
           id: id,
         },
         data: {
           email: primaryEmail.email_address,
-          name: username?.toLowerCase(),
+          name,
           firstName: first_name,
           lastName: last_name,
           profileUrl: image_url,

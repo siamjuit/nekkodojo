@@ -49,7 +49,7 @@ const Navbar = () => {
         </div>
 
         {/* --- DESKTOP NAV --- */}
-        <nav className="hidden md:flex flex-1 justify-center items-center">
+        <nav className="hidden lg:flex flex-1 justify-center items-center">
           <div className="flex gap-2 text-sm font-medium text-[#a1887f]">
             {NavLinks.map((navLink) => {
               let href = navLink.url;
@@ -140,7 +140,7 @@ const Navbar = () => {
           </SignedIn>
 
           {/* --- MOBILE NAV --- */}
-          <div className="block md:hidden">
+          <div className="block lg:hidden">
             <Menubar className="border-none bg-transparent p-0">
               <MenubarMenu>
                 <MenubarTrigger className="cursor-pointer bg-transparent data-[state=open]:bg-[#d4af37]/10 p-2 rounded-md text-[#d4af37] hover:bg-[#d4af37]/10 transition-colors focus:bg-[#d4af37]/10">

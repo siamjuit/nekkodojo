@@ -4,7 +4,11 @@ const nextConfig: NextConfig = {
   /* config options here */
   experimental: {
     serverActions: {
-      allowedOrigins: ["https://ericka-trophied-azucena.ngrok-free.dev", "localhost:3000"],
+      allowedOrigins: [
+        "https://ericka-trophied-azucena.ngrok-free.dev",
+        "localhost:3000",
+        "http://localhost:5173",
+      ],
     },
   },
   images: {

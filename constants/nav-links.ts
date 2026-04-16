@@ -1,4 +1,4 @@
-import { User, Bookmark, MessageSquare, BookOpen, Trophy, Users2 } from "lucide-react";
+import { User, Bookmark, MessageSquare, BookOpen, Trophy, Users2, ScrollTextIcon } from "lucide-react";
 
 export const NavLinks: NavLinkProps[] = [
   {
@@ -14,7 +14,7 @@ export const NavLinks: NavLinkProps[] = [
   {
     name: "Leaderboard",
     url: "/leaderboard",
-    icon: Trophy
+    icon: Trophy,
   },
   {
     name: "Problems",
@@ -30,5 +30,10 @@ export const NavLinks: NavLinkProps[] = [
     name: "Archives",
     url: "/archives",
     icon: Bookmark,
+  },
+  {
+    name: "NekkoChat",
+    url: "http://localhost:5173",
+    icon: ScrollTextIcon,
   },
 ];

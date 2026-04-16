@@ -50,12 +50,14 @@ export async function POST(req: Request) {
       const primaryEmail = email_addresses.find((email) => email.id === primary_email_address_id);
 
       if (!primaryEmail) return new Response("No primary email found", { status: 404 });
+      if (!username) return new Response("No username provided!", { status: 400 });
 
+      const name = username.toLowerCase();
       const newUser = await prisma.user.create({
         data: {
           id: evt.data.id,
           email: primaryEmail.email_address,
-          name: username?.toLowerCase(),
+          name,
           profileUrl: image_url,
           firstName: first_name,
           lastName: last_name,
