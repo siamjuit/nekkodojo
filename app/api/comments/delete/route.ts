@@ -1,4 +1,5 @@
 import imagekit from "@/lib/image-kit";
+import { invalidateCommentCaches } from "@/lib/actions/caching";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
@@ -36,6 +37,7 @@ export async function DELETE(request: Request) {
         where: { id, authorId: res.authorId },
       });
     }
+    await invalidateCommentCaches(res.discussion.id);
     return NextResponse.json("Comment deleted!", { status: 200 });
   } catch (error) {
     console.error(error);

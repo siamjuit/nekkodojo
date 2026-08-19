@@ -3,6 +3,10 @@ import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+const noStoreHeaders = {
+  "Cache-Control": "no-store, max-age=0",
+};
+
 export async function PATCH(request: Request) {
   try {
     const user = await currentUser();
@@ -86,7 +90,7 @@ export async function GET(request: Request) {
       },
     });
 
-    return NextResponse.json(allShelfItems, { status: 200 });
+    return NextResponse.json(allShelfItems, { status: 200, headers: noStoreHeaders });
   } catch (error) {
     console.log(error);
     return NextResponse.json("Internal Server Error.", { status: 500 });

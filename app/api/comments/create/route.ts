@@ -1,4 +1,5 @@
 import imagekit from "@/lib/image-kit";
+import { invalidateCommentCaches } from "@/lib/actions/caching";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
@@ -52,6 +53,7 @@ export async function POST(request: Request) {
       throw new Error("Failed to make the comment");
     }
 
+    await invalidateCommentCaches(discussionId);
     return NextResponse.json(newComment, { status: 201 });
   } catch (error) {
     console.error(error);

@@ -1,14 +1,7 @@
 "use client";
 
 import SignOut from "./SignOut";
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useUser, Show } from "@clerk/nextjs";
 import { LayoutDashboard, MenuIcon, UserCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,9 +18,12 @@ import { NavLinks } from "@/constants/nav-links";
 import Image from "next/image";
 
 const Navbar = () => {
-  const { user } = useUser();
-  // 2. Get current path
+  // Extract isLoaded to prevent hydration flashes
+  const { user, isLoaded } = useUser();
   const pathname = usePathname();
+  const userAvatarSrc = user?.imageUrl?.trim() ? user.imageUrl : null;
+  const userProfileHref = user?.username ? `/member/${user.username}` : "/";
+
   return (
     <header className="fixed top-6 left-0 right-0 mx-auto w-[95%] max-w-7xl h-20 z-40 rounded-2xl border border-[#d4af37]/10 bg-[#1a110d]/40 backdrop-blur-xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05), 0_8px_32px_0_rgba(0,0,0,0.36)] transition-all duration-300">
       <div className="w-full h-full px-6 md:px-8 flex items-center justify-between">
@@ -101,43 +97,52 @@ const Navbar = () => {
         </nav>
 
         <div className="shrink-0 flex items-center gap-4">
-          <SignedOut>
-            <SignInButton>
-              <button className="hidden md:block group relative px-5 py-2 overflow-hidden rounded-sm border border-[#d4af37]/30 text-[#d4af37] font-mono text-xs tracking-[0.15em] uppercase hover:border-[#d4af37] transition-all duration-300 cursor-pointer">
-                <span className="absolute inset-0 w-0 bg-[#d4af37]/10 transition-all duration-250 ease-out group-hover:w-full"></span>
-                <span className="relative">Log In</span>
-              </button>
-            </SignInButton>
-            <SignUpButton>
-              <button className="relative px-6 py-2 bg-[#d4af37] text-[#1a110d] font-bold font-mono text-xs tracking-[0.15em] uppercase rounded-sm hover:bg-[#c5a028] hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all duration-300 cursor-pointer">
-                Join
-              </button>
-            </SignUpButton>
-          </SignedOut>
+          {/* --- NEW <Show> FOR SIGNED OUT --- */}
+          {isLoaded && (
+            <Show when="signed-out">
+              <SignInButton mode="redirect">
+                <button className="hidden md:block group relative px-5 py-2 overflow-hidden rounded-sm border border-[#d4af37]/30 text-[#d4af37] font-mono text-xs tracking-[0.15em] uppercase hover:border-[#d4af37] transition-all duration-300 cursor-pointer">
+                  <span className="absolute inset-0 w-0 bg-[#d4af37]/10 transition-all duration-250 ease-out group-hover:w-full"></span>
+                  <span className="relative">Log In</span>
+                </button>
+              </SignInButton>
+              <SignUpButton mode="redirect">
+                <button className="relative px-6 py-2 bg-[#d4af37] text-[#1a110d] font-bold font-mono text-xs tracking-[0.15em] uppercase rounded-sm hover:bg-[#c5a028] hover:shadow-[0_0_15px_rgba(212,175,55,0.3)] transition-all duration-300 cursor-pointer">
+                  Join
+                </button>
+              </SignUpButton>
+            </Show>
+          )}
 
-          <SignedIn>
-            <div className="flex items-center gap-4" suppressHydrationWarning={true}>
-              <div className="min-w-8 min-h-8">
-                {user ? (
-                  <>
-                    <Link href={`/member/${user.username}`}>
-                      <Image
-                        src={user.imageUrl}
-                        alt={user.username || "profile_image"}
-                        className="w-8 h-8 rounded-full border border-[#d4af37]/50 ring-2 ring-transparent hover:ring-[#d4af37]/20 transition-all"
-                        width={32}
-                        height={32}
-                      />
+          {/* --- NEW <Show> FOR SIGNED IN --- */}
+          {isLoaded && (
+            <Show when="signed-in">
+              <div className="flex items-center gap-4" suppressHydrationWarning={true}>
+                <div className="min-w-8 min-h-8">
+                  {user && (
+                    <Link
+                      href={userProfileHref}
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-[#d4af37]/50 bg-[#1a110d] text-[#d4af37] ring-2 ring-transparent transition-all hover:ring-[#d4af37]/20"
+                    >
+                      {userAvatarSrc ? (
+                        <Image
+                          src={userAvatarSrc}
+                          alt={user.username || "profile_image"}
+                          className="h-8 w-8 rounded-full object-cover"
+                          width={32}
+                          height={32}
+                        />
+                      ) : (
+                        <UserCircleIcon size={20} aria-hidden="true" />
+                      )}
                     </Link>
-                  </>
-                ) : (
-                  ""
-                )}
+                  )}
+                </div>
+                <div className="w-px h-5 bg-[#3e2723]"></div>
+                <SignOut />
               </div>
-              <div className="w-px h-5 bg-[#3e2723]"></div>
-              <SignOut />
-            </div>
-          </SignedIn>
+            </Show>
+          )}
 
           {/* --- MOBILE NAV --- */}
           <div className="block lg:hidden">
@@ -159,7 +164,6 @@ const Navbar = () => {
                   {user ? (
                     NavLinks.map((navLink) => {
                       const Icon = navLink.icon;
-                      // Mobile Active Logic
                       let href = navLink.url;
                       if (user) {
                         if (navLink.name === "Profile" && user.username) {
@@ -204,7 +208,6 @@ const Navbar = () => {
                       </Link>
                     </MenubarItem>
                   )}
-                  {/* ... (Admin/Moderator logic remains mostly same, can apply similar highlighting if desired) ... */}
                   {user?.publicMetadata.role === "admin" ||
                   user?.publicMetadata.role === "moderator" ? (
                     <>

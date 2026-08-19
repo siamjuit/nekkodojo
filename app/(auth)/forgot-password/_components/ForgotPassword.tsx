@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const ForgotPassword = () => {
-  const { isLoaded, signIn, setActive } = useSignIn();
+  const { signIn } = useSignIn();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -37,14 +37,27 @@ const ForgotPassword = () => {
   async function requestCode(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!isLoaded || !email) return;
+    if (!signIn || !email) return;
 
     setIsLoading(true);
     try {
-      await signIn.create({
-        strategy: "reset_password_email_code",
+      const { error: createError } = await signIn.create({
         identifier: email,
       });
+      if (createError) {
+        console.error(JSON.stringify(createError, null, 2));
+        setError(createError.message || "Failed to create sign-in");
+        setIsLoading(false);
+        return;
+      }
+
+      const { error: sendCodeError } = await signIn.resetPasswordEmailCode.sendCode();
+      if (sendCodeError) {
+        console.error(JSON.stringify(sendCodeError, null, 2));
+        setError(sendCodeError.message || "Failed to send code");
+        setIsLoading(false);
+        return;
+      }
       setPendingVerification(true);
     } catch (error: any) {
       console.error(JSON.stringify(error, null, 2));
@@ -57,24 +70,42 @@ const ForgotPassword = () => {
   async function onPressVerify(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!isLoaded || !code || !newPassword) {
+    if (!signIn || !code || !newPassword) {
       setError("Please enter the code and your new password.");
       return;
     }
 
     setIsLoading(true);
     try {
-      const result = await signIn.attemptFirstFactor({
-        strategy: "reset_password_email_code",
+      const { error: verifyError } = await signIn.resetPasswordEmailCode.verifyCode({
         code,
+      });
+      if (verifyError) {
+        console.error(JSON.stringify(verifyError, null, 2));
+        setError(verifyError.message || "Failed to verify code");
+        setIsLoading(false);
+        return;
+      }
+
+      const { error: submitError } = await signIn.resetPasswordEmailCode.submitPassword({
         password: newPassword,
       });
+      if (submitError) {
+        console.error(JSON.stringify(submitError, null, 2));
+        setError(submitError.message || "Failed to reset password");
+        setIsLoading(false);
+        return;
+      }
 
-      if (result.status === "complete") {
-        await setActive({ session: result.createdSessionId });
+      if (signIn.status === "complete") {
+        await signIn.finalize({
+          navigate: ({ session }) => {
+            if (session?.currentTask) return;
+            router.push("/onboarding");
+          },
+        });
         router.push("/");
       } else {
-        console.log(result);
         setError("Verification failed. Please try again.");
       }
     } catch (error: any) {
@@ -135,10 +166,7 @@ const ForgotPassword = () => {
             </div>
 
             {error && (
-              <Alert
-                variant="destructive"
-                className="bg-red-900/20 border-red-900/50 text-red-200"
-              >
+              <Alert variant="destructive" className="bg-red-900/20 border-red-900/50 text-red-200">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -156,15 +184,15 @@ const ForgotPassword = () => {
                 "Send Reset Code"
               )}
             </Button>
-            
+
             <div className="text-center">
-               <button
-                  type="button"
-                  onClick={() => router.push("/sign-in")}
-                  className="text-xs text-[#a1887f] hover:text-[#d4af37] transition-colors tracking-widest uppercase"
-                >
-                  Return to Login
-                </button>
+              <button
+                type="button"
+                onClick={() => router.push("/sign-in")}
+                className="text-xs text-[#a1887f] hover:text-[#d4af37] transition-colors tracking-widest uppercase"
+              >
+                Return to Login
+              </button>
             </div>
           </div>
         ) : (
@@ -218,10 +246,7 @@ const ForgotPassword = () => {
             </div>
 
             {error && (
-              <Alert
-                variant="destructive"
-                className="bg-red-900/20 border-red-900/50 text-red-200"
-              >
+              <Alert variant="destructive" className="bg-red-900/20 border-red-900/50 text-red-200">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"; // ✅ Add useEffect
 import Image from "next/image";
-import { X } from "lucide-react";
+import { UserCircle, X } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { ensureUserStatus } from "@/app/(root)/discussions/create/_actions";
 
 interface Props {
   discussionId: string;
-  authorId: string;
+  authorId?: string;
   userAvatar?: string | null;
   parentId?: string;
   onCommentSubmitted?: (newComment: CommentProps) => void;
@@ -21,12 +21,12 @@ interface Props {
 
 const WriteComment = ({
   discussionId,
-  authorId,
   userAvatar,
   parentId,
   onCommentSubmitted,
 }: Props) => {
   const router = useRouter();
+  const avatarSrc = userAvatar?.trim() ? userAvatar : null;
 
   const [description, setDescription] = useState("");
   const [post, setPost] = useState<UploadFile | null>(null);
@@ -34,9 +34,6 @@ const WriteComment = ({
   const [isFocused, setIsFocused] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ✅ AUTO-CLEANUP TRIGGER
-  // As soon as this component renders, check if the user's ban has expired.
-  // If it has, the server updates them to "Active" before they even type.
   useEffect(() => {
     ensureUserStatus();
   }, []);
@@ -114,8 +111,12 @@ const WriteComment = ({
 
   return (
     <div className="flex gap-4 w-full mb-8 animate-in fade-in slide-in-from-bottom-2">
-      <div className="shrink-0 relative w-10 h-10 rounded-full overflow-hidden border border-[#3e2723]">
-        <Image src={userAvatar!} alt="User" fill className="object-cover" />
+      <div className="shrink-0 relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-[#3e2723] bg-[#1a110d] text-[#d4af37]">
+        {avatarSrc ? (
+          <Image src={avatarSrc} alt="User" fill sizes="40px" className="object-cover" />
+        ) : (
+          <UserCircle size={24} aria-hidden="true" />
+        )}
       </div>
       <div className="flex-1 space-y-3">
         <div

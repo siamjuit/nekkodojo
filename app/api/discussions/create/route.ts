@@ -1,6 +1,13 @@
+import { deleteCacheByPrefix } from "@/lib/actions/caching";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+
+type DiscussionAttachmentInput = {
+  id: string;
+  postUrl: string;
+  type: string;
+};
 
 export async function POST(request: Request) {
   try {
@@ -27,7 +34,7 @@ export async function POST(request: Request) {
           },
         },
         attachments: {
-          create: attachments.map((post: any) => ({
+          create: attachments.map((post: DiscussionAttachmentInput) => ({
             id: post.id,
             postUrl: post.postUrl,
             type: post.type,
@@ -36,7 +43,14 @@ export async function POST(request: Request) {
       },
     });
 
-    if (newDiscussion) return NextResponse.json(newDiscussion.id, { status: 200 });
+    if (newDiscussion) {
+      try {
+        await deleteCacheByPrefix("discussions:");
+      } catch (error) {
+        console.error("Discussion list cache invalidation failed:", error);
+      }
+      return NextResponse.json(newDiscussion.id, { status: 200 });
+    }
   } catch (error) {
     console.error("Failed to create the discussion!", error);
     return NextResponse.json("Error: failed to create the discussion", { status: 500 });

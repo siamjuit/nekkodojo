@@ -1,10 +1,20 @@
 "use server";
 
 import { isShadowBanned } from "@/utils/check-shadowban";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
+import { cache } from "react";
 
-export async function ensureUserStatus() {
-  const user = await currentUser();
-  if (!user) return;
-  await isShadowBanned(user.id);
-}
+export const ensureUserStatus = cache(async () => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return { authenticated: false, shadowBanned: false };
+  }
+
+  const shadowBanned = await isShadowBanned(userId);
+
+  return {
+    authenticated: true,
+    shadowBanned,
+  };
+});

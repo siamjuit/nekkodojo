@@ -5,10 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import DiscussionViewer from "@/components/Discussion/DiscussionView";
-import { checkDislike, checkLike } from "@/lib/actions/isLiked";
 import CommentSection from "@/components/Comment/CommentSection";
 import { useUser } from "@clerk/nextjs";
-import { checkIsDiscussionMarked } from "@/lib/actions/isMarked";
 
 export default function DiscussionPage() {
   const params = useParams();

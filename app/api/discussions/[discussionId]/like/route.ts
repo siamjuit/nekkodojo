@@ -1,3 +1,4 @@
+import { invalidateDiscussionCaches } from "@/lib/actions/caching";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
@@ -30,6 +31,7 @@ export async function PATCH(
           }),
         ]);
 
+        await invalidateDiscussionCaches(id, user.id);
         return NextResponse.json("Like removed", { status: 201 });
       } else {
         await prisma.$transaction([
@@ -43,6 +45,7 @@ export async function PATCH(
           }),
         ]);
 
+        await invalidateDiscussionCaches(id, user.id);
         return NextResponse.json("Switched to like", { status: 201 });
       }
     }
@@ -67,6 +70,7 @@ export async function PATCH(
       return like;
     });
 
+    await invalidateDiscussionCaches(id, user.id);
     return NextResponse.json(newLike, { status: 200 });
   } catch (error) {
     return NextResponse.json("Failed to like/unlike", { status: 500 });

@@ -1,4 +1,5 @@
 import imagekit from "@/lib/image-kit";
+import { invalidateCommentCaches, invalidateDiscussionCaches } from "@/lib/actions/caching";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
@@ -34,6 +35,10 @@ export async function DELETE(request: Request) {
             authorId: user.id,
           },
         });
+        await Promise.all([
+          invalidateDiscussionCaches(discussionId),
+          invalidateCommentCaches(discussionId),
+        ]);
         return NextResponse.json("Discussion deleted!", { status: 200 });
       }
     }

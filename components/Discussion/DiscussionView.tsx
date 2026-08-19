@@ -59,6 +59,7 @@ export default function DiscussionViewer({ discussion }: { discussion: Discussio
                   alt="Author"
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 40px, 40px"
                 />
               </div>
               <div>

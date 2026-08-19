@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChevronDown, ChevronUp, Trophy } from "lucide-react";
-import { getCategoryColor } from "@/constants/get-colors"; 
+import { getCategoryColor } from "@/constants/get-colors";
 
 // Types
 interface CategoryStat {
@@ -309,7 +309,11 @@ const CustomCompanyTick = ({ x, y, payload, data }: any) => {
     <g transform={`translate(${x},${y})`}>
       <foreignObject x="-40" y="-12" width="24" height="24">
         <div className="w-6 h-6 rounded-full overflow-hidden relative">
-          <img src={company.logo} alt={company.name} className="object-contain w-full h-full p-0.5" />
+          <img
+            src={company.logo}
+            alt={company.name}
+            className="object-contain w-full h-full p-0.5"
+          />
         </div>
       </foreignObject>
       <text x="-50" y="4" dy="0" textAnchor="end" fill="#a1887f" fontSize="12px" fontWeight="500">

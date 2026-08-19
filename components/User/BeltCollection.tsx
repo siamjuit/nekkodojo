@@ -1,151 +1,118 @@
-import { cn } from "@/lib/utils";
-import { Lock } from "lucide-react";
+"use client";
 
-// --- CONFIGURATION ---
-const BELTS = [
-  { name: "White Belt", minSolved: 0, color: "bg-white text-black border-gray-200" },
-  {
-    name: "Yellow Belt",
-    minSolved: 10,
-    color: "bg-yellow-400 text-black border-yellow-500 shadow-yellow-400/50",
-  },
-  {
-    name: "Orange Belt",
-    minSolved: 25,
-    color: "bg-orange-500 text-white border-orange-600 shadow-orange-500/50",
-  },
-  {
-    name: "Green Belt",
-    minSolved: 50,
-    color: "bg-green-600 text-white border-green-700 shadow-green-600/50",
-  },
-  {
-    name: "Blue Belt",
-    minSolved: 100,
-    color: "bg-blue-600 text-white border-blue-700 shadow-blue-600/50",
-  },
-  {
-    name: "Purple Belt",
-    minSolved: 200,
-    color: "bg-purple-600 text-white border-purple-700 shadow-purple-600/50",
-  },
-  {
-    name: "Brown Belt",
-    minSolved: 350,
-    color: "bg-[#795548] text-white border-[#5d4037] shadow-[#795548]/50",
-  },
-  {
-    name: "Black Belt",
-    minSolved: 500,
-    color: "bg-neutral-900 text-white border-neutral-700 shadow-black/50",
-  },
+import { Lock, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export const BELTS = [
+  { name: "White Belt", minSolved: 0, color: "bg-white text-black" },
+  { name: "Yellow Belt", minSolved: 10, color: "bg-yellow-400 text-black" },
+  { name: "Orange Belt", minSolved: 25, color: "bg-orange-500 text-white" },
+  { name: "Green Belt", minSolved: 50, color: "bg-green-600 text-white" },
+  { name: "Blue Belt", minSolved: 100, color: "bg-blue-600 text-white" },
+  { name: "Purple Belt", minSolved: 200, color: "bg-purple-600 text-white" },
+  { name: "Brown Belt", minSolved: 350, color: "bg-[#6d4c41] text-white" },
+  { name: "Black Belt", minSolved: 500, color: "bg-black text-white" },
 ];
 
 export function BeltProgress({ totalSolved }: { totalSolved: number }) {
-  // Find current belt (the highest one unlocked)
-  const currentBeltIndex = BELTS.findLastIndex((b) => totalSolved >= b.minSolved);
-  const nextBelt = BELTS[currentBeltIndex + 1];
-  const progressToNext = nextBelt
+  const currentIndex = BELTS.findLastIndex((belt) => totalSolved >= belt.minSolved);
+
+  const current = BELTS[currentIndex];
+  const next = BELTS[currentIndex + 1];
+
+  const progress = next
     ? Math.min(
         100,
-        Math.round(
-          ((totalSolved - BELTS[currentBeltIndex].minSolved) /
-            (nextBelt.minSolved - BELTS[currentBeltIndex].minSolved)) *
-            100
-        )
+        Math.round(((totalSolved - current.minSolved) / (next.minSolved - current.minSolved)) * 100)
       )
     : 100;
 
   return (
-    <div className="space-y-6">
-      {/* Header Info - Responsive Stack */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-[#3e2723] pb-4 gap-4 sm:gap-0">
+    <section className="rounded-3xl border border-amber-500/20 bg-linear-to-br from-[#111111] to-black p-6 shadow-[0_0_40px_rgba(245,158,11,0.05)]">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-xl md:text-2xl font-bold text-[#eaddcf]">Dojo Ranks</h2>
-          <p className="text-[#a1887f] text-xs md:text-sm mt-1">
-            Current Rank:{" "}
-            <span className="text-[#d4af37] font-bold">{BELTS[currentBeltIndex].name}</span>
+          <p className="text-xs uppercase tracking-[0.3em] text-amber-400 mb-2">Rank Progression</p>
+
+          <h2 className="text-2xl font-black text-white">Dojo Belts</h2>
+
+          <p className="text-sm text-zinc-400 mt-2">
+            Current Rank: <span className="text-amber-400 font-bold">{current.name}</span>
           </p>
         </div>
-        {nextBelt && (
-          <div className="text-left sm:text-right">
-            <span className="text-[10px] md:text-xs text-[#5d4037] uppercase font-mono block mb-1">
-              Next Milestone
-            </span>
-            <div className="flex items-center gap-2 sm:justify-end">
-              {/* Mobile Progress Bar (Optional Visual Cue) */}
-              <div className="h-1.5 w-16 bg-[#1a110d] rounded-full overflow-hidden sm:hidden border border-[#3e2723]">
-                <div 
-                  className="h-full bg-[#d4af37]" 
-                  style={{ width: `${progressToNext}%` }}
-                />
-              </div>
-              <p className="text-[#eaddcf] text-xs md:text-sm font-medium">
-                {totalSolved} / {nextBelt.minSolved} <span className="text-[#a1887f] ml-1">({progressToNext}%)</span>
-              </p>
-            </div>
+
+        {next && (
+          <div className="text-sm text-zinc-400">
+            Next Rank: <span className="text-white font-semibold">{next.name}</span>
           </div>
         )}
       </div>
 
-      {/* Belts Grid - Responsive Columns */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-        {BELTS.map((belt, idx) => {
-          const isUnlocked = totalSolved >= belt.minSolved;
-          const isCurrent = idx === currentBeltIndex;
+      {/* Progress */}
+      {next && (
+        <div className="mb-8">
+          <div className="mb-2 flex items-center justify-between text-xs text-zinc-500 uppercase tracking-widest">
+            <span>Journey</span>
+            <span>{progress}%</span>
+          </div>
+
+          <div className="h-3 overflow-hidden rounded-full bg-zinc-900 border border-zinc-800">
+            <div
+              className="h-full rounded-full bg-linear-to-r from-amber-500 to-yellow-400 transition-all duration-700"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          <p className="mt-3 text-sm text-zinc-400">
+            {totalSolved} solved • Need{" "}
+            <span className="text-white font-semibold">{next.minSolved - totalSolved}</span> more
+            for {next.name}
+          </p>
+        </div>
+      )}
+
+      {/* Belts Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {BELTS.map((belt, index) => {
+          const unlocked = totalSolved >= belt.minSolved;
+          const active = index === currentIndex;
 
           return (
             <div
               key={belt.name}
               className={cn(
-                "relative flex flex-col items-center p-3 md:p-4 rounded-xl border transition-all duration-500",
-                // Unlocked Style
-                isUnlocked
-                  ? "bg-[#1a110d] border-[#3e2723]"
-                  : "bg-[#0f0b0a] border-[#271b16] opacity-60 grayscale", // Locked "Shadow" Look
-                // Current Belt Highlight
-                isCurrent &&
-                  "ring-1 ring-[#d4af37] bg-[#1a110d] shadow-[0_0_20px_rgba(212,175,55,0.1)] scale-[1.02]"
+                "rounded-2xl border p-4 transition-all",
+                unlocked
+                  ? "border-zinc-700 bg-[#0f0f0f]"
+                  : "border-zinc-900 bg-[#0a0a0a] opacity-50",
+                active && "border-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.15)]"
               )}
             >
-              {/* Belt Visual Representation */}
+              {/* Belt Bar */}
               <div
                 className={cn(
-                  "h-6 md:h-8 w-full rounded mb-2 md:mb-3 flex items-center justify-center relative shadow-lg transition-transform hover:scale-105",
-                  isUnlocked ? belt.color : "bg-[#2a201d] border-[#3e2723]", // Dull gray if locked
-                  isUnlocked && "shadow-[0_0_15px_currentColor]" // Glow if unlocked
+                  "h-8 rounded-xl flex items-center justify-center font-bold text-xs",
+                  unlocked ? belt.color : "bg-zinc-800 text-zinc-500"
                 )}
               >
-                {/* The "Knot" of the belt */}
-                <div className="w-1 md:w-1.5 h-full bg-black/20 absolute left-6 md:left-8" />
-
-                {/* Lock Icon for locked belts */}
-                {!isUnlocked && <Lock className="w-3 h-3 md:w-4 md:h-4 text-[#5d4037]" />}
+                {unlocked ? belt.name : <Lock className="h-4 w-4" />}
               </div>
 
-              {/* Text Info */}
-              <div className="text-center space-y-0.5 md:space-y-1">
-                <span
-                  className={cn(
-                    "block font-bold text-xs md:text-sm truncate px-1",
-                    isUnlocked ? "text-[#eaddcf]" : "text-[#5d4037]"
-                  )}
-                >
-                  {belt.name}
-                </span>
-                <span className="block text-[10px] font-mono text-[#a1887f]">
-                  {belt.minSolved}+ Solved
-                </span>
-              </div>
+              <div className="mt-4">
+                <p className="font-semibold text-sm text-white">{belt.name}</p>
 
-              {/* Locked Overlay (Optional visual effect) */}
-              {!isUnlocked && (
-                <div className="absolute inset-0 bg-[#0f0b0a]/40 z-10 pointer-events-none rounded-xl" />
-              )}
+                <p className="text-xs text-zinc-500 mt-1">{belt.minSolved}+ solved</p>
+
+                {active && (
+                  <div className="mt-3 flex items-center gap-1 text-xs text-amber-400 font-semibold">
+                    Active <ChevronRight className="h-3 w-3" />
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

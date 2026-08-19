@@ -107,6 +107,7 @@ export function AttachmentCarousel({ attachments }: { attachments: Attachment[] 
                         ) : (
                           <div className="relative w-full h-full">
                             <Image
+                              loading={"eager"}
                               src={file.postUrl}
                               alt="Attachment"
                               fill
@@ -179,10 +180,12 @@ export function AttachmentCarousel({ attachments }: { attachments: Attachment[] 
                   className="max-w-full max-h-[85vh] object-contain shadow-2xl my-auto mx-auto"
                 />
               ) : (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={selectedFile.postUrl}
                   alt="Full view"
                   className="w-auto h-auto max-w-[95vw] object-contain shadow-2xl my-auto mx-auto"
+                  loading={"eager"}
                 />
               )}
             </div>

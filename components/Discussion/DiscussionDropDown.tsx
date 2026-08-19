@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MoreHorizontal, Trash2, Flag, Copy, Bookmark, BookmarkCheck } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";

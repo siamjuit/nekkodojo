@@ -28,7 +28,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Image from "next/image";
 
 const SignUpPage = () => {
-  const { isLoaded, signUp, setActive } = useSignUp();
+  const { signUp } = useSignUp();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +42,7 @@ const SignUpPage = () => {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!isLoaded || !email || !username || !password) {
+    if (!signUp || !email || !username || !password) {
       return;
     }
     setIsLoading(true);
@@ -52,9 +52,7 @@ const SignUpPage = () => {
         password,
         username,
       });
-      await signUp.prepareEmailAddressVerification({
-        strategy: "email_code",
-      });
+      await signUp.verifications.sendEmailCode();
 
       setPendingVerification(true);
     } catch (error: any) {
@@ -67,21 +65,25 @@ const SignUpPage = () => {
   async function onPressVerify(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!isLoaded || !code) return;
+    if (!signUp || !code) return;
     setIsLoading(true);
 
     try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
+      await signUp.verifications.verifyEmailCode({
         code,
       });
 
-      if (completeSignUp.status !== "complete") {
-        console.log(JSON.stringify(completeSignUp, null, 2));
+      if (signUp.status !== "complete") {
+        console.log(JSON.stringify(signUp, null, 2));
       }
 
-      if (completeSignUp.status === "complete") {
-        await setActive({ session: completeSignUp.createdSessionId });
-        router.push("/onboarding");
+      if (signUp.status === "complete") {
+        await signUp.finalize({
+          navigate: ({ session }) => {
+            if (session?.currentTask) return;
+            router.push("/onboarding");
+          },
+        });
       }
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));
@@ -91,13 +93,13 @@ const SignUpPage = () => {
   }
   async function googleSignIn() {
     setError("");
-    if (!isLoaded) return;
+    if (!signUp) return;
     setIsLoading(true);
     try {
-      await signUp.authenticateWithRedirect({
+      await signUp.sso({
         strategy: "oauth_google",
-        redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/onboarding",
+        redirectCallbackUrl: "/sso-callback",
+        redirectUrl: "/onboarding",
       });
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));
@@ -108,13 +110,13 @@ const SignUpPage = () => {
   async function githubSignIn() {
     setIsLoading(true);
     setError("");
-    if (!isLoaded) return;
+    if (!signUp) return;
 
     try {
-      await signUp.authenticateWithRedirect({
+      await signUp.sso({
         strategy: "oauth_github",
-        redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/onboarding",
+        redirectCallbackUrl: "/sso-callback",
+        redirectUrl: "/onboarding",
       });
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));
@@ -122,7 +124,7 @@ const SignUpPage = () => {
     }
   }
 
-  if (!isLoaded) {
+  if (!signUp) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0f0b0a]">
         <div className="flex flex-col items-center gap-3">

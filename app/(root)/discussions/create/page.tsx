@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -236,7 +237,8 @@ export default function CreateDiscussionPage() {
                         <img
                           src={file.postUrl}
                           alt="Attachment"
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            loading="eager"
                         />
                         <span className="absolute bottom-2 left-2 text-[10px] bg-black/80 text-[#d4af37] px-1.5 rounded font-bold uppercase tracking-wider">
                           Image

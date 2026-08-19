@@ -50,11 +50,7 @@ interface Props {
   comments: Comment[];
 }
 
-export function ProfileActivityTabs({
-  solvedQuestions,
-  discussions,
-  comments,
-}: Props) {
+export function ProfileActivityTabs({ solvedQuestions, discussions, comments }: Props) {
   return (
     <div className="w-full space-y-6">
       <h2 className="text-xl md:text-2xl font-bold text-[#eaddcf] border-b border-[#3e2723] pb-4">
@@ -116,8 +112,8 @@ export function ProfileActivityTabs({
                               item.question.difficulty === "Easy"
                                 ? "text-green-400 border-green-900/30"
                                 : item.question.difficulty === "Medium"
-                                ? "text-yellow-400 border-yellow-900/30"
-                                : "text-red-400 border-red-900/30"
+                                  ? "text-yellow-400 border-yellow-900/30"
+                                  : "text-red-400 border-red-900/30"
                             )}
                           >
                             {item.question.difficulty}

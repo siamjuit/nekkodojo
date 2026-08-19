@@ -23,7 +23,7 @@ import { useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
 
 const SignInPage = () => {
-  const { isLoaded, signIn, setActive } = useSignIn();
+  const { signIn } = useSignIn();
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -36,12 +36,12 @@ const SignInPage = () => {
   async function googleSignIn() {
     setIsLoading(true);
     setError("");
-    if (!isLoaded) return;
+    if (!signIn) return;
     try {
-      await signIn.authenticateWithRedirect({
+      await signIn.sso({
         strategy: "oauth_google",
-        redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/problems",
+        redirectCallbackUrl: "/sso-callback",
+        redirectUrl: "/problems",
       });
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));
@@ -52,13 +52,13 @@ const SignInPage = () => {
   async function githubSignIn() {
     setIsLoading(true);
     setError("");
-    if (!isLoaded) return;
+    if (!signIn) return;
 
     try {
-      await signIn.authenticateWithRedirect({
+      await signIn.sso({
         strategy: "oauth_github",
-        redirectUrl: "/sso-callback",
-        redirectUrlComplete: "/problems",
+        redirectCallbackUrl: "/sso-callback",
+        redirectUrl: "/problems",
       });
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));
@@ -70,21 +70,28 @@ const SignInPage = () => {
 
     const identifier = activeTab === "email" ? email : username;
 
-    if (!isLoaded || !identifier || !password) {
+    if (!signIn || !identifier || !password) {
       setError("Please fill in all fields");
       return;
     }
 
     setIsLoading(true);
     try {
-      const session = await signIn.create({
-        identifier: identifier,
-        password,
-      });
+      await signIn.create({ identifier });
+      const result = await signIn.password({ password });
 
-      if (session.status === "complete") {
-        await setActive({ session: session.createdSessionId });
-        router.push("/problems");
+      if (signIn.status === "complete") {
+        await signIn.finalize({
+          navigate: ({ session }) => {
+            if (session?.currentTask) {
+              console.log("Pending session task:", session.currentTask);
+              return;
+            }
+            router.push("/problems");
+          },
+        });
+      } else {
+        console.log("Sign-in requires further action:", result);
       }
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));
@@ -94,7 +101,7 @@ const SignInPage = () => {
   }
   const router = useRouter();
 
-  if (!isLoaded) {
+  if (!signIn) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0f0b0a]">
         <div className="flex flex-col items-center gap-3">

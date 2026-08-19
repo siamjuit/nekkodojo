@@ -117,7 +117,6 @@ const CommentSection = ({ discussionId, authorId }: { discussionId: string; auth
       <div className="w-full">
         <WriteComment
           discussionId={discussionId}
-          authorId={user?.id || ""}
           userAvatar={user?.imageUrl}
           onCommentSubmitted={handleNewRootComment}
         />
