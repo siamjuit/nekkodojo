@@ -33,7 +33,7 @@ export const NavLinks: NavLinkProps[] = [
   },
   {
     name: "NekkoChat",
-    url: "http://localhost:5173",
+    url: "/chat",
     icon: ScrollTextIcon,
   },
 ];

@@ -14,12 +14,12 @@ export default function SleepingCatFooter({ children }: { children: ReactNode })
         aria-hidden="true"
       >
         <motion.div
-          className="absolute left-[72%] top-[14%] z-0 h-[48%] w-[20%] origin-[56%_100%]"
+          className="absolute left-[75%] top-[14%] z-0 h-[48%] w-[20%] origin-[56%_100%]"
           animate={reduceMotion ? undefined : { rotate: [-9, 9, -9] }}
           transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
         >
           <Image
-            src="/cattail.png"
+            src="/tail.svg"
             alt=""
             width={1100}
             height={3900}
