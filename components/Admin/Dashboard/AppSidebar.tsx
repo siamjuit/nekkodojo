@@ -202,7 +202,7 @@ export function AppSidebar() {
                                     asChild
                                     isActive={isSubActive}
                                     className={`
-                                      h-9 text-xs transition-colors
+                                      h-11 text-xs transition-colors md:h-9
                                       ${
                                         isSubActive
                                           ? "text-[#d4af37] bg-[#d4af37]/10"

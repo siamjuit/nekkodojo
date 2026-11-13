@@ -287,7 +287,7 @@ export default function LanguageManagementClient() {
                     variant="ghost"
                     aria-label={`Edit ${language.name}`}
                     onClick={() => setLanguageToEdit(language)}
-                    className="size-8 cursor-pointer text-[#a1887f] hover:bg-[#3a2318] hover:text-[#d4af37]"
+                    className="size-11 cursor-pointer text-[#a1887f] hover:bg-[#3a2318] hover:text-[#d4af37] md:size-8"
                   >
                     <Pencil className="size-4" />
                   </Button>

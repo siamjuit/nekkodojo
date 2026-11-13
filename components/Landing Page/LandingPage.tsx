@@ -186,13 +186,13 @@ export default function LandingPage() {
           </span>
         </div>
         <div className="relative group inline-block">
-          <h1 className="font-brand text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-none text-[#eaddcf] mix-blend-screen drop-shadow-[0_0_15px_rgba(234,221,207,0.1)] whitespace-nowrap">
+          <h1 className="font-brand text-[clamp(2rem,10vw,3.75rem)] sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-none text-[#eaddcf] mix-blend-screen drop-shadow-[0_0_15px_rgba(234,221,207,0.1)] whitespace-nowrap">
             NEKKO
             <span className="text-[#d4af37] drop-shadow-[0_2px_10px_rgba(212,175,55,0.4)]">
               DOJO
             </span>
           </h1>
-          <h1 className="font-brand absolute inset-0 text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-none text-[#d4af37] opacity-0 group-hover:opacity-10 group-hover:translate-x-1 group-hover:translate-y-1 transition-all duration-300 pointer-events-none select-none whitespace-nowrap">
+          <h1 className="font-brand absolute inset-0 text-[clamp(2rem,10vw,3.75rem)] sm:text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter leading-none text-[#d4af37] opacity-0 group-hover:opacity-10 group-hover:translate-x-1 group-hover:translate-y-1 transition-all duration-300 pointer-events-none select-none whitespace-nowrap">
             NEKKO<span className="">DOJO</span>
           </h1>
         </div>

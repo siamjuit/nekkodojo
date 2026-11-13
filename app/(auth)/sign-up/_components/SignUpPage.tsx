@@ -240,9 +240,9 @@ const SignUpPage = () => {
   );
 
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-2 bg-[#0f0b0a] text-[#eaddcf]">
+    <div className="grid min-h-screen min-h-svh w-full lg:grid-cols-2 bg-[#0f0b0a] text-[#eaddcf]">
       {                                      }
-      <main className="relative flex items-center justify-center px-6 py-12 sm:px-12">
+      <main className="relative flex items-center justify-center px-4 py-8 sm:px-8 sm:py-12 lg:px-12">
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_left,rgba(62,39,35,0.35),transparent_60%)]" />
 
         <div className="relative z-10 w-full max-w-md space-y-8">

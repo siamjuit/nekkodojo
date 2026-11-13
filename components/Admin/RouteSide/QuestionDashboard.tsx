@@ -216,10 +216,10 @@ export default function QuestionsDashboard({ initialCategories }: Props) {
           {                   }
           <div className="rounded-xl border border-[#3e2723] bg-[#1a110d]/40 overflow-hidden min-h-[300px] w-full">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm whitespace-nowrap">
+              <table className="w-full text-left text-sm sm:whitespace-nowrap">
                 <thead>
                   <tr className="border-b border-[#3e2723] bg-[#0f0b0a] text-[#a1887f]">
-                    <th className="p-4 font-medium min-w-[200px]">Title</th>
+                    <th className="p-4 font-medium min-w-0 sm:min-w-[200px]">Title</th>
                     <th className="p-4 font-medium">Categories</th>
                     <th className="p-4 font-medium">Difficulty</th>
                     <th className="p-4 font-medium">Companies</th>

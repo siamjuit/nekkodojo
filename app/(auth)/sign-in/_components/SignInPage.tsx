@@ -159,7 +159,7 @@ const SignInPage = () => {
     "flex-1 bg-[#2c1810]/50 border border-[#5d4037] text-[#eaddcf] hover:bg-[#3e2723] hover:text-[#d4af37] hover:border-[#d4af37] transition-all duration-300 h-12";
 
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-2 bg-[#0f0b0a] text-[#eaddcf]">
+    <div className="grid min-h-screen min-h-svh w-full lg:grid-cols-2 bg-[#0f0b0a] text-[#eaddcf]">
       {                                          }
       <aside className="relative hidden lg:flex flex-col justify-between overflow-hidden border-r border-[#3e2723] p-12">
         <DojoArt />
@@ -180,7 +180,7 @@ const SignInPage = () => {
       </aside>
 
       {                                       }
-      <main className="relative flex items-center justify-center px-6 py-12 sm:px-12">
+      <main className="relative flex items-center justify-center px-4 py-8 sm:px-8 sm:py-12 lg:px-12">
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_right,rgba(62,39,35,0.35),transparent_60%)]" />
 
         <div className="relative z-10 w-full max-w-md space-y-8">

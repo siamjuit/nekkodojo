@@ -273,7 +273,7 @@ export default function TagClient() {
                       variant="ghost"
                       onClick={() => setTagToEdit(tag)}
                       aria-label={`Edit ${tag.name}`}
-                      className="size-8 text-[#a1887f] hover:bg-[#3a2318] hover:text-[#d4af37]"
+                      className="size-11 text-[#a1887f] hover:bg-[#3a2318] hover:text-[#d4af37] md:size-8"
                     >
                       <Edit2 className="size-4" />
                     </Button>
@@ -282,7 +282,7 @@ export default function TagClient() {
                       variant="ghost"
                       onClick={() => setTagToDelete(tag)}
                       aria-label={`Delete ${tag.name}`}
-                      className="size-8 text-[#a1887f] hover:bg-red-900/20 hover:text-red-400"
+                      className="size-11 text-[#a1887f] hover:bg-red-900/20 hover:text-red-400 md:size-8"
                     >
                       <Trash2 className="size-4" />
                     </Button>

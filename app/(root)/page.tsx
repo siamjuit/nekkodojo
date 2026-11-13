@@ -5,6 +5,7 @@ import TrainingGrounds from "@/components/Landing Page/TrainingGrounds";
 import SanctuaryMetrics from "@/components/Landing Page/SanctuaryMetrics";
 import Footer from "@/components/Landing Page/Footer";
 import dynamic from "next/dynamic";
+import SleepingCatFooter from "@/components/Landing Page/SleepingCatFooter";
 
 const AboutHero = dynamic(() => import("@/components/Landing Page/Hero"), {
   ssr: false,
@@ -19,7 +20,9 @@ export default function Home() {
         <AboutHero />
         <TrainingGrounds />
         <SanctuaryMetrics />
-        <Footer />
+        <SleepingCatFooter>
+          <Footer />
+        </SleepingCatFooter>
       </div>
     </>
   );

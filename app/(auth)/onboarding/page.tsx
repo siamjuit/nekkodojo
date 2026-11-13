@@ -46,8 +46,8 @@ export default function OnboardingPage() {
   }, [retryCount]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-[#0f0b0a] font-sans text-[#eaddcf] relative overflow-hidden">
-      <div className="absolute inset-0 bg-[#120c0a]">
+    <div className="relative flex min-h-screen min-h-svh w-full items-center justify-center bg-[#0f0b0a] px-4 py-8 font-sans text-[#eaddcf] sm:py-12">
+      <div className="absolute inset-0 overflow-hidden bg-[#120c0a]">
         <div className="absolute top-[-50%] left-[-50%] right-[-50%] bottom-[-50%] bg-[radial-gradient(circle_at_center,rgba(62,39,35,0.2)_0%,rgba(10,5,3,1)_60%)] pointer-events-none"></div>
         <div
           className="absolute inset-0 opacity-10 pointer-events-none"

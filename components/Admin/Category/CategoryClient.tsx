@@ -137,7 +137,7 @@ export default function CategoryClient({ data }: { data: CategoryWithRelations[]
                       variant="ghost"
                       size="sm"
                       onClick={() => setCategoryToEdit(cat)}
-                      className="h-8 px-3 text-[#a1887f] hover:bg-transparent hover:text-[#d4af37]"
+                      className="h-11 px-3 text-[#a1887f] hover:bg-transparent hover:text-[#d4af37] md:h-8"
                     >
                       <Pencil className="mr-1.5 size-3.5" aria-hidden />
                       Edit
@@ -147,7 +147,7 @@ export default function CategoryClient({ data }: { data: CategoryWithRelations[]
                       variant="ghost"
                       size="sm"
                       onClick={() => setCategoryToDelete(cat)}
-                      className="h-8 px-3 text-[#8d6e63] hover:bg-transparent hover:text-[#d4796b]"
+                      className="h-11 px-3 text-[#8d6e63] hover:bg-transparent hover:text-[#d4796b] md:h-8"
                     >
                       <Trash2 className="mr-1.5 size-3.5" aria-hidden />
                       Delete

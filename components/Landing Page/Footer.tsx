@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Github from "@/public/logos/github.svg";
-import { Grain, Hanko, SleepingCat } from "./DojoGraphics";
+import { Grain, Hanko } from "./DojoGraphics";
 
 const NAV = [
   {
@@ -66,11 +66,6 @@ export default function Footer() {
                 Forging algorithmic sharpness in quiet discipline.
               </p>
             </div>
-
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#5c3d21] bg-[#18120e] px-3 py-1.5 text-[11px] font-medium uppercase tracking-widest text-[#a1887f]">
-              <span className="size-2 rounded-full bg-emerald-500" />
-              All systems operational
-            </span>
           </div>
 
           {                                      }
@@ -119,8 +114,6 @@ export default function Footer() {
                 <Image src="/logos/x.svg" alt="x" width={12} height={12} className="opacity-80" />
               </SocialLink>
             </div>
-
-            <SleepingCat className="w-36 opacity-80 transition-opacity duration-500 hover:opacity-100" />
           </div>
         </div>
 

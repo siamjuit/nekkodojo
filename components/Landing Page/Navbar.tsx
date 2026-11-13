@@ -186,15 +186,26 @@ const Navbar = () => {
                       );
                     })
                   ) : (
-                    <MenubarItem
-                      asChild
-                      className="focus:bg-[#0f0b0a]/30 focus:text-[#d4af37] focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.55)] text-[#eaddcf] cursor-pointer rounded-sm px-3 py-2.5 my-0.5"
-                    >
-                      <Link href="/guest">
-                        <UserCircleIcon size={16} className="opacity-70" />
-                        Join as guest
-                      </Link>
-                    </MenubarItem>
+                    <>
+                      <MenubarItem
+                        asChild
+                        className="focus:bg-[#0f0b0a]/30 focus:text-[#d4af37] focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.55)] text-[#eaddcf] cursor-pointer rounded-sm px-3 py-2.5 my-0.5"
+                      >
+                        <Link href="/sign-in">
+                          <UserCircleIcon size={16} className="opacity-70" />
+                          Log in
+                        </Link>
+                      </MenubarItem>
+                      <MenubarItem
+                        asChild
+                        className="focus:bg-[#0f0b0a]/30 focus:text-[#d4af37] focus:shadow-[inset_0_2px_4px_rgba(0,0,0,0.55)] text-[#eaddcf] cursor-pointer rounded-sm px-3 py-2.5 my-0.5"
+                      >
+                        <Link href="/guest">
+                          <UserCircleIcon size={16} className="opacity-70" />
+                          Join as guest
+                        </Link>
+                      </MenubarItem>
+                    </>
                   )}
                   {isStaff && (
                     <>

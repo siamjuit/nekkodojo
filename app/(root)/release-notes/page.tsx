@@ -99,6 +99,21 @@ export default function ReleaseNotesPage() {
             </nav>
           </aside>
 
+          <nav aria-label="Versions" className="-mb-6 min-w-0 lg:hidden">
+            <p className="mb-3 text-xs text-[#5d4037]">Jump to version</p>
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {RELEASES.map((release) => (
+                <a
+                  key={release.version}
+                  href={`#v${release.version}`}
+                  className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-[#3a2318] px-3 text-sm text-[#a1887f] transition-colors hover:border-[#d4af37]/50 hover:text-[#d4af37] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d4af37]"
+                >
+                  v{release.version}
+                </a>
+              ))}
+            </div>
+          </nav>
+
           {                                    }
           <ol className="relative">
             {              }

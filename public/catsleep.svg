@@ -1,0 +1,365 @@
+<svg width="996" height="774" viewBox="0 0 996 774" fill="none" xmlns="http://www.w3.org/2000/svg">
+<style>
+@keyframes kf_rounded-body_transform_0 {
+  0% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(143.171px) translateY(0px) translate(309.109px, 258.249px) scaleX(1) scaleY(1) translate(-309.109px, -258.249px);
+  }
+  20% {
+    transform: translateX(143.171px) translateY(0px) translate(309.109px, 258.249px) scaleX(1.008) scaleY(1.05) translate(-309.109px, -258.249px);
+  }
+  26.25% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(143.171px) translateY(0px) translate(309.109px, 258.249px) scaleX(1.008) scaleY(1.05) translate(-309.109px, -258.249px);
+  }
+  38.75% {
+    transform: translateX(143.171px) translateY(0px) translate(309.109px, 258.249px) scaleX(1) scaleY(1) translate(-309.109px, -258.249px);
+  }
+  50% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(143.171px) translateY(0px) translate(309.109px, 258.249px) scaleX(1) scaleY(1) translate(-309.109px, -258.249px);
+  }
+  70% {
+    transform: translateX(143.171px) translateY(0px) translate(309.109px, 258.249px) scaleX(1.008) scaleY(1.05) translate(-309.109px, -258.249px);
+  }
+  76.25% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(143.171px) translateY(0px) translate(309.109px, 258.249px) scaleX(1.008) scaleY(1.05) translate(-309.109px, -258.249px);
+  }
+  88.75% {
+    transform: translateX(143.171px) translateY(0px) translate(309.109px, 258.249px) scaleX(1) scaleY(1) translate(-309.109px, -258.249px);
+  }
+  100% {
+    transform: translateX(143.171px) translateY(0px) translate(309.109px, 258.249px) scaleX(1) scaleY(1) translate(-309.109px, -258.249px);
+  }
+}
+#rounded-body {
+  transform-origin: 0 0;
+  animation: kf_rounded-body_transform_0 8s linear infinite;
+}
+@keyframes kf_drooping-hind-paw_transform_0 {
+  0% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(501.152px) translateY(98.249px) translate(108.432px, 5px) rotate(0rad) translate(-108.432px, -5px);
+  }
+  25% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(501.152px) translateY(98.249px) translate(108.432px, 5px) rotate(-0.026rad) translate(-108.432px, -5px);
+  }
+  50% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(501.152px) translateY(98.249px) translate(108.432px, 5px) rotate(0rad) translate(-108.432px, -5px);
+  }
+  75% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(501.152px) translateY(98.249px) translate(108.432px, 5px) rotate(-0.026rad) translate(-108.432px, -5px);
+  }
+  100% {
+    transform: translateX(501.152px) translateY(98.249px) translate(108.432px, 5px) rotate(0rad) translate(-108.432px, -5px);
+  }
+}
+#drooping-hind-paw {
+  transform-origin: 0 0;
+  animation: kf_drooping-hind-paw_transform_0 8s linear infinite;
+}
+@keyframes kf_drooping-front-paw_transform_0 {
+  0% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(212.797px) translateY(132.249px) translate(54.852px, 5px) rotate(0rad) translate(-54.852px, -5px);
+  }
+  25% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(212.797px) translateY(132.249px) translate(54.852px, 5px) rotate(0.021rad) translate(-54.852px, -5px);
+  }
+  50% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(212.797px) translateY(132.249px) translate(54.852px, 5px) rotate(0rad) translate(-54.852px, -5px);
+  }
+  75% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(212.797px) translateY(132.249px) translate(54.852px, 5px) rotate(0.021rad) translate(-54.852px, -5px);
+  }
+  100% {
+    transform: translateX(212.797px) translateY(132.249px) translate(54.852px, 5px) rotate(0rad) translate(-54.852px, -5px);
+  }
+}
+#drooping-front-paw {
+  transform-origin: 0 0;
+  animation: kf_drooping-front-paw_transform_0 8s linear infinite;
+}
+@keyframes kf_Snore_1____floating_z_transform_0 {
+  0% {
+    transform: translateX(45px) translateY(15px) translateX(0px) translateY(0px);
+  }
+  11.25% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(45px) translateY(15px) translateX(0px) translateY(0px);
+  }
+  31.25% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(45px) translateY(15px) translateX(15px) translateY(-55px);
+  }
+  50% {
+    transform: translateX(45px) translateY(15px) translateX(0px) translateY(0px);
+  }
+  61.25% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(45px) translateY(15px) translateX(0px) translateY(0px);
+  }
+  81.25% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(45px) translateY(15px) translateX(15px) translateY(-55px);
+  }
+  100% {
+    transform: translateX(45px) translateY(15px) translateX(0px) translateY(0px);
+  }
+}
+@keyframes kf_Snore_1____floating_z_opacity_0 {
+  0% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  11.25% {
+    animation-timing-function: ease-in-out;
+    opacity: 0;
+  }
+  16.25% {
+    animation-timing-function: ease-in-out;
+    opacity: 0.8;
+  }
+  31.25% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  50% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  61.25% {
+    animation-timing-function: ease-in-out;
+    opacity: 0;
+  }
+  66.25% {
+    animation-timing-function: ease-in-out;
+    opacity: 0.8;
+  }
+  81.25% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+#Snore_1____floating_z {
+  transform-origin: 0 0;
+  animation:
+    kf_Snore_1____floating_z_transform_0 8s linear infinite,
+    kf_Snore_1____floating_z_opacity_0 8s linear infinite;
+}
+@keyframes kf_Snore_2____floating_z_transform_0 {
+  0% {
+    transform: translateX(85px) translateY(-23px) translateX(0px) translateY(0px);
+  }
+  14.38% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(85px) translateY(-23px) translateX(0px) translateY(0px);
+  }
+  34.38% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(85px) translateY(-23px) translateX(15px) translateY(-55px);
+  }
+  50% {
+    transform: translateX(85px) translateY(-23px) translateX(0px) translateY(0px);
+  }
+  64.38% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(85px) translateY(-23px) translateX(0px) translateY(0px);
+  }
+  84.38% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(85px) translateY(-23px) translateX(15px) translateY(-55px);
+  }
+  100% {
+    transform: translateX(85px) translateY(-23px) translateX(0px) translateY(0px);
+  }
+}
+@keyframes kf_Snore_2____floating_z_opacity_0 {
+  0% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  14.38% {
+    animation-timing-function: ease-in-out;
+    opacity: 0;
+  }
+  19.38% {
+    animation-timing-function: ease-in-out;
+    opacity: 0.8;
+  }
+  34.38% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  50% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  64.38% {
+    animation-timing-function: ease-in-out;
+    opacity: 0;
+  }
+  69.38% {
+    animation-timing-function: ease-in-out;
+    opacity: 0.8;
+  }
+  84.38% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+#Snore_2____floating_z {
+  transform-origin: 0 0;
+  animation:
+    kf_Snore_2____floating_z_transform_0 8s linear infinite,
+    kf_Snore_2____floating_z_opacity_0 8s linear infinite;
+}
+@keyframes kf_Snore_3____floating_z_transform_0 {
+  0% {
+    transform: translateX(125px) translateY(-61px) translateX(0px) translateY(0px);
+  }
+  17.5% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(125px) translateY(-61px) translateX(0px) translateY(0px);
+  }
+  37.5% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(125px) translateY(-61px) translateX(15px) translateY(-55px);
+  }
+  50% {
+    transform: translateX(125px) translateY(-61px) translateX(0px) translateY(0px);
+  }
+  67.5% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(125px) translateY(-61px) translateX(0px) translateY(0px);
+  }
+  87.5% {
+    animation-timing-function: ease-in-out;
+    transform: translateX(125px) translateY(-61px) translateX(15px) translateY(-55px);
+  }
+  100% {
+    transform: translateX(125px) translateY(-61px) translateX(0px) translateY(0px);
+  }
+}
+@keyframes kf_Snore_3____floating_z_opacity_0 {
+  0% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  17.5% {
+    animation-timing-function: ease-in-out;
+    opacity: 0;
+  }
+  22.5% {
+    animation-timing-function: ease-in-out;
+    opacity: 0.8;
+  }
+  37.5% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  50% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  67.5% {
+    animation-timing-function: ease-in-out;
+    opacity: 0;
+  }
+  72.5% {
+    animation-timing-function: ease-in-out;
+    opacity: 0.8;
+  }
+  87.5% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+#Snore_3____floating_z {
+  transform-origin: 0 0;
+  animation:
+    kf_Snore_3____floating_z_transform_0 8s linear infinite,
+    kf_Snore_3____floating_z_opacity_0 8s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<g id="Sleeping_ginger_cat____snoring___10___snake_tail" clip-path="url(#clip0_5_4072)">
+<g id="Cat___Sleeping___snoring" transform="translate(162 359)">
+<g id="Sleeping_cat_-_breathing">
+<g id="rounded-body" transform="translate(143.171)">
+<path id="Vector" d="M3.32864 238.249C-7.67135 182.249 7.32864 112.249 67.3286 90.2488C127.329 67.2488 164.329 23.2488 240.329 7.24877C338.329 -14.7512 450.328 15.2488 519.328 71.2488C576.328 117.249 607.328 170.249 589.328 221.249C583.328 237.249 573.328 249.249 558.328 255.249L64.3286 258.249L3.32864 238.249Z" fill="#EEECE2"/>
+<g id="Clip_path_group">
+<mask id="mask0_5_4072" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="996" height="774">
+<g id="body-silhouette">
+<path id="Vector_2" d="M3.32864 238.249C-7.67135 182.249 7.32864 112.249 67.3286 90.2488C127.329 67.2488 164.329 23.2488 240.329 7.24877C338.329 -14.7512 450.328 15.2488 519.328 71.2488C576.328 117.249 607.328 170.249 589.328 221.249C583.328 237.249 573.328 249.249 558.328 255.249L64.3286 258.249L3.32864 238.249Z" fill="white"/>
+</g>
+</mask>
+<g mask="url(#mask0_5_4072)">
+<g id="body-coat-patches" transform="translate(-1.67085 -2.79077)">
+<path id="Vector_3" transform="translate(78.1876)" d="M40.8123 51.0395C86.8123 17.0395 150.812 -0.960472 204.812 0.0395285C227.812 29.0395 222.812 62.0395 193.812 87.0395C168.812 109.04 145.812 123.04 145.812 157.04C143.812 195.04 119.812 227.04 95.8123 207.04C77.8123 194.04 80.8123 169.04 63.8123 160.04C44.8123 146.04 15.8123 158.04 2.81231 128.04C-9.18768 100.04 19.8123 70.0395 40.8123 51.0395Z" fill="#CE8448"/>
+<path id="Vector_4" transform="translate(138.984 7.03955)" d="M7.01543 31C44.0154 11 80.0154 0 117.015 0C101.015 27 81.0154 52 55.0154 67C35.0154 78 18.0154 97 11.0154 117C-5.98457 91 0.0154314 57 7.01543 31Z" fill="#B96B37"/>
+<path id="Vector_5" transform="translate(380.645 15.0396)" d="M31.355 0C112.355 14 210.355 68 232.355 152L214.355 246L96.3549 255C74.3549 224 91.3549 192 68.3549 168C41.3549 141 4.35496 152 0.354966 115C-3.64503 82 27.355 70 33.3549 49C37.3549 32 27.355 16 31.355 0Z" fill="#CF864B"/>
+<path id="Vector_6" transform="translate(491 53.0395)" d="M0 0C53 32 100 71 106 119C109 147 98 172 85 183C89 115 50 81 34 60C17 40 8 21 0 0Z" fill="#B66A39"/>
+<path id="Vector_7" opacity="0.55" transform="translate(1.92602e-08 175.04)" d="M0 15C71 45 132 47 195 55C308 69 367 49 428 33C495 16 551 27 606 0L605 100H5L0 15Z" fill="#B9B9B3"/>
+</g>
+</g>
+</g>
+<path id="Vector_8" transform="translate(296.328 23.1728)" d="M0 0.0758988C41 -0.924101 82 8.0759 113 20.0759" stroke="#FAF7EF" stroke-width="9" stroke-linecap="round"/>
+</g>
+<g id="drooping-hind-paw" transform="translate(501.152 98.2488)">
+<path id="Vector_9" d="M74.3488 2C21.3488 17 -6.65118 64 1.34882 112C8.34882 153 44.3488 166 87.3488 175C106.349 180 106.349 186 96.3488 205C83.3488 228 75.3488 254 82.3488 274C85.3488 283 94.3488 287 105.349 280C132.349 261 153.349 233 172.349 208C206.349 163 226.349 124 212.349 83C198.349 42 152.349 7 110.349 0L74.3488 2Z" fill="#D18A4D"/>
+<path id="Vector_10" transform="translate(80.3451 200)" d="M19.0037 0C43.0036 11 63.0036 11 88.0036 10C70.0036 35 50.0036 64 25.0037 80C14.0037 87 5.00366 83 2.00366 74C-3.99634 55 4.00366 29 19.0037 0Z" fill="#EEEAE0"/>
+<path id="Vector_11" transform="translate(78.9553 213)" d="M11.394 0C7.39402 23 6.39402 44 14.394 59C18.394 65 22.394 67 26.394 67C15.394 77 4.39402 71 1.39402 59C-2.60598 39 2.39402 17 11.394 0Z" fill="#B9BAB4"/>
+<path id="Vector_12" transform="translate(101.349 242)" d="M0 27C2 17 6 7 12 0" stroke="#AAA79F" stroke-width="4" stroke-linecap="round"/>
+<path id="Vector_13" transform="translate(11.3488 10)" d="M64 0C22 17 0 48 0 77" stroke="#BD7845" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g id="drooping-front-paw" transform="translate(212.797 132.249)">
+<path id="Vector_14" d="M55.7034 0C17.7034 7 -4.29656 55 0.703433 108C5.70343 162 30.7034 203 64.7034 222C78.7034 230 92.7034 229 90.7034 216C77.7034 188 66.7034 165 68.7034 136C70.7034 91 87.7034 62 109.703 39L55.7034 0Z" fill="#F0EDE3"/>
+<path id="Vector_15" transform="translate(0.320218 56)" d="M14.3832 0C0.383203 61 24.3832 119 61.3832 152C72.3832 162 82.3832 165 90.3832 164C90.3832 175 75.3832 172 64.3832 166C24.3832 144 4.3832 103 0.383203 52C-1.6168 33 4.3832 13 14.3832 0Z" fill="#BDBEB7"/>
+<path id="Vector_16" transform="translate(24.663 96.1354)" d="M16.0404 0.864648C30.0404 -2.13535 42.0404 2.86465 46.0404 12.8646C42.0404 28.8646 42.0404 42.8646 44.0404 54.8646C30.0404 68.8646 12.0404 66.8646 2.04038 51.8646C-3.95962 36.8646 4.04038 13.8646 16.0404 0.864648Z" fill="#D38D50"/>
+<path id="Vector_17" transform="translate(54.7034 199)" d="M12 16L0 0" stroke="#AAA79F" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g id="resting-head" transform="translate(0 37.6699)">
+<path id="Vector_18" d="M22.5 124.579C31.5 102.579 38.5 81.579 43.5 58.579L51.5 5.57895C52.8333 0.245614 56.1666 -0.421053 61.5 3.57895L104.5 38.579C135.5 29.579 168.5 28.579 198.5 40.579L237.5 2.57895C243.5 -2.08772 247.167 -0.421053 248.5 7.57895C255.5 38.579 250.5 66.579 242.5 87.579C253.5 111.579 255.5 142.579 244.5 167.579C233.5 193.579 211.5 208.579 183.5 210.579H71.5C44.5 203.579 25.5 186.579 3.5 166.579C-1.16667 162.579 -1.16667 158.246 3.5 153.579L22.5 124.579Z" fill="#D18A4C"/>
+<path id="Vector_19" transform="translate(51.5 8.57892)" d="M0 0L45 35L11 61L0 0Z" fill="#B76A3D"/>
+<path id="Vector_20" transform="translate(61.5 20.5789)" d="M0 0L22 23L3 35L0 0Z" fill="#D6A49A"/>
+<path id="Vector_21" transform="translate(210.5 16.5789)" d="M25 0V48L0 32L25 0Z" fill="#B76A3D"/>
+<path id="Vector_22" transform="translate(220.5 27.5789)" d="M14 0L12 26L0 18L14 0Z" fill="#DEB2A6"/>
+<path id="Vector_23" transform="translate(119.5 33.5789)" d="M0 1C8 21 12 39 26 52C33 33 37 15 34 0L0 1Z" fill="#B86D3D"/>
+<path id="Vector_24" transform="translate(11.5 104.579)" d="M102 0C111 11 115 28 115 44C131 34 142 33 152 42C170 57 191 61 223 56C215 87 196 104 170 106H60C35 99 17 84 0 69C23 72 39 59 59 53C79 47 84 20 102 0Z" fill="#F3EFE5"/>
+<path id="Vector_25" opacity="0.65" transform="translate(14.5 170.579)" d="M0 4C29 24 57 28 88 29H168C191 26 208 16 220 0C209 25 191 39 167 40H57C32 33 14 18 0 4Z" fill="#BCBDB7"/>
+<path id="Vector_26" transform="translate(92 153.801)" d="M1.5 1.77778C10.1667 -0.888889 18.8333 -0.555556 27.5 2.77778C28.8333 4.11111 28.5 5.77778 26.5 7.77778L16.5 17.7778C15.1667 19.1111 13.8333 18.7778 12.5 16.7778L1.5 6.77778C-0.5 4.77778 -0.5 3.11111 1.5 1.77778Z" fill="#D69A97"/>
+<path id="Vector_27" transform="translate(106.5 172.579)" d="M0 0C1 8 9 12 15 8" stroke="#8B7363" stroke-width="3.5" stroke-linecap="round"/>
+</g>
+<g id="Eyes-closed" transform="translate(48.5 167.249)">
+<path id="Vector_28" d="M0 0C4 13 18 15 31 1" stroke="#795F4C" stroke-width="5" stroke-linecap="round"/>
+<path id="Vector_29" transform="translate(95 3.55382e-06)" d="M0 0C9 15 25 18 41 1" stroke="#795F4C" stroke-width="5" stroke-linecap="round"/>
+</g>
+</g>
+<path id="Snore_1____floating_z" opacity="0.287061" transform="translate(45 15)" d="M1.56037 25V23.1072L9.24219 13.348V13.2188H1.80966V10.8182H12.6861V12.831L5.29972 22.4702V22.5994H12.9446V25H1.56037Z" fill="#855C3D"/>
+<path id="Snore_2____floating_z" opacity="0.565783" transform="translate(85 -23)" d="M1.98047 32V29.5977L11.7305 17.2109V17.0469H2.29688V14H16.1016V16.5547L6.72656 28.7891V28.9531H16.4297V32H1.98047Z" fill="#855C3D"/>
+<path id="Snore_3____floating_z" opacity="0.755095" transform="translate(125 -61)" d="M2.44318 39V36.0739L17.7415 13.6875H2.31534V9.90909H23.1108V12.8352L7.8125 35.2216H23.2386V39H2.44318Z" fill="#855C3D"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_5_4072">
+<rect width="996" height="774" fill="white"/>
+</clipPath>
+</defs>
+</svg>
