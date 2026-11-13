@@ -1,10 +1,17 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Image from "next/image";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { Brain, ScrollText, Swords, Trophy } from "lucide-react";
 import Link from "next/link";
+import { useRef } from "react";
 
 export default function AboutHero() {
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const hasEntered = useInView(cardsRef, { once: true, amount: 0.25 });
+  const prefersReducedMotion = useReducedMotion();
+  const shouldReveal = hasEntered || prefersReducedMotion;
+
   const features = [
     {
       icon: <Brain className="size-8 text-[#d4af37]" />,
@@ -63,19 +70,83 @@ export default function AboutHero() {
             distractions, leaving only the pure essence of code and logic.
           </p>
         </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div ref={cardsRef} className="relative grid grid-cols-1 gap-8 md:grid-cols-3">
+          {!prefersReducedMotion && (
+            <motion.div
+              aria-hidden="true"
+              initial={{ x: "-100%" }}
+              animate={{ x: shouldReveal ? "0%" : "-100%" }}
+              transition={{
+                duration: 2.5,
+                ease: "easeInOut",
+              }}
+              className="pointer-events-none absolute inset-x-0 top-1/2 z-0 hidden -translate-y-1/2 md:block"
+            >
+              <Image
+                src="/wooden_sword.svg"
+                alt=""
+                width={351}
+                height={94}
+                className="h-auto w-full"
+              />
+            </motion.div>
+          )}
           {features.map((feature, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.2 }}
-              className="group relative p-8 rounded-xl bg-[#1a110d]/40 border border-[#3e2723] hover:border-[#d4af37]/50 transition-colors duration-500 hover:bg-[#1a110d]/80 backdrop-blur-sm"
+              initial={false}
+              animate={{
+                borderColor: shouldReveal ? ["#3e2723", "#d4af37", "#3e2723"] : "#3e2723",
+              }}
+              transition={{
+                borderColor: {
+                  duration: 0.8,
+                  delay: 0.4 + i * 0.8,
+                  times: [0, 0.35, 1],
+                },
+              }}
+              className="group relative z-10 overflow-hidden rounded-xl border p-8 transition-colors duration-500 hover:border-[#d4af37]/50"
             >
-              <div className="absolute inset-0 rounded-xl bg-[#d4af37]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-              <div className="relative z-10">
+              <div className="pointer-events-none absolute inset-0 z-10 rounded-xl bg-[#1a110d]/40 backdrop-blur-sm transition-colors duration-500 group-hover:bg-[#1a110d]/80" />
+              <motion.div
+                aria-hidden="true"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: shouldReveal ? [0, 0.3, 0] : 0 }}
+                transition={{
+                  duration: 0.8,
+                  delay: 0.4 + i * 0.8,
+                  times: [0, 0.35, 1],
+                }}
+                className="pointer-events-none absolute inset-0 z-20 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.4),transparent_72%)]"
+              />
+              <div className="pointer-events-none absolute inset-0 z-20 rounded-xl bg-[#d4af37]/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              {!prefersReducedMotion && (
+                <motion.div
+                  aria-hidden="true"
+                  initial={{ x: "-100%", opacity: 0 }}
+                  animate={
+                    shouldReveal
+                      ? { x: "0%", opacity: 1 }
+                      : { x: "-100%", opacity: 0 }
+                  }
+                  transition={{ duration: 0.55, delay: i * 0.72, ease: "easeOut" }}
+                  className="pointer-events-none absolute inset-x-0 top-1/2 z-0 -translate-y-1/2 md:hidden"
+                >
+                  <Image
+                    src="/wooden_sword.svg"
+                    alt=""
+                    width={351}
+                    height={94}
+                    className="h-auto w-full"
+                  />
+                </motion.div>
+              )}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={shouldReveal ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
+                transition={{ duration: 0.4, delay: 0.65 + i * 0.8 }}
+                className="relative z-30"
+              >
                 <div className="mb-6 p-3 w-fit rounded-lg bg-[#2c1810] border border-[#3e2723] group-hover:border-[#d4af37]/30 transition-colors">
                   {feature.icon}
                 </div>
@@ -83,7 +154,7 @@ export default function AboutHero() {
                   {feature.title}
                 </h3>
                 <p className="text-[#a1887f] leading-relaxed text-sm">{feature.desc}</p>
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>
